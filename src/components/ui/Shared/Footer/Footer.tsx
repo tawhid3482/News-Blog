@@ -1,3 +1,5 @@
+import SocialMediaLinks from "../../HomePage/SocialMedia/SocialMedia";
+
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-10 mt-10 border-t">
@@ -6,7 +8,9 @@ const Footer = () => {
         <div>
           <h2 className="text-xl font-semibold mb-4">TIS-News</h2>
           <p className="text-gray-400 text-sm">
-            Stay informed with the latest headlines from around the world. Your trusted source for breaking news, in-depth analysis, and expert opinion.
+            Stay informed with the latest headlines from around the world. Your
+            trusted source for breaking news, in-depth analysis, and expert
+            opinion.
           </p>
         </div>
 
@@ -14,10 +18,26 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><a href="/about" className="hover:text-white transition">About Us</a></li>
-            <li><a href="/contact" className="hover:text-white transition">Contact</a></li>
-            <li><a href="/privacy" className="hover:text-white transition">Privacy Policy</a></li>
-            <li><a href="/terms" className="hover:text-white transition">Terms of Use</a></li>
+            <li>
+              <a href="/about" className="hover:text-white transition">
+                About Us
+              </a>
+            </li>
+            <li>
+              <a href="/contact" className="hover:text-white transition">
+                Contact
+              </a>
+            </li>
+            <li>
+              <a href="/privacy" className="hover:text-white transition">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="/terms" className="hover:text-white transition">
+                Terms of Use
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -37,6 +57,9 @@ const Footer = () => {
               Subscribe
             </button>
           </form>
+          <h3 className="text-lg font-semibold  my-5">Connect With Us</h3>
+
+          <SocialMediaLinks></SocialMediaLinks>
         </div>
       </div>
 
