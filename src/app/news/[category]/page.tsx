@@ -1,7 +1,15 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+
+interface Params {
+  params: {
+    category: string;
+  };
+}
 
 const dummyNews = [
   {
@@ -13,7 +21,7 @@ const dummyNews = [
       "https://ichef.bbci.co.uk/ace/standard/1024/cpsprodpb/a09c/live/c1f82ba0-3002-11f0-96c3-cf669419a2b0.jpg",
     slug: "trump-syria-saudi-deal",
     date: "2025-05-14",
-    newsType: "international",
+    newsType: "world",
   },
   {
     id: 2,
@@ -35,7 +43,7 @@ const dummyNews = [
       "https://www.shutterstock.com/image-photo/tv-live-news-program-professional-600nw-2160015507.jpg",
     slug: "messi-goal",
     date: "2025-05-14",
-    newsType: "international",
+    newsType: "world",
   },
   {
     id: 4,
@@ -45,7 +53,7 @@ const dummyNews = [
     imageUrl: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
     slug: "new-exoplanet-discovery",
     date: "2025-05-13",
-    newsType: "international",
+    newsType: "world",
   },
   {
     id: 5,
@@ -56,7 +64,7 @@ const dummyNews = [
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjCAfVgATBaPFFWX2WWJF6x-gVW4P1mdvfKA&s",
     slug: "market-rally",
     date: "2025-05-12",
-    newsType: "business",
+    newsType: "world",
   },
 ];
 
@@ -67,35 +75,49 @@ const truncateWords = (text: string, wordLimit: number) => {
     : text;
 };
 
-const NewsSection = () => {
-  const mainNews = dummyNews[0];
-  const relevantNews = dummyNews.filter(
-    (news) => news.newsType === mainNews.newsType && news.id !== mainNews.id
+const NewsCategoryPage = ({
+  params,
+}: {
+  params: Promise<{ category: string }>;
+}) => {
+  const { category } = use(params);
+  const filteredNews = dummyNews.filter(
+    (news) => news.newsType.toLowerCase() === category.toLowerCase()
   );
 
-  const excludedIds = [
-    mainNews.id,
-    ...relevantNews.slice(0, 3).map((news) => news.id),
-  ];
-  const otherNews = dummyNews.filter((news) => !excludedIds.includes(news.id));
+  if (!filteredNews.length) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh]">
+        <p className="text-4xl font-bold text-[#0896EF]">
+          No news found for this category.
+        </p>
+      </div>
+    );
+  }
+
+  const mainNews = filteredNews[0];
+  const relevantNews = filteredNews.slice(1, 4); // পরবর্তী ৩টি
+  const otherNews = filteredNews.slice(4); // বাকি সব
 
   const [showFullDesc, setShowFullDesc] = useState(false);
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold mb-8 text-center">Latest News</h2>
+      <h2 className="text-3xl font-bold mb-8 text-center">
+        {category.charAt(0).toUpperCase() + category.slice(1)} News
+      </h2>
 
+      {/* Featured News */}
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Featured News */}
         <div className="lg:w-2/3 w-full lg:h-[520px]">
-          <Link href={`/news/${mainNews.newsType}/${mainNews.slug}`}>
-            <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 ">
+          <Link href={`/news/${mainNews?.newsType}/${mainNews.slug}`}>
+            <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
               <Image
                 src={mainNews.imageUrl}
                 alt={mainNews.title}
                 width={800}
                 height={450}
-                className="w-full md:w-2/3 object-cover lg:h-[520px] "
+                className="w-full md:w-2/3 object-cover lg:h-[520px]"
               />
               <div className="p-6 flex flex-col justify-between">
                 <h3 className="text-2xl font-bold mb-2">{mainNews.title}</h3>
@@ -129,10 +151,10 @@ const NewsSection = () => {
           </h3>
           <div className="flex flex-col gap-4">
             {relevantNews.length > 0 ? (
-              relevantNews.slice(0, 3).map((news) => (
+              relevantNews.map((news) => (
                 <Link
                   key={news.slug}
-                  href={`/news/${news.newsType}/${news.slug}`}
+                  href={`/news/${news?.newsType}/${news.slug}`}
                 >
                   <div className="flex flex-col sm:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
                     <div className="relative w-full sm:w-1/3 h-40 sm:h-auto">
@@ -164,15 +186,15 @@ const NewsSection = () => {
         </div>
       </div>
 
-      {/* Other News Cards */}
+      {/* Other News */}
       {otherNews.length > 0 && (
         <div className="mt-12">
           <h3 className="text-2xl font-bold mb-6 text-center">More News</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {otherNews.slice(0, 12).map((news) => (
+            {otherNews.map((news) => (
               <Link
                 key={news.slug}
-                href={`/news/${news.newsType}/${news.slug}`}
+                href={`/news/${news?.newsType}/${news.slug}`}
               >
                 <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
                   <div className="relative w-full h-48">
@@ -202,4 +224,4 @@ const NewsSection = () => {
   );
 };
 
-export default NewsSection;
+export default NewsCategoryPage;

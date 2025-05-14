@@ -7,33 +7,33 @@ import { Button } from "../../button";
 
 const navItems = [
   { name: "Home", path: "/" },
-  { name: "World", path: "/world" },
-  { name: "Politics", path: "/politics" },
-  { name: "Economy", path: "/economy" },
-  { name: "Technology", path: "/technology" },
-  { name: "Health", path: "/health" },
-  { name: "Entertainment", path: "/entertainment" },
-  { name: "Sports", path: "/sports" },
-  { name: "Science", path: "/science" },
-  { name: "National", path: "/national" },
-  { name: "Investigative", path: "/investigative" },
-  { name: "Education", path: "/education" },
+  { name: "World", path: "/news/world" },
+  { name: "Politics", path: "/news/politics" },
+  { name: "Economy", path: "/news/economy" },
+  { name: "Technology", path: "/news/technology" },
+  { name: "Health", path: "/news/health" },
+  { name: "Entertainment", path: "/news/entertainment" },
+  { name: "Sports", path: "/news/sports" },
+  { name: "Science", path: "/news/science" },
+  { name: "National", path: "/news/national" },
+  { name: "Investigative", path: "/news/investigative" },
+  { name: "Education", path: "/news/education" },
 ];
 
 const Navbar = () => {
   const pathname = usePathname();
-  const user = true;
+  const user = false;
   const handleLogout = () => {
     // Handle logout logic here
     console.log("User logged out");
-  }
+  };
 
   return (
     <nav className="w-full sticky top-0 z-50 bg-white">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center items-center p-4 gap-4 max-w-7xl mx-auto ">
         {/* Logo */}
         <div className="text-2xl font-medium text-center lg:text-left">
-         TIS-News
+          TIS-News
         </div>
 
         {/* Search Bar */}
@@ -58,11 +58,11 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-lg font-medium ">
-               <Button>Sign In</Button>
+            <Link href="/signin" className="text-lg font-medium ">
+              <Button>Sign In</Button>
             </Link>
-            <Link href="/login" className="text-lg font-medium ">
-               <Button>Sign Up</Button>
+            <Link href="/signup" className="text-lg font-medium ">
+              <Button>Sign Up</Button>
             </Link>
           </div>
         )}

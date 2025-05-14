@@ -42,7 +42,7 @@ const Newsletter = () => {
             />
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+              className="px-6 py-2 bg-[#0896EF] text-white rounded-md hover:bg-blue-700 transition"
             >
               Subscribe Now
             </button>

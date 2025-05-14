@@ -40,7 +40,7 @@ const EditorialsSection = () => {
           <div key={editorial.id} className="bg-white shadow-lg rounded-lg p-6">
             <h3 className="text-2xl font-semibold mb-2">
               {/* Removed the <a> tag inside <Link> */}
-              <Link href={`/editorials/${editorial.slug}`} className="text-blue-600 hover:text-blue-800">
+              <Link href={`/editorials/${editorial.slug}`} className="text-[#0896EF] hover:text-blue-800">
                 {editorial.title}
               </Link>
             </h3>
@@ -48,7 +48,7 @@ const EditorialsSection = () => {
               By {editorial.author} | {editorial.date}
             </p>
             <p className="text-gray-700 mb-4">{editorial.excerpt}</p>
-            <Link href={`/editorials/${editorial.slug}`} className="text-blue-600 hover:text-blue-800">
+            <Link href={`/editorials/${editorial.slug}`} className="text-[#0896EF] hover:text-blue-800">
               Read Full Article
             </Link>
           </div>

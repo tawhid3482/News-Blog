@@ -27,8 +27,12 @@ export const metadata: Metadata = {
   keywords:
     "news, breaking news, international news, sports, entertainment, daily news, news blog",
   authors: [{ name: "Tawhidul Islam" }],
-  viewport: "width=device-width, initial-scale=1.0", // For responsive design
   robots: "index, follow", // Tell search engines to index and follow links
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1.0,
 };
 
 export default function RootLayout({
