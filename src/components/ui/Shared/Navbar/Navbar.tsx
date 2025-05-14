@@ -33,7 +33,7 @@ const Navbar = () => {
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center items-center p-4 gap-4 max-w-7xl mx-auto ">
         {/* Logo */}
         <div className="text-2xl font-medium text-center lg:text-left">
-          News-Blog
+         TIS-News
         </div>
 
         {/* Search Bar */}

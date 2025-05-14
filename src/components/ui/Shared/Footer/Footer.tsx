@@ -4,7 +4,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Column */}
         <div>
-          <h2 className="text-xl font-semibold mb-4">News-Blog</h2>
+          <h2 className="text-xl font-semibold mb-4">TIS-News</h2>
           <p className="text-gray-400 text-sm">
             Stay informed with the latest headlines from around the world. Your trusted source for breaking news, in-depth analysis, and expert opinion.
           </p>

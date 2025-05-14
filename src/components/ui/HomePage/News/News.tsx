@@ -87,7 +87,7 @@ const NewsSection = () => {
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Featured News */}
-        <div className="lg:w-2/3 w-full lg:h-[520px] border">
+        <div className="lg:w-2/3 w-full lg:h-[520px]">
           <Link href={`/news/${mainNews.id}`}>
             <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 ">
               <Image
@@ -166,7 +166,7 @@ const NewsSection = () => {
         <div className="mt-12">
           <h3 className="text-2xl font-bold mb-6 text-center">More News</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {otherNews.map((news) => (
+            {otherNews.slice(0,12).map((news) => (
               <Link key={news.id} href={`/news/${news.id}`}>
                 <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
                   <div className="relative w-full h-48">
