@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import heroImage from "@/assets/image.png";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -29,12 +30,12 @@ const Hero = () => {
           journalism—all at your fingertips.
         </p>
 
-        <a
-          href="/latest"
+        <Link
+          href="/news/world"
           className="inline-block bg-white text-[#0896EF] hover:bg-gray-100 font-semibold py-3 px-6 rounded-full transition shadow-md text-lg"
         >
           Browse Top Stories
-        </a>
+        </Link>
       </div>
     </section>
   );

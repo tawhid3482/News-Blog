@@ -33,14 +33,19 @@ const editorials = [
 const EditorialsSection = () => {
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold mb-8 text-center">Editorials & Opinions</h2>
+      <h2 className="text-3xl font-bold mb-8 text-center">
+        Editorials & Opinions
+      </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {editorials.map((editorial) => (
           <div key={editorial.id} className="bg-white shadow-lg rounded-lg p-6">
-            <h3 className="text-2xl font-semibold mb-2">
+            <h3 className="text-2xl font-semibold mb-2 text-[#0896EF]">
               {/* Removed the <a> tag inside <Link> */}
-              <Link href={`/editorials/${editorial.slug}`} className="text-[#0896EF] hover:text-blue-800">
+              <Link
+                href={`/editorials/${editorial.slug}`}
+                className="text-[#0896EF] hover:text-[#365060]"
+              >
                 {editorial.title}
               </Link>
             </h3>
@@ -48,7 +53,10 @@ const EditorialsSection = () => {
               By {editorial.author} | {editorial.date}
             </p>
             <p className="text-gray-700 mb-4">{editorial.excerpt}</p>
-            <Link href={`/editorials/${editorial.slug}`} className="text-[#0896EF] hover:text-blue-800">
+            <Link
+              href={`/editorials/${editorial.slug}`}
+              className="text-[#0896EF] hover:text-blue-800"
+            >
               Read Full Article
             </Link>
           </div>

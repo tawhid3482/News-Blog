@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { useState } from "react";
+import { Button } from "../../button";
 
 const Newsletter = () => {
   const [email, setEmail] = useState("");
@@ -40,12 +41,12 @@ const Newsletter = () => {
               required
               className="w-full sm:w-2/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-            <button
+            <Button
               type="submit"
-              className="px-6 py-2 bg-[#0896EF] text-white rounded-md hover:bg-blue-700 transition"
+              className="px-6 py-2 text-lg font-medium bg-[#0896EF] text-white rounded-md hover:bg-blue-700 transition"
             >
               Subscribe Now
-            </button>
+            </Button>
           </form>
         )}
       </div>
