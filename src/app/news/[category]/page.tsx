@@ -4,6 +4,13 @@
 import React, { use, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaLink,
+  FaLinkedin,
+  FaTwitter,
+} from "react-icons/fa";
 
 interface Params {
   params: {
@@ -75,6 +82,9 @@ const truncateWords = (text: string, wordLimit: number) => {
     : text;
 };
 
+const reactionEmojis = ["👍", "❤️", "😂", "😮", "😢", "😡"] as const;
+type ReactionType = (typeof reactionEmojis)[number];
+
 const NewsCategoryPage = ({
   params,
 }: {
@@ -97,9 +107,47 @@ const NewsCategoryPage = ({
 
   const mainNews = filteredNews[0];
   const relevantNews = filteredNews.slice(1, 4); // পরবর্তী ৩টি
-  const otherNews = filteredNews.slice(4); // বাকি সব
 
-  const [showFullDesc, setShowFullDesc] = useState(false);
+  // ✅ Corrected: Filter same category, exclude main/relevant
+  const excludedIds = [mainNews.id, ...relevantNews.map((news) => news.id)];
+
+  const otherNews = filteredNews.filter(
+    (news) => !excludedIds.includes(news.id)
+  );
+
+  const [reactions, setReactions] = useState<Record<ReactionType, number>>({
+    "👍": 0,
+    "❤️": 0,
+    "😂": 0,
+    "😮": 0,
+    "😢": 0,
+    "😡": 0,
+  });
+  const [showPicker, setShowPicker] = useState(false);
+  const [, setHovering] = useState(false);
+
+  const [comments, setComments] = useState<string[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const [showComments, setShowComments] = useState(false);
+
+  let hoverTimeout: NodeJS.Timeout;
+
+  const handleReaction = (type: ReactionType) => {
+    setReactions((prev) => ({ ...prev, [type]: prev[type] + 1 }));
+  };
+
+  const handleMouseEnter = () => {
+    clearTimeout(hoverTimeout);
+    setHovering(true);
+    setShowPicker(true);
+  };
+
+  const handleMouseLeave = () => {
+    hoverTimeout = setTimeout(() => {
+      setHovering(false);
+      setShowPicker(false);
+    }, 200);
+  };
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
@@ -109,39 +157,202 @@ const NewsCategoryPage = ({
 
       {/* Featured News */}
       <div className="flex flex-col lg:flex-row gap-8">
-        <div className="lg:w-2/3 w-full lg:h-[520px]">
-          <Link href={`/news/${mainNews?.newsType}/${mainNews.slug}`}>
-            <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
-              <Image
-                src={mainNews.imageUrl}
-                alt={mainNews.title}
-                width={800}
-                height={450}
-                className="w-full md:w-2/3 object-cover lg:h-[520px]"
-              />
-              <div className="p-6 flex flex-col justify-between">
-                <h3 className="text-2xl font-bold mb-2">{mainNews.title}</h3>
-                <hr className="my-2" />
-                <p className="text-gray-700 mb-2">
-                  {showFullDesc
-                    ? mainNews.description
-                    : truncateWords(mainNews.description, 30)}
-                </p>
-                {mainNews.description.split(" ").length > 30 && (
+        {/* Main News */}
+        <div className="lg:w-2/3 w-full h-full relative">
+          <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div className="relative w-full h-72 md:h-[520px] md:w-2/3">
+              <Link href={`/news/${mainNews.newsType}/${mainNews.slug}`}>
+                <Image
+                  src={mainNews.imageUrl}
+                  alt={mainNews.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 66vw"
+                  className="object-cover rounded-l-lg"
+                />
+              </Link>
+            </div>
+
+            <div className="p-6 flex flex-col justify-between relative md:w-1/3">
+              <h3 className="text-2xl font-bold mb-2">{mainNews.title}</h3>
+              <hr className="my-2" />
+              <p className="text-gray-700 mb-2">
+                {truncateWords(mainNews.description, 30)}
+              </p>
+              <Link href={`/news/${mainNews.newsType}/${mainNews.slug}`}>
+                <button className="text-[#0896EF] text-sm hover:text-blue-800">
+                  See more
+                </button>
+              </Link>
+
+              <p className="text-sm text-gray-400 mt-2">{mainNews.date}</p>
+
+              {/* Reactions */}
+              <div className="mt-4 relative">
+                <div
+                  className="inline-block relative"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <button className="text-sm text-gray-600 hover:text-blue-500">
+                    👍 Like (
+                    {Object.values(reactions).reduce((a, b) => a + b, 0)})
+                  </button>
+
+                  {showPicker && (
+                    <div
+                      className="absolute z-10 flex gap-2 p-2 mt-2 bg-white shadow-lg rounded-lg border"
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      {reactionEmojis.map((emoji) => (
+                        <button
+                          key={emoji}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleReaction(emoji);
+                            setShowPicker(false);
+                          }}
+                          className="text-xl hover:scale-125 transition-transform"
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-2 flex gap-2 flex-wrap text-sm text-gray-700">
+                  {reactionEmojis.map(
+                    (emoji) =>
+                      reactions[emoji] > 0 && (
+                        <span key={emoji}>
+                          {emoji} {reactions[emoji]}
+                        </span>
+                      )
+                  )}
+                </div>
+              </div>
+
+              {/* Comments */}
+              <div className="mt-6">
+                <h4 className="font-semibold mb-2">Comments</h4>
+
+                <button
+                  onClick={() => setShowComments(!showComments)}
+                  className="text-[#0896EF] hover:underline mb-2 text-sm"
+                >
+                  {showComments
+                    ? "Hide Comments"
+                    : `View Comments (${comments.length})`}
+                </button>
+
+                {showComments && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Write a comment..."
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      className="w-full border p-2 rounded mb-2"
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (newComment.trim()) {
+                          setComments([...comments, newComment.trim()]);
+                          setNewComment("");
+                        }
+                      }}
+                      className="bg-[#0896EF] text-white px-4 py-1 rounded hover:bg-[#2f576f]"
+                    >
+                      Post
+                    </button>
+                    <ul className="mt-4 space-y-4 max-h-64 overflow-y-auto">
+                      {comments.map((c, i) => (
+                        <li key={i} className="flex gap-3 items-start">
+                          <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                          <div className="bg-gray-100 p-3 rounded-lg w-full">
+                            <p className="text-sm text-gray-800">{c}</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              Just now
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+
+              {/* Share */}
+              <div className="mt-4">
+                <p className="text-md text-gray-500">Share this news:</p>
+                <div className="flex gap-3 mt-2 flex-wrap">
+                  {/* Copy Link */}
                   <button
+                    className="text-[#0896EF] hover:underline cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
-                      setShowFullDesc(!showFullDesc);
+                      navigator.clipboard.writeText(window.location.href);
                     }}
-                    className="text-blue-600 text-sm hover:text-blue-800"
+                    aria-label="Copy Link"
                   >
-                    {showFullDesc ? "See Less" : "See More"}
+                    <FaLink className="text-xl" />
                   </button>
-                )}
-                <p className="text-sm text-gray-400 mt-2">{mainNews.date}</p>
+
+                  {/* Facebook */}
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                      window.location.href
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-700 hover:underline"
+                    aria-label="Share on Facebook"
+                  >
+                    <FaFacebook className="text-xl" />
+                  </a>
+
+                  {/* Instagram (Note: Instagram does not support direct URL sharing via a link) */}
+                  <a
+                    href="https://www.instagram.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-pink-500 hover:underline"
+                    aria-label="Visit Instagram"
+                  >
+                    <FaInstagram className="text-xl" />
+                  </a>
+
+                  {/* Twitter */}
+                  <a
+                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                      window.location.href
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:underline"
+                    aria-label="Share on Twitter"
+                  >
+                    <FaTwitter className="text-xl" />
+                  </a>
+
+                  {/* LinkedIn */}
+                  <a
+                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+                      window.location.href
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                    aria-label="Share on LinkedIn"
+                  >
+                    <FaLinkedin className="text-xl" />
+                  </a>
+                </div>
               </div>
             </div>
-          </Link>
+          </div>
         </div>
 
         {/* Relevant News */}

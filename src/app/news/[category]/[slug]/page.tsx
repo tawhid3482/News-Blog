@@ -1,6 +1,9 @@
+"use client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { useState } from "react";
 
+// Dummy news data
 const dummyNews = [
   {
     id: 1,
@@ -11,7 +14,7 @@ const dummyNews = [
       "https://ichef.bbci.co.uk/ace/standard/1024/cpsprodpb/a09c/live/c1f82ba0-3002-11f0-96c3-cf669419a2b0.jpg",
     slug: "trump-syria-saudi-deal",
     date: "2025-05-14",
-    newsType: "international",
+    newsType: "world",
   },
   {
     id: 2,
@@ -58,26 +61,54 @@ const dummyNews = [
   },
 ];
 
+const reactions = [
+  { type: "like", emoji: "👍" },
+  { type: "love", emoji: "❤️" },
+  { type: "angry", emoji: "😡" },
+  { type: "sad", emoji: "😢" },
+  { type: "wow", emoji: "😮" },
+  { type: "haha", emoji: "😂" },
+];
+
 interface Props {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
 }
 
-const NewsDetailsPage = async ({ params }: Props) => {
-  // Ensure async handling of params.slug
-  const newsSlug = await params?.slug;
+const NewsDetailsPage = ({ params }: Props) => {
+  const newsSlug = params.slug;
   const newsItem = dummyNews.find((item) => item.slug === newsSlug);
 
-  if (!newsItem) {
-    notFound(); // If newsItem is not found, show 404 page
-  }
+  const [userReaction, setUserReaction] = useState<string | null>(null);
+
+  const [showAllReactions, setShowAllReactions] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+
+  const [comments, setComments] = useState<string[]>([]);
+  const [newComment, setNewComment] = useState("");
+
+  if (!newsItem) return notFound();
+
+  const handleReaction = (type: string) => {
+    setUserReaction(type);
+    setShowAllReactions(false);
+  };
+
+  const handleCommentSubmit = () => {
+    if (newComment.trim()) {
+      setComments([...comments, newComment.trim()]);
+      setNewComment("");
+    }
+  };
+
+  const relevantNews = dummyNews.filter(
+    (item) => item.newsType === newsItem.newsType && item.slug !== newsItem.slug
+  );
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10">
+    <div className="max-w-6xl mx-auto px-4 py-10">
       <h1 className="text-4xl font-bold mb-6">{newsItem.title}</h1>
       <p className="text-sm text-gray-500 mb-4">{newsItem.date}</p>
-      <div className="w-full h-80 relative mb-6 rounded-md overflow-hidden">
+      <div className="w-full h-80 md:h-[450px] lg:h-[580px] relative mb-6 rounded-md overflow-hidden">
         <Image
           src={newsItem.imageUrl}
           alt={newsItem.title}
@@ -85,9 +116,101 @@ const NewsDetailsPage = async ({ params }: Props) => {
           objectFit="cover"
         />
       </div>
-      <p className="text-lg text-gray-700 leading-8 whitespace-pre-line">
+      <p className="text-lg text-gray-700 leading-8 whitespace-pre-line mb-6">
         {newsItem.description}
       </p>
+
+      {/* Reaction + Comment UI */}
+      <div className="flex items-center gap-4 mb-6">
+        <div
+          className="relative"
+          onMouseEnter={() => setShowAllReactions(true)}
+          onMouseLeave={() => setShowAllReactions(false)}
+        >
+          <button className="px-4 py-2 bg-gray-200 rounded-full text-sm font-medium hover:bg-gray-300 transition">
+            {userReaction
+              ? reactions.find((r) => r.type === userReaction)?.emoji
+              : "👍 Like"}
+          </button>
+
+          {showAllReactions && (
+            <div className="absolute -top-12 left-0 bg-white border px-3 py-2 rounded-full shadow flex gap-2 z-10">
+              {reactions.map((r) => (
+                <button
+                  key={r.type}
+                  onClick={() => handleReaction(r.type)}
+                  className="text-xl hover:scale-125 transition-transform"
+                >
+                  {r.emoji}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={() => setShowComments(!showComments)}
+          className="px-4 py-2 bg-gray-100 rounded-full text-sm hover:bg-gray-200 transition"
+        >
+          💬 Comment
+        </button>
+      </div>
+
+      {/* Comment Section */}
+      {showComments && (
+        <div className="mb-10 space-y-4">
+          <textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            className="w-full p-3 border rounded-md focus:outline-none"
+            placeholder="Write a comment..."
+          />
+          <button
+            onClick={handleCommentSubmit}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Post Comment
+          </button>
+
+          <div className="mt-6 space-y-2">
+            {comments.map((cmt, idx) => (
+              <div key={idx} className="bg-gray-100 p-3 rounded-md">
+                {cmt}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Relevant News Section */}
+      {relevantNews.length > 0 ? (
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold mb-4">Related News</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {relevantNews.map((news) => (
+              <div
+                key={news.id}
+                className="border rounded-md overflow-hidden shadow hover:shadow-lg transition"
+              >
+                <div className="relative h-48 w-full">
+                  <Image
+                    src={news.imageUrl}
+                    alt={news.title}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-bold">{news.title}</h3>
+                  <p className="text-sm text-gray-500">{news.date}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className=""></div>
+      )}
     </div>
   );
 };
