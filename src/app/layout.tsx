@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/Shared/Navbar/Navbar";
 import Footer from "@/components/ui/Shared/Footer/Footer";
+import { Toaster } from "react-hot-toast";
+import Providers from "@/lib/Providers/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,16 +43,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased max-w-7xl mx-auto  `}
-      >
-        <Navbar></Navbar>
-        <main className="flex flex-col min-h-screen">
-          <div className="flex-grow">{children}</div>
-        </main>
-        <Footer></Footer>
-      </body>
-    </html>
+    <Providers>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased max-w-7xl mx-auto  `}
+        >
+          <Navbar></Navbar>
+          <main className="flex flex-col min-h-screen">
+            <div className="flex-grow">
+              <Toaster position="top-center" />
+
+              {children}
+            </div>
+          </main>
+          <Footer></Footer>
+        </body>
+      </html>
+    </Providers>
   );
 }

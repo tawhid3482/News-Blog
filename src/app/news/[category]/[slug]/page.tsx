@@ -1,65 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import { useState } from "react";
 
-// Dummy news data
-const dummyNews = [
-  {
-    id: 1,
-    title: "Trump Pledges to Lift Syria Sanctions After $142bn Saudi Arms Deal",
-    description:
-      "The US president gets a 'lavender-carpet' reception on a whirlwind visit of Gulf countries mainly focused on shoring up investment adsf wefasd wafasd trewafsdf wefadfwet ewa asd fwefa fewafasdf ewf afdwea wefsdf werfasf sdgfwe gweafasdf wefadfweae ewa gwarfwe asdgfwera awefsdgfwe sdfdgwera awegfsegf wer af a e sdf iw nsg sdfioalsio  fiohfds fi sdhsgi sd foif wsif hwsadi ilsdaos giswh israhf saisd oisdois hoihg son.",
-    imageUrl:
-      "https://ichef.bbci.co.uk/ace/standard/1024/cpsprodpb/a09c/live/c1f82ba0-3002-11f0-96c3-cf669419a2b0.jpg",
-    slug: "trump-syria-saudi-deal",
-    date: "2025-05-14",
-    newsType: "world",
-  },
-  {
-    id: 2,
-    title: "BBC Cameraman Captures Israeli Strike on Hospital",
-    description:
-      "Israel says it targeted Hamas militants hiding among civilians at the Khan Younis hospital.",
-    imageUrl:
-      "https://c8.alamy.com/comp/2BEAFRR/tv-news-studio-with-broadcaster-and-breaking-world-background-vector-illustration-breaking-news-on-tv-broadcasting-journalist-2BEAFRR.jpg",
-    slug: "gaza-hospital-strike",
-    date: "2025-05-14",
-    newsType: "international",
-  },
-  {
-    id: 3,
-    title: "Lionel Messi Scores Stunning Goal to Secure Victory",
-    description:
-      "Messi continues to show brilliance with a last-minute goal in Champions League.",
-    imageUrl:
-      "https://www.shutterstock.com/image-photo/tv-live-news-program-professional-600nw-2160015507.jpg",
-    slug: "messi-goal",
-    date: "2025-05-14",
-    newsType: "international",
-  },
-  {
-    id: 4,
-    title: "Scientists Discover New Exoplanet in Habitable Zone",
-    description:
-      "Astronomers have identified a new Earth-like planet that may have conditions suitable for life.",
-    imageUrl: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
-    slug: "new-exoplanet-discovery",
-    date: "2025-05-13",
-    newsType: "international",
-  },
-  {
-    id: 5,
-    title: "Stock Markets Rally Amid Economic Recovery Hopes",
-    description:
-      "Markets respond positively to signs of recovery in major global economies after prolonged slowdowns.",
-    imageUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjCAfVgATBaPFFWX2WWJF6x-gVW4P1mdvfKA&s",
-    slug: "market-rally",
-    date: "2025-05-12",
-    newsType: "business",
-  },
-];
+import {
+  useCreatePostMutation,
+  useGetAllPostQuery,
+} from "@/redux/features/post/postApi";
+import Image from "next/image";
+import { useState } from "react";
 
 const reactions = [
   { type: "like", emoji: "👍" },
@@ -76,65 +23,115 @@ interface Props {
 
 const NewsDetailsPage = ({ params }: Props) => {
   const newsSlug = params.slug;
-  const newsItem = dummyNews.find((item) => item.slug === newsSlug);
+  const { data, isLoading } = useGetAllPostQuery("");
+  const [createPost] = useCreatePostMutation();
+  const newsItem = data?.data?.find((item: any) => item.slug === newsSlug);
 
   const [userReaction, setUserReaction] = useState<string | null>(null);
-
   const [showAllReactions, setShowAllReactions] = useState(false);
-  const [showComments, setShowComments] = useState(false);
-
-  const [comments, setComments] = useState<string[]>([]);
+  const [showCommentInput, setShowCommentInput] = useState(false);
   const [newComment, setNewComment] = useState("");
+  if (isLoading) {
+    return (
+      <div className="max-w-5xl mx-auto px-4 py-10 animate-pulse">
+        {/* Title placeholder */}
+        <div className="h-10 bg-gray-300 rounded w-3/4 mb-6"></div>
+        {/* Summary placeholder */}
+        <div className="h-6 bg-gray-300 rounded w-1/2 mb-6"></div>
+        {/* Image placeholder */}
+        <div className="w-full h-64 md:h-96 bg-gray-300 rounded mb-6"></div>
+        {/* Content lines */}
+        <div className="space-y-3">
+          <div className="h-5 bg-gray-300 rounded w-full"></div>
+          <div className="h-5 bg-gray-300 rounded w-full"></div>
+          <div className="h-5 bg-gray-300 rounded w-5/6"></div>
+          <div className="h-5 bg-gray-300 rounded w-4/6"></div>
+        </div>
+      </div>
+    );
+  }
+  if (!newsItem) {
+    return <p>Data not found</p>;
+  }
 
-  if (!newsItem) return notFound();
+  const reactionCounts = reactions.map((reaction) => {
+    const count =
+      newsItem.reactions?.filter(
+        (r: any) => r.type.toLowerCase() === reaction.type
+      ).length || 0;
+    return { ...reaction, count };
+  });
 
   const handleReaction = (type: string) => {
     setUserReaction(type);
     setShowAllReactions(false);
+
+    // Ideally: dispatch API call to backend
+    createPost({ postId: newsItem.id, reaction: type });
   };
 
   const handleCommentSubmit = () => {
     if (newComment.trim()) {
-      setComments([...comments, newComment.trim()]);
+      // You should call your comment API here
+      newsItem.comments.push({
+        content: newComment,
+        createdAt: new Date().toISOString(),
+        userId: "me",
+        id: Math.random().toString(),
+        postId: newsItem.id,
+      });
       setNewComment("");
     }
   };
 
-  const relevantNews = dummyNews.filter(
-    (item) => item.newsType === newsItem.newsType && item.slug !== newsItem.slug
-  );
-
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <h1 className="text-4xl font-bold mb-6">{newsItem.title}</h1>
-      <p className="text-sm text-gray-500 mb-4">{newsItem.date}</p>
-      <div className="w-full h-80 md:h-[450px] lg:h-[580px] relative mb-6 rounded-md overflow-hidden">
+    <div className="max-w-5xl mx-auto px-4 py-10">
+      <h1 className="text-4xl font-bold mb-2">{newsItem.title}</h1>
+      <p className="text-gray-600 text-lg mb-1">{newsItem.summary}</p>
+      <p className="text-sm text-gray-500 mb-4">
+        Published: {new Date(newsItem.createdAt).toLocaleString()}
+      </p>
+
+      <div className="relative w-full h-[350px] md:h-[500px] rounded-xl overflow-hidden mb-6 shadow">
         <Image
-          src={newsItem.imageUrl}
+          src={newsItem.coverImage}
           alt={newsItem.title}
           layout="fill"
           objectFit="cover"
         />
       </div>
-      <p className="text-lg text-gray-700 leading-8 whitespace-pre-line mb-6">
-        {newsItem.description}
+      {/* Tags */}
+      <div className="my-5">
+        <div className="flex flex-wrap gap-2">
+          {newsItem.tags.map((tag: any) => (
+            <span
+              key={tag.id}
+              className="px-3 py-1 bg-gray-200 text-sm rounded-full"
+            >
+              #{tag.name}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <p className="text-lg leading-8 mb-6 whitespace-pre-line">
+        {newsItem.content}
       </p>
 
-      {/* Reaction + Comment UI */}
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-4 mb-3">
         <div
           className="relative"
           onMouseEnter={() => setShowAllReactions(true)}
           onMouseLeave={() => setShowAllReactions(false)}
         >
-          <button className="px-4 py-2 bg-gray-200 rounded-full text-sm font-medium hover:bg-gray-300 transition">
+          <button className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200">
             {userReaction
               ? reactions.find((r) => r.type === userReaction)?.emoji
               : "👍 Like"}
           </button>
 
           {showAllReactions && (
-            <div className="absolute -top-12 left-0 bg-white border px-3 py-2 rounded-full shadow flex gap-2 z-10">
+            <div className="absolute -top-12 left-0 bg-white border shadow px-3 py-2 rounded-full flex gap-2 z-20">
               {reactions.map((r) => (
                 <button
                   key={r.type}
@@ -149,68 +146,73 @@ const NewsDetailsPage = ({ params }: Props) => {
         </div>
 
         <button
-          onClick={() => setShowComments(!showComments)}
-          className="px-4 py-2 bg-gray-100 rounded-full text-sm hover:bg-gray-200 transition"
+          onClick={() => setShowCommentInput((prev) => !prev)}
+          className="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300"
         >
           💬 Comment
         </button>
       </div>
 
-      {/* Comment Section */}
-      {showComments && (
-        <div className="mb-10 space-y-4">
-          <textarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            className="w-full p-3 border rounded-md focus:outline-none"
-            placeholder="Write a comment..."
+      <p className="text-sm text-gray-600 mb-6">
+        {reactionCounts
+          .filter((r) => r.count > 0)
+          .map((r) => `${r.emoji} ${r.count}`)
+          .join("  ") || "No reactions yet"}
+      </p>
+
+      <div className="bg-gray-50 rounded-md p-4 mb-10">
+        {/* Show input only if toggled */}
+        {showCommentInput && (
+          <>
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              className="w-full p-3 border rounded-md mb-2"
+              placeholder="Write a comment..."
+            />
+            <button
+              onClick={handleCommentSubmit}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Post Comment
+            </button>
+          </>
+        )}
+
+        {/* Comments always visible */}
+        <div className="mt-6 space-y-4">
+          {newsItem.comments.map((comment: any, index: number) => (
+            <div
+              key={comment.id || index}
+              className="bg-white shadow p-3 rounded-md"
+            >
+              <p className="text-gray-700">{comment.content}</p>
+              <p className="text-xs text-gray-400 mt-1">
+                {new Date(comment.createdAt).toLocaleString()}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Author Info */}
+      <div className="border-t pt-6 mt-6 text-sm text-gray-500">
+        <div className="flex items-center gap-4">
+          <Image
+            src={newsItem.author.profilePhoto}
+            width={40}
+            height={40}
+            alt="author"
+            className="rounded-full"
           />
-          <button
-            onClick={handleCommentSubmit}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Post Comment
-          </button>
-
-          <div className="mt-6 space-y-2">
-            {comments.map((cmt, idx) => (
-              <div key={idx} className="bg-gray-100 p-3 rounded-md">
-                {cmt}
-              </div>
-            ))}
+          <div>
+            <p className="font-semibold text-gray-800">
+              {newsItem.author.name}
+            </p>
+            <p>{newsItem.author.email}</p>
           </div>
         </div>
-      )}
-
-      {/* Relevant News Section */}
-      {relevantNews.length > 0 ? (
-        <div className="mt-12">
-          <h2 className="text-2xl font-semibold mb-4">Related News</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {relevantNews.map((news) => (
-              <div
-                key={news.id}
-                className="border rounded-md overflow-hidden shadow hover:shadow-lg transition"
-              >
-                <div className="relative h-48 w-full">
-                  <Image
-                    src={news.imageUrl}
-                    alt={news.title}
-                    layout="fill"
-                    objectFit="cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-bold">{news.title}</h3>
-                  <p className="text-sm text-gray-500">{news.date}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className=""></div>
-      )}
+      </div>
     </div>
   );
 };

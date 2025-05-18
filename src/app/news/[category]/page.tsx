@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -11,69 +10,17 @@ import {
   FaLinkedin,
   FaTwitter,
 } from "react-icons/fa";
+import {
+  useCreatePostMutation,
+  useGetAllPostQuery,
+} from "@/redux/features/post/postApi";
+import LoadingSkeleton from "@/components/ui/HomePage/News/Loding";
 
 interface Params {
   params: {
     category: string;
   };
 }
-
-const dummyNews = [
-  {
-    id: 1,
-    title: "Trump Pledges to Lift Syria Sanctions After $142bn Saudi Arms Deal",
-    description:
-      "The US president gets a 'lavender-carpet' reception on a whirlwind visit of Gulf countries mainly focused on shoring up investment adsf wefasd wafasd trewafsdf wefadfwet ewa asd fwefa fewafasdf ewf afdwea wefsdf werfasf sdgfwe gweafasdf wefadfweae ewa gwarfwe asdgfwera awefsdgfwe sdfdgwera awegfsegf wer af a e sdf iw nsg sdfioalsio  fiohfds fi sdhsgi sd foif wsif hwsadi ilsdaos giswh israhf saisd oisdois hoihg son.",
-    imageUrl:
-      "https://ichef.bbci.co.uk/ace/standard/1024/cpsprodpb/a09c/live/c1f82ba0-3002-11f0-96c3-cf669419a2b0.jpg",
-    slug: "trump-syria-saudi-deal",
-    date: "2025-05-14",
-    newsType: "world",
-  },
-  {
-    id: 2,
-    title: "BBC Cameraman Captures Israeli Strike on Hospital",
-    description:
-      "Israel says it targeted Hamas militants hiding among civilians at the Khan Younis hospital.",
-    imageUrl:
-      "https://c8.alamy.com/comp/2BEAFRR/tv-news-studio-with-broadcaster-and-breaking-world-background-vector-illustration-breaking-news-on-tv-broadcasting-journalist-2BEAFRR.jpg",
-    slug: "gaza-hospital-strike",
-    date: "2025-05-14",
-    newsType: "world",
-  },
-  {
-    id: 3,
-    title: "Lionel Messi Scores Stunning Goal to Secure Victory",
-    description:
-      "Messi continues to show brilliance with a last-minute goal in Champions League.",
-    imageUrl:
-      "https://www.shutterstock.com/image-photo/tv-live-news-program-professional-600nw-2160015507.jpg",
-    slug: "messi-goal",
-    date: "2025-05-14",
-    newsType: "world",
-  },
-  {
-    id: 4,
-    title: "Scientists Discover New Exoplanet in Habitable Zone",
-    description:
-      "Astronomers have identified a new Earth-like planet that may have conditions suitable for life.",
-    imageUrl: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
-    slug: "new-exoplanet-discovery",
-    date: "2025-05-13",
-    newsType: "world",
-  },
-  {
-    id: 5,
-    title: "Stock Markets Rally Amid Economic Recovery Hopes",
-    description:
-      "Markets respond positively to signs of recovery in major global economies after prolonged slowdowns.",
-    imageUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjCAfVgATBaPFFWX2WWJF6x-gVW4P1mdvfKA&s",
-    slug: "market-rally",
-    date: "2025-05-12",
-    newsType: "world",
-  },
-];
 
 const truncateWords = (text: string, wordLimit: number) => {
   const words = text.split(" ");
@@ -82,20 +29,48 @@ const truncateWords = (text: string, wordLimit: number) => {
     : text;
 };
 
-const reactionEmojis = ["👍", "❤️", "😂", "😮", "😢", "😡"] as const;
-type ReactionType = (typeof reactionEmojis)[number];
+const reactionEmojiMap: Record<string, string> = {
+  LIKE: "👍",
+  LOVE: "❤️",
+  HAHA: "😂",
+  WOW: "😮",
+  SAD: "😢",
+  ANGRY: "😡",
+};
+
+const countReactions = (reactions: { type: string }[]) => {
+  return reactions.reduce((acc: Record<string, number>, { type }) => {
+    acc[type] = (acc[type] || 0) + 1;
+    return acc;
+  }, {});
+};
 
 const NewsCategoryPage = ({
   params,
-}: {
-  params: Promise<{ category: string }>;
-}) => {
-  const { category } = use(params);
-  const filteredNews = dummyNews.filter(
-    (news) => news.newsType.toLowerCase() === category.toLowerCase()
+}: Params) => {
+  const { category } = params;
+
+  // সব হুক এখানে উপরে কল করুন
+  const { data, isLoading } = useGetAllPostQuery("");
+  const [newComment, setNewComment] = useState("");
+  const [showComments, setShowComments] = useState(false);
+  const [createReaction, { isLoading: reactionLoading }] =
+    useCreatePostMutation();
+  const [userReaction, setUserReaction] = useState<string | null>(null);
+  const [showReactionPicker, setShowReactionPicker] = useState(false);
+
+  // লোডিং থাকলে লোডার দেখান
+  if (isLoading) {
+    return <LoadingSkeleton />;
+  }
+
+  const news = data?.data || [];
+  const filteredNews = news.filter(
+    (newsItem: any) =>
+      newsItem?.category?.name.toLowerCase() === category.toLowerCase()
   );
 
-  if (!filteredNews.length) {
+  if (filteredNews.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-[80vh]">
         <p className="text-4xl font-bold text-[#0896EF]">
@@ -106,68 +81,58 @@ const NewsCategoryPage = ({
   }
 
   const mainNews = filteredNews[0];
-  const relevantNews = filteredNews.slice(1, 4); // পরবর্তী ৩টি
+  if (!mainNews) return <p>No news found.</p>;
 
-  // ✅ Corrected: Filter same category, exclude main/relevant
-  const excludedIds = [mainNews.id, ...relevantNews.map((news) => news.id)];
-
+  const relevantNews = filteredNews.slice(1, 4);
+  const excludedIds = [
+    mainNews.id,
+    ...relevantNews.map((newsItem: any) => newsItem.id),
+  ];
   const otherNews = filteredNews.filter(
-    (news) => !excludedIds.includes(news.id)
+    (newsItem: any) => !excludedIds.includes(newsItem.id)
   );
 
-  const [reactions, setReactions] = useState<Record<ReactionType, number>>({
-    "👍": 0,
-    "❤️": 0,
-    "😂": 0,
-    "😮": 0,
-    "😢": 0,
-    "😡": 0,
-  });
-  const [showPicker, setShowPicker] = useState(false);
-  const [, setHovering] = useState(false);
+  const mainReactions = countReactions(mainNews?.reactions || []);
+  const mainComments = mainNews?.comments || [];
 
-  const [comments, setComments] = useState<string[]>([]);
-  const [newComment, setNewComment] = useState("");
-  const [showComments, setShowComments] = useState(false);
+  const totalReactions = Object.values(mainReactions).reduce(
+    (acc, count) => acc + count,
+    0
+  );
 
-  let hoverTimeout: NodeJS.Timeout;
+  const handleReact = async (type: string) => {
+    if (reactionLoading) return;
 
-  const handleReaction = (type: ReactionType) => {
-    setReactions((prev) => ({ ...prev, [type]: prev[type] + 1 }));
+    try {
+      await createReaction({ postId: mainNews.id, type }).unwrap();
+      setUserReaction(type);
+    } catch (error) {
+      console.error("Failed to react:", error);
+    }
   };
 
-  const handleMouseEnter = () => {
-    clearTimeout(hoverTimeout);
-    setHovering(true);
-    setShowPicker(true);
+  const handleComment = () => {
+    console.log("ami");
   };
 
-  const handleMouseLeave = () => {
-    hoverTimeout = setTimeout(() => {
-      setHovering(false);
-      setShowPicker(false);
-    }, 200);
-  };
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold mb-8 text-center">
-        {category.charAt(0).toUpperCase() + category.slice(1)} News
-      </h2>
+      <h2 className="text-3xl font-bold mb-8 text-center">Latest News</h2>
 
-      {/* Featured News */}
       <div className="flex flex-col lg:flex-row gap-8">
+        {/* Main News */}
         {/* Main News */}
         <div className="lg:w-2/3 w-full h-full relative">
           <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
             <div className="relative w-full h-72 md:h-[520px] md:w-2/3">
-              <Link href={`/news/${mainNews.newsType}/${mainNews.slug}`}>
+              <Link href={`/news/${mainNews.category.slug}/${mainNews.slug}`}>
                 <Image
-                  src={mainNews.imageUrl}
+                  src={mainNews.coverImage}
                   alt={mainNews.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 66vw"
-                  className="object-cover rounded-l-lg"
+                  className="object-cover"
                 />
               </Link>
             </div>
@@ -176,43 +141,43 @@ const NewsCategoryPage = ({
               <h3 className="text-2xl font-bold mb-2">{mainNews.title}</h3>
               <hr className="my-2" />
               <p className="text-gray-700 mb-2">
-                {truncateWords(mainNews.description, 30)}
+                {truncateWords(mainNews.summary || "", 30)}
               </p>
-              <Link href={`/news/${mainNews.newsType}/${mainNews.slug}`}>
-                <button className="text-[#0896EF] text-sm hover:text-blue-800">
-                  See more
-                </button>
+              <Link
+                href={`/news/${mainNews.category.slug}/${mainNews.slug}`}
+                className="text-[#0896EF] text-sm hover:text-blue-800"
+              >
+                See more
               </Link>
 
-              <p className="text-sm text-gray-400 mt-2">{mainNews.date}</p>
+              <p className="text-sm text-gray-400 mt-2">
+                {new Date(mainNews.createdAt).toLocaleDateString()}
+              </p>
 
               {/* Reactions */}
-              <div className="mt-4 relative">
+              <div className="mt-4">
+                <p className="font-medium mb-1">Reactions</p>
+
                 <div
-                  className="inline-block relative"
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
+                  className="relative inline-block"
+                  onMouseEnter={() => setShowReactionPicker(true)}
+                  onMouseLeave={() => setShowReactionPicker(false)}
                 >
-                  <button className="text-sm text-gray-600 hover:text-blue-500">
-                    👍 Like (
-                    {Object.values(reactions).reduce((a, b) => a + b, 0)})
+                  <button className="text-2xl p-2 rounded hover:bg-gray-100 transition">
+                    {userReaction ? reactionEmojiMap[userReaction] : "👍"}({" "}
+                    {totalReactions})
                   </button>
 
-                  {showPicker && (
-                    <div
-                      className="absolute z-10 flex gap-2 p-2 mt-2 bg-white shadow-lg rounded-lg border"
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
-                    >
-                      {reactionEmojis.map((emoji) => (
+                  {showReactionPicker && (
+                    <div className="absolute top-full left-0 flex gap-2 bg-white shadow-lg border p-2 rounded-xl z-10">
+                      {Object.entries(reactionEmojiMap).map(([type, emoji]) => (
                         <button
-                          key={emoji}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleReaction(emoji);
-                            setShowPicker(false);
-                          }}
-                          className="text-xl hover:scale-125 transition-transform"
+                          key={type}
+                          onClick={() => handleReact(type)}
+                          disabled={reactionLoading}
+                          className={`text-xl transition transform hover:scale-125 ${
+                            userReaction === type ? "opacity-100" : "opacity-60"
+                          }`}
                         >
                           {emoji}
                         </button>
@@ -221,14 +186,20 @@ const NewsCategoryPage = ({
                   )}
                 </div>
 
-                <div className="mt-2 flex gap-2 flex-wrap text-sm text-gray-700">
-                  {reactionEmojis.map(
-                    (emoji) =>
-                      reactions[emoji] > 0 && (
-                        <span key={emoji}>
-                          {emoji} {reactions[emoji]}
-                        </span>
-                      )
+                {/* Show all reaction counts below */}
+                <div className="flex gap-3 text-sm mt-2 flex-wrap">
+                  {Object.entries(mainReactions).length === 0 ? (
+                    <span className="text-gray-500">No reactions yet</span>
+                  ) : (
+                    Object.entries(mainReactions).map(([type, count]) => (
+                      <div
+                        key={type}
+                        className="flex items-center gap-1 text-gray-600 border px-2 py-1 rounded-full text-xs"
+                      >
+                        <span>{reactionEmojiMap[type] || "❓"}</span>
+                        <span>{count}</span>
+                      </div>
+                    ))
                   )}
                 </div>
               </div>
@@ -243,7 +214,7 @@ const NewsCategoryPage = ({
                 >
                   {showComments
                     ? "Hide Comments"
-                    : `View Comments (${comments.length})`}
+                    : `View Comments (${mainComments.length})`}
                 </button>
 
                 {showComments && (
@@ -256,95 +227,102 @@ const NewsCategoryPage = ({
                       className="w-full border p-2 rounded mb-2"
                     />
                     <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (newComment.trim()) {
-                          setComments([...comments, newComment.trim()]);
-                          setNewComment("");
-                        }
-                      }}
+                      onClick={handleComment}
                       className="bg-[#0896EF] text-white px-4 py-1 rounded hover:bg-[#2f576f]"
                     >
                       Post
                     </button>
-                    <ul className="mt-4 space-y-4 max-h-64 overflow-y-auto">
-                      {comments.map((c, i) => (
-                        <li key={i} className="flex gap-3 items-start">
-                          <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                          <div className="bg-gray-100 p-3 rounded-lg w-full">
-                            <p className="text-sm text-gray-800">{c}</p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              Just now
-                            </p>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
+
+                    {/* এখানে কমেন্ট লিস্ট দেখাবে */}
+                    {mainComments.length === 0 ? (
+                      <p className="text-gray-500 text-sm mt-2">
+                        No comments yet.
+                      </p>
+                    ) : (
+                      <ul className="mt-4 space-y-4 max-h-64 overflow-y-auto">
+                        {mainComments.map((c: any, i: any) => (
+                          <li key={i} className="flex gap-3 items-start">
+                            <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                            <div className="bg-gray-100 p-3 rounded-lg w-full">
+                              <p className="text-sm text-gray-800">
+                                {c?.content}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {new Date(c?.createdAt).toLocaleString()}
+                              </p>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </>
                 )}
               </div>
-
               {/* Share */}
               <div className="mt-4">
                 <p className="text-md text-gray-500">Share this news:</p>
                 <div className="flex gap-3 mt-2 flex-wrap">
-                  {/* Copy Link */}
                   <button
-                    className="text-[#0896EF] hover:underline cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigator.clipboard.writeText(window.location.href);
-                    }}
+                    className="text-[#0896EF]"
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        typeof window !== "undefined"
+                          ? window.location.href
+                          : ""
+                      )
+                    }
                     aria-label="Copy Link"
                   >
                     <FaLink className="text-xl" />
                   </button>
 
-                  {/* Facebook */}
                   <a
-                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                      window.location.href
-                    )}`}
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${
+                      typeof window !== "undefined"
+                        ? encodeURIComponent(window.location.href)
+                        : ""
+                    }`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-700 hover:underline"
+                    className="text-blue-700"
                     aria-label="Share on Facebook"
                   >
                     <FaFacebook className="text-xl" />
                   </a>
 
-                  {/* Instagram (Note: Instagram does not support direct URL sharing via a link) */}
                   <a
                     href="https://www.instagram.com/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-pink-500 hover:underline"
+                    className="text-pink-500"
                     aria-label="Visit Instagram"
                   >
                     <FaInstagram className="text-xl" />
                   </a>
 
-                  {/* Twitter */}
                   <a
-                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                      window.location.href
-                    )}`}
+                    href={`https://twitter.com/intent/tweet?url=${
+                      typeof window !== "undefined"
+                        ? encodeURIComponent(window.location.href)
+                        : ""
+                    }`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-400 hover:underline"
+                    className="text-blue-400"
                     aria-label="Share on Twitter"
                   >
                     <FaTwitter className="text-xl" />
                   </a>
 
-                  {/* LinkedIn */}
                   <a
-                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
-                      window.location.href
-                    )}`}
+                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${
+                      typeof window !== "undefined"
+                        ? encodeURIComponent(window.location.href)
+                        : ""
+                    }`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
+                    className="text-blue-600"
                     aria-label="Share on LinkedIn"
                   >
                     <FaLinkedin className="text-xl" />
@@ -361,69 +339,67 @@ const NewsCategoryPage = ({
             Relevant News
           </h3>
           <div className="flex flex-col gap-4">
-            {relevantNews.length > 0 ? (
-              relevantNews.map((news) => (
-                <Link
-                  key={news.slug}
-                  href={`/news/${news?.newsType}/${news.slug}`}
-                >
-                  <div className="flex flex-col sm:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                    <div className="relative w-full sm:w-1/3 h-40 sm:h-auto">
-                      <Image
-                        src={news.imageUrl}
-                        alt={news.title}
-                        layout="fill"
-                        objectFit="cover"
-                      />
-                    </div>
-                    <div className="p-4 sm:w-2/3">
-                      <h4 className="text-md font-semibold mb-1 line-clamp-2">
-                        {news.title}
-                      </h4>
-                      <p className="text-sm text-gray-600 mb-1 line-clamp-2">
-                        {truncateWords(news.description, 20)}
-                      </p>
-                      <p className="text-xs text-gray-400">{news.date}</p>
-                    </div>
+            {relevantNews.slice(0, 3).map((item: any) => (
+              <Link
+                key={item.slug}
+                href={`/news/${item.category.slug}/${item.slug}`}
+              >
+                <div className="flex flex-col sm:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+                  <div className="relative w-full sm:w-1/3 h-40">
+                    <Image
+                      src={item.coverImage}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                </Link>
-              ))
-            ) : (
-              <p className="text-gray-500 text-center">
-                No relevant news found.
-              </p>
-            )}
+                  <div className="p-4 sm:w-2/3">
+                    <h4 className="text-md font-semibold mb-1 line-clamp-2">
+                      {item.title}
+                    </h4>
+                    <p className="text-sm text-gray-600 mb-1 line-clamp-2">
+                      {truncateWords(item.summary, 20)}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {new Date(item.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Other News */}
+      {/* More News */}
       {otherNews.length > 0 && (
         <div className="mt-12">
           <h3 className="text-2xl font-bold mb-6 text-center">More News</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {otherNews.map((news) => (
+            {otherNews.map((item: any) => (
               <Link
-                key={news.slug}
-                href={`/news/${news?.newsType}/${news.slug}`}
+                key={item.slug}
+                href={`/news/${item.category.slug}/${item.slug}`}
               >
-                <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
                   <div className="relative w-full h-48">
                     <Image
-                      src={news.imageUrl}
-                      alt={news.title}
-                      layout="fill"
-                      objectFit="cover"
+                      src={item.coverImage}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
                     />
                   </div>
                   <div className="p-4">
-                    <h4 className="text-lg font-semibold mb-2 line-clamp-2">
-                      {news.title}
+                    <h4 className="text-md font-semibold mb-1 line-clamp-2">
+                      {item.title}
                     </h4>
-                    <p className="text-sm text-gray-600 mb-2 line-clamp-3">
-                      {truncateWords(news.description, 25)}
+                    <p className="text-sm text-gray-600 mb-1 line-clamp-2">
+                      {truncateWords(item.summary, 20)}
                     </p>
-                    <p className="text-xs text-gray-400">{news.date}</p>
+                    <p className="text-xs text-gray-400">
+                      {new Date(item.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
               </Link>
