@@ -1,10 +1,16 @@
 /* eslint-disable react/no-unescaped-entities */
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import Image from 'next/image';
+import React from "react";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import Image from "next/image";
+import { useAppDispatch } from "@/redux/features/hooks";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { verifyToken } from "@/utils/verifyToken";
+import { setUser, TUser } from "@/redux/features/auth/authSlice";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface SignInFormData {
   email: string;
@@ -18,16 +24,29 @@ const SignInPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<SignInFormData>();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const [login] = useLoginMutation();
 
-  const onSubmit = (data: SignInFormData) => {
-    console.log('Form Data:', data);
-    // Handle login logic here
+  const onSubmit = async (data: SignInFormData) => {
+    const userData = {
+      email: data.email,
+      password: data.password,
+    };
+
+    const res = await login(userData).unwrap();
+
+    if (res) {
+      const user = (await verifyToken(res.token)) as TUser;
+      dispatch(setUser({ user, token: res.token }));
+      toast.success("Logged in");
+      router.push("/");
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 via-white to-blue-100 px-4">
       <div className="flex flex-col md:flex-row items-center max-w-4xl w-full bg-white p-6 md:p-0 rounded-2xl shadow-xl overflow-hidden">
-        
         {/* Image section */}
         <div className="hidden md:block md:w-1/2">
           <Image
@@ -41,37 +60,49 @@ const SignInPage = () => {
 
         {/* Form section */}
         <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-3xl font-bold text-center text-[#0896EF] mb-6">Welcome Back</h2>
+          <h2 className="text-3xl font-bold text-center text-[#0896EF] mb-6">
+            Welcome Back
+          </h2>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email Address
               </label>
               <input
                 id="email"
                 type="email"
-                {...register('email', { required: 'Email is required' })}
+                {...register("email", { required: "Email is required" })}
                 className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                 placeholder="Enter your email"
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <input
                 id="password"
                 type="password"
-                {...register('password', { required: 'Password is required' })}
+                {...register("password", { required: "Password is required" })}
                 className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                 placeholder="Enter your password"
               />
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
@@ -79,12 +110,15 @@ const SignInPage = () => {
               <label className="flex items-center gap-2 text-sm text-gray-600">
                 <input
                   type="checkbox"
-                  {...register('remember')}
+                  {...register("remember")}
                   className="accent-blue-500"
                 />
                 Remember me
               </label>
-              <Link href="/forgot-password" className="text-sm text-[#0896EF] hover:underline">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-[#0896EF] hover:underline"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -98,7 +132,7 @@ const SignInPage = () => {
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link href="/signup" className="text-[#0896EF] hover:underline">
               Sign Up
             </Link>

@@ -184,20 +184,23 @@ const NewsDetailsPage = ({ params }: Props) => {
           {newsItem.comments.map((comment: any, index: number) => (
             <div
               key={comment.id || index}
-              className="bg-white shadow p-3 rounded-md"
+              className="flex items-center  gap-2 bg-white  p-3 rounded-md"
             >
-              <p className="text-gray-700">{comment.content}</p>
+                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+              <div className="">
+                <p className="text-gray-700">{comment.content}</p>
               <p className="text-xs text-gray-400 mt-1">
                 {new Date(comment.createdAt).toLocaleString()}
               </p>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Author Info */}
-      <div className="border-t pt-6 mt-6 text-sm text-gray-500">
-        <div className="flex items-center gap-4">
+      <div className="border-t pt-6 mt-6 text-sm text-gray-500 ">
+        <div className="flex items-center  gap-4">
           <Image
             src={newsItem.author.profilePhoto}
             width={40}

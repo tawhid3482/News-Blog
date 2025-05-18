@@ -240,7 +240,7 @@ const NewsCategoryPage = ({
                       </p>
                     ) : (
                       <ul className="mt-4 space-y-4 max-h-64 overflow-y-auto">
-                        {mainComments.map((c: any, i: any) => (
+                        {mainComments.slice(0,2).map((c: any, i: any) => (
                           <li key={i} className="flex gap-3 items-start">
                             <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
                             <div className="bg-gray-100 p-3 rounded-lg w-full">
