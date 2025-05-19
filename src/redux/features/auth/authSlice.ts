@@ -2,15 +2,15 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 export type TUser = {
-  userId:string | null;
-  name:string;
+  userId: string | null;
+  name: string;
   email: string;
   role: string;
   iat: number;
   exp: number;
-  profilePhoto?:string
-  gender:string
-  needPasswordChange?:string
+  profilePhoto?: string;
+  gender: string;
+  needPasswordChange?: string;
 };
 
 type TAuthState = {

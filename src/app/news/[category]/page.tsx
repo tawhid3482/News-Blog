@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -10,16 +10,19 @@ import {
   FaLinkedin,
   FaTwitter,
 } from "react-icons/fa";
-import {
-  useCreatePostMutation,
-  useGetAllPostQuery,
-} from "@/redux/features/post/postApi";
+import { useGetAllPostQuery } from "@/redux/features/post/postApi";
 import LoadingSkeleton from "@/components/ui/HomePage/News/Loading";
+import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
+import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
+import toast from "react-hot-toast";
+import { useAppSelector } from "@/redux/features/hooks";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useGetMeQuery } from "@/redux/features/user/userApi";
 
 interface Params {
-  params: {
+  params: Promise<{
     category: string;
-  };
+  }>;
 }
 
 const truncateWords = (text: string, wordLimit: number) => {
@@ -30,9 +33,9 @@ const truncateWords = (text: string, wordLimit: number) => {
 };
 
 const reactionEmojiMap: Record<string, string> = {
-  LIKE: "👍",
+  LIKE: "👍🏻",
   LOVE: "❤️",
-  HAHA: "😂",
+  FUNNY: "😂",
   WOW: "😮",
   SAD: "😢",
   ANGRY: "😡",
@@ -45,24 +48,23 @@ const countReactions = (reactions: { type: string }[]) => {
   }, {});
 };
 
-const NewsCategoryPage = ({
-  params,
-}: Params) => {
-  const { category } = params;
+const NewsCategoryPage = ({ params }: Params) => {
+  const { category } = use(params);
+  const [newComment, setNewComment] = useState("");
+  const [showComments, setShowComments] = useState(false);
+  // userReaction state রাখছি নতুন reaction এর জন্য
+  const [showReactionPicker, setShowReactionPicker] = useState(false);
+
+  const user = useAppSelector(selectCurrentUser);
+  const { data: Me } = useGetMeQuery("");
+  const mySelf = Me?.data || null;
 
   // সব হুক এখানে উপরে কল করুন
   const { data, isLoading } = useGetAllPostQuery("");
-  const [newComment, setNewComment] = useState("");
-  const [showComments, setShowComments] = useState(false);
   const [createReaction, { isLoading: reactionLoading }] =
-    useCreatePostMutation();
-  const [userReaction, setUserReaction] = useState<string | null>(null);
-  const [showReactionPicker, setShowReactionPicker] = useState(false);
-
-  // লোডিং থাকলে লোডার দেখান
-  if (isLoading) {
-    return <LoadingSkeleton />;
-  }
+    useCreateReactionMutation();
+  const [createComment, { isLoading: commentLoading }] =
+    useCreateCommentMutation();
 
   const news = data?.data || [];
   const filteredNews = news.filter(
@@ -92,36 +94,64 @@ const NewsCategoryPage = ({
     (newsItem: any) => !excludedIds.includes(newsItem.id)
   );
 
+  if (isLoading) {
+    return <LoadingSkeleton></LoadingSkeleton>;
+  }
+
   const mainReactions = countReactions(mainNews?.reactions || []);
   const mainComments = mainNews?.comments || [];
 
+  if (!mainNews) return <p>No news found.</p>;
   const totalReactions = Object.values(mainReactions).reduce(
     (acc, count) => acc + count,
     0
   );
+
+  const userReactionFromData =
+    mainNews.reactions?.find((r: any) => r.userId === user?.userId)?.type ||
+    null;
+
+  // Display server reaction if exists, otherwise default to LIKE ("👍")
+  const displayedReaction = userReactionFromData ?? "LIKE";
 
   const handleReact = async (type: string) => {
     if (reactionLoading) return;
 
     try {
       await createReaction({ postId: mainNews.id, type }).unwrap();
-      setUserReaction(type);
+      toast.success(`${reactionEmojiMap[type]} reacted!`);
     } catch (error) {
       console.error("Failed to react:", error);
     }
   };
 
-  const handleComment = () => {
-    console.log("ami");
-  };
+  const handleComment = async () => {
+    if (commentLoading || !newComment.trim()) return;
 
+    if (!mySelf || !mySelf.profilePhoto) {
+      toast.error("User information not loaded!");
+      return;
+    }
+
+    try {
+      await createComment({
+        postId: mainNews.id,
+        content: newComment,
+        userImage: mySelf.profilePhoto,
+      });
+      await toast.success("Comment posted!");
+      setNewComment(""); // Clear input
+    } catch (error) {
+      console.error("Failed to post comment:", error);
+      toast.error("Failed to post comment.");
+    }
+  };
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
       <h2 className="text-3xl font-bold mb-8 text-center">Latest News</h2>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Main News */}
         {/* Main News */}
         <div className="lg:w-2/3 w-full h-full relative">
           <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -145,7 +175,7 @@ const NewsCategoryPage = ({
               </p>
               <Link
                 href={`/news/${mainNews.category.slug}/${mainNews.slug}`}
-                className="text-[#0896EF] text-sm hover:text-blue-800"
+                className="text-[#0896EF] text-sm hover:text-blue-800 cursor-pointer"
               >
                 See more
               </Link>
@@ -163,9 +193,8 @@ const NewsCategoryPage = ({
                   onMouseEnter={() => setShowReactionPicker(true)}
                   onMouseLeave={() => setShowReactionPicker(false)}
                 >
-                  <button className="text-2xl p-2 rounded hover:bg-gray-100 transition">
-                    {userReaction ? reactionEmojiMap[userReaction] : "👍"}({" "}
-                    {totalReactions})
+                  <button className="text-2xl p-2 rounded hover:bg-gray-100 transition cursor-pointer">
+                    {reactionEmojiMap[displayedReaction]} ({totalReactions})
                   </button>
 
                   {showReactionPicker && (
@@ -175,8 +204,10 @@ const NewsCategoryPage = ({
                           key={type}
                           onClick={() => handleReact(type)}
                           disabled={reactionLoading}
-                          className={`text-xl transition transform hover:scale-125 ${
-                            userReaction === type ? "opacity-100" : "opacity-60"
+                          className={`text-xl transition transform hover:scale-125 cursor-pointer ${
+                            displayedReaction === type
+                              ? "opacity-100"
+                              : "opacity-60"
                           }`}
                         >
                           {emoji}
@@ -210,7 +241,7 @@ const NewsCategoryPage = ({
 
                 <button
                   onClick={() => setShowComments(!showComments)}
-                  className="text-[#0896EF] hover:underline mb-2 text-sm"
+                  className="text-[#0896EF] hover:underline mb-2 text-sm cursor-pointer"
                 >
                   {showComments
                     ? "Hide Comments"
@@ -228,7 +259,7 @@ const NewsCategoryPage = ({
                     />
                     <button
                       onClick={handleComment}
-                      className="bg-[#0896EF] text-white px-4 py-1 rounded hover:bg-[#2f576f]"
+                      className="bg-[#0896EF] text-white px-4 py-1 rounded hover:bg-[#2f576f] cursor-pointer"
                     >
                       Post
                     </button>
@@ -240,9 +271,18 @@ const NewsCategoryPage = ({
                       </p>
                     ) : (
                       <ul className="mt-4 space-y-4 max-h-64 overflow-y-auto">
-                        {mainComments.slice(0,2).map((c: any, i: any) => (
+                        {mainComments.slice(-3).map((c: any, i: any) => (
                           <li key={i} className="flex gap-3 items-start">
-                            <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                            <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden relative">
+                              <Image
+                                src={c.userImage}
+                                alt="name"
+                                width={35}
+                                height={35}
+                                className="object-cover"
+                              />
+                            </div>
+
                             <div className="bg-gray-100 p-3 rounded-lg w-full">
                               <p className="text-sm text-gray-800">
                                 {c?.content}

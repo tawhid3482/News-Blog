@@ -14,6 +14,8 @@ import { useGetAllPostQuery } from "@/redux/features/post/postApi";
 import LoadingSkeleton from "./Loading";
 import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
 import toast from "react-hot-toast";
+import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
+import { useGetMeQuery } from "@/redux/features/user/userApi";
 import { useAppSelector } from "@/redux/features/hooks";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
@@ -25,7 +27,7 @@ const truncateWords = (text: string, wordLimit: number) => {
 };
 
 const reactionEmojiMap: Record<string, string> = {
-  LIKE: "👍",
+  LIKE: "👍🏻",
   LOVE: "❤️",
   FUNNY: "😂",
   WOW: "😮",
@@ -43,10 +45,16 @@ const countReactions = (reactions: { type: string }[]) => {
 
 const NewsSection = () => {
   const user = useAppSelector(selectCurrentUser);
-  console.log(user?.userId);
+  const { data: Me } = useGetMeQuery("");
+  const mySelf = Me?.data || null;
+
   const { data, isLoading } = useGetAllPostQuery("");
+
   const [createReaction, { isLoading: reactionLoading }] =
     useCreateReactionMutation();
+  const [createComment, { isLoading: commentLoading }] =
+    useCreateCommentMutation();
+    
   const news = data?.data || [];
   const mainNews = news[0];
   const relevantNews = news.filter(
@@ -63,7 +71,6 @@ const NewsSection = () => {
   const [showComments, setShowComments] = useState(false);
 
   // userReaction state রাখছি নতুন reaction এর জন্য
-  const [userReaction, setUserReaction] = useState<string | null>(null);
   const [showReactionPicker, setShowReactionPicker] = useState(false);
 
   if (isLoading) {
@@ -83,22 +90,41 @@ const NewsSection = () => {
     mainNews.reactions?.find((r: any) => r.userId === user?.userId)?.type ||
     null;
 
-  // ডিসপ্লে করার জন্য উপযুক্ত রিয়্যাকশন টাইপ
-  const displayedReaction = userReaction || userReactionFromData;
+  // Display server reaction if exists, otherwise default to LIKE ("👍")
+  const displayedReaction = userReactionFromData ?? "LIKE";
 
   const handleReact = async (type: string) => {
-    if (reactionLoading) return; // লোডিং হলে অপেক্ষা কর
+    if (reactionLoading) return;
 
     try {
       await createReaction({ postId: mainNews.id, type }).unwrap();
       toast.success(`${reactionEmojiMap[type]} reacted!`);
-      setUserReaction(type);
     } catch (error) {
       console.error("Failed to react:", error);
     }
   };
 
-  const handleComment = () => {};
+  const handleComment = async () => {
+    if (commentLoading || !newComment.trim()) return;
+
+    if (!mySelf || !mySelf.profilePhoto) {
+      toast.error("User information not loaded!");
+      return;
+    }
+
+    try {
+      await createComment({
+        postId: mainNews.id,
+        content: newComment,
+        userImage: mySelf.profilePhoto,
+      });
+      await toast.success("Comment posted!");
+      setNewComment(""); // Clear input
+    } catch (error) {
+      console.error("Failed to post comment:", error);
+      toast.error("Failed to post comment.");
+    }
+  };
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
@@ -146,11 +172,8 @@ const NewsSection = () => {
                   onMouseEnter={() => setShowReactionPicker(true)}
                   onMouseLeave={() => setShowReactionPicker(false)}
                 >
-                  <button className="text-2xl p-2 rounded hover:bg-gray-100 transition">
-                    {displayedReaction
-                      ? reactionEmojiMap[displayedReaction]
-                      : "👍"}{" "}
-                    ({totalReactions})
+                  <button className="text-2xl p-2 rounded hover:bg-gray-100 transition cursor-pointer">
+                    {reactionEmojiMap[displayedReaction]} ({totalReactions})
                   </button>
 
                   {showReactionPicker && (
@@ -160,7 +183,7 @@ const NewsSection = () => {
                           key={type}
                           onClick={() => handleReact(type)}
                           disabled={reactionLoading}
-                          className={`text-xl transition transform hover:scale-125 ${
+                          className={`text-xl transition transform hover:scale-125 cursor-pointer ${
                             displayedReaction === type
                               ? "opacity-100"
                               : "opacity-60"
@@ -197,7 +220,7 @@ const NewsSection = () => {
 
                 <button
                   onClick={() => setShowComments(!showComments)}
-                  className="text-[#0896EF] hover:underline mb-2 text-sm"
+                  className="text-[#0896EF] hover:underline mb-2 text-sm cursor-pointer"
                 >
                   {showComments
                     ? "Hide Comments"
@@ -215,7 +238,7 @@ const NewsSection = () => {
                     />
                     <button
                       onClick={handleComment}
-                      className="bg-[#0896EF] text-white px-4 py-1 rounded hover:bg-[#2f576f]"
+                      className="bg-[#0896EF] text-white px-4 py-1 rounded hover:bg-[#2f576f] cursor-pointer"
                     >
                       Post
                     </button>
@@ -227,9 +250,18 @@ const NewsSection = () => {
                       </p>
                     ) : (
                       <ul className="mt-4 space-y-4 max-h-64 overflow-y-auto">
-                        {mainComments.map((c: any, i: any) => (
+                        {mainComments.slice(-3).map((c: any, i: any) => (
                           <li key={i} className="flex gap-3 items-start">
-                            <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                            <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden relative">
+                              <Image
+                                src={c.userImage}
+                                alt="name"
+                                width={35}
+                                height={35}
+                                className="object-cover"
+                              />
+                            </div>
+
                             <div className="bg-gray-100 p-3 rounded-lg w-full">
                               <p className="text-sm text-gray-800">
                                 {c?.content}

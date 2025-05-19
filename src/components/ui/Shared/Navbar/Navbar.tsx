@@ -1,12 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation"; // ✅ This is the new router for App Router (Next 13+)
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "../../button";
-import { useAppSelector } from "@/redux/features/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/features/hooks";
 import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 const navItems = [
@@ -27,9 +27,16 @@ const navItems = [
 
 const Navbar = () => {
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const user = useAppSelector(selectCurrentUser);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const router = useRouter();
 
@@ -41,7 +48,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
   };
 
   return (
@@ -93,7 +100,7 @@ const Navbar = () => {
 
         {/* Auth Buttons */}
         <div className="hidden lg:flex items-center gap-4 ml-auto">
-          {user ? (
+          {isClient && user ? (
             <>
               <Link href="/profile" className="text-lg font-medium">
                 Profile
@@ -101,14 +108,16 @@ const Navbar = () => {
               <Button onClick={handleLogout}>Logout</Button>
             </>
           ) : (
-            <>
-              <Link href="/signin" className="text-lg font-medium">
-                <Button>Sign In</Button>
-              </Link>
-              <Link href="/signup" className="text-lg font-medium">
-                <Button>Sign Up</Button>
-              </Link>
-            </>
+            isClient && (
+              <>
+                <Link href="/signin" className="text-lg font-medium">
+                  <Button>Sign In</Button>
+                </Link>
+                <Link href="/signup" className="text-lg font-medium">
+                  <Button>Sign Up</Button>
+                </Link>
+              </>
+            )
           )}
         </div>
       </div>

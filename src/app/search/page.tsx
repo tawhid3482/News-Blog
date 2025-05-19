@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import LoadingSkeleton from "@/components/ui/HomePage/News/Loading";
-import {
-  useCreatePostMutation,
-  useGetAllPostQuery,
-} from "@/redux/features/post/postApi";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
+import { useAppSelector } from "@/redux/features/hooks";
+import { useGetAllPostQuery } from "@/redux/features/post/postApi";
+import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
+import { useGetMeQuery } from "@/redux/features/user/userApi";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import {
   FaFacebook,
   FaInstagram,
@@ -25,9 +28,9 @@ const truncateWords = (text: string, wordLimit: number) => {
 };
 
 const reactionEmojiMap: Record<string, string> = {
-  LIKE: "👍",
+  LIKE: "👍🏻",
   LOVE: "❤️",
-  HAHA: "😂",
+  FUNNY: "😂",
   WOW: "😮",
   SAD: "😢",
   ANGRY: "😡",
@@ -46,19 +49,25 @@ export default function SearchPage() {
 
   const { data, isLoading, error } = useGetAllPostQuery(searchTerm);
   const searchNews = data?.data || [];
-  console.log(searchNews);
-  /// copy
 
   const [newComment, setNewComment] = useState("");
   const [showComments, setShowComments] = useState(false);
-  const [createReaction, { isLoading: reactionLoading }] =
-    useCreatePostMutation();
-  const [userReaction, setUserReaction] = useState<string | null>(null);
+  // userReaction state রাখছি নতুন reaction এর জন্য
   const [showReactionPicker, setShowReactionPicker] = useState(false);
+
+  const user = useAppSelector(selectCurrentUser);
+  const { data: Me } = useGetMeQuery("");
+  const mySelf = Me?.data || null;
+
+  const [createReaction, { isLoading: reactionLoading }] =
+    useCreateReactionMutation();
+  const [createComment, { isLoading: commentLoading }] =
+    useCreateCommentMutation();
 
   if (isLoading) {
     return <LoadingSkeleton />;
   }
+
   if (error) return <div>Something went wrong</div>;
 
   if (searchNews.length === 0) {
@@ -86,28 +95,54 @@ export default function SearchPage() {
   const mainReactions = countReactions(mainNews?.reactions || []);
   const mainComments = mainNews?.comments || [];
 
+  if (!mainNews) return <p>No news found.</p>;
   const totalReactions = Object.values(mainReactions).reduce(
     (acc, count) => acc + count,
     0
   );
+
+  const userReactionFromData =
+    mainNews.reactions?.find((r: any) => r.userId === user?.userId)?.type ||
+    null;
+
+  // Display server reaction if exists, otherwise default to LIKE ("👍")
+  const displayedReaction = userReactionFromData ?? "LIKE";
 
   const handleReact = async (type: string) => {
     if (reactionLoading) return;
 
     try {
       await createReaction({ postId: mainNews.id, type }).unwrap();
-      setUserReaction(type);
+      toast.success(`${reactionEmojiMap[type]} reacted!`);
     } catch (error) {
       console.error("Failed to react:", error);
     }
   };
 
-  const handleComment = () => {
-    console.log("ami");
+  const handleComment = async () => {
+    if (commentLoading || !newComment.trim()) return;
+
+    if (!mySelf || !mySelf.profilePhoto) {
+      toast.error("User information not loaded!");
+      return;
+    }
+
+    try {
+      await createComment({
+        postId: mainNews.id,
+        content: newComment,
+        userImage: mySelf.profilePhoto,
+      });
+      await toast.success("Comment posted!");
+      setNewComment(""); // Clear input
+    } catch (error) {
+      console.error("Failed to post comment:", error);
+      toast.error("Failed to post comment.");
+    }
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
+    <div className="max-w-6xl mx-auto p-4 ">
       <h1 className="text-2xl font-semibold mb-4">
         Search results for `{searchTerm}`
       </h1>
@@ -116,7 +151,6 @@ export default function SearchPage() {
           <h2 className="text-3xl font-bold mb-8 text-center">Latest News</h2>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Main News */}
             {/* Main News */}
             <div className="lg:w-2/3 w-full h-full relative">
               <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -142,7 +176,7 @@ export default function SearchPage() {
                   </p>
                   <Link
                     href={`/news/${mainNews.category.slug}/${mainNews.slug}`}
-                    className="text-[#0896EF] text-sm hover:text-blue-800"
+                    className="text-[#0896EF] text-sm hover:text-blue-800 cursor-pointer"
                   >
                     See more
                   </Link>
@@ -160,21 +194,20 @@ export default function SearchPage() {
                       onMouseEnter={() => setShowReactionPicker(true)}
                       onMouseLeave={() => setShowReactionPicker(false)}
                     >
-                      <button className="text-2xl p-2 rounded hover:bg-gray-100 transition">
-                        {userReaction ? reactionEmojiMap[userReaction] : "👍"}({" "}
-                        {totalReactions})
+                      <button className="text-2xl p-2 rounded hover:bg-gray-100 transition cursor-pointer">
+                        {reactionEmojiMap[displayedReaction]} ({totalReactions})
                       </button>
 
                       {showReactionPicker && (
-                        <div className="absolute top-full left-0 flex gap-2 bg-white shadow-lg border p-2 rounded-xl z-10">
+                        <div className="absolute top-full left-0 flex gap-2 bg-white shadow-lg border p-2 rounded-xl z-10 ">
                           {Object.entries(reactionEmojiMap).map(
                             ([type, emoji]) => (
                               <button
                                 key={type}
                                 onClick={() => handleReact(type)}
                                 disabled={reactionLoading}
-                                className={`text-xl transition transform hover:scale-125 ${
-                                  userReaction === type
+                                className={`text-xl transition transform hover:scale-125 cursor-pointer  ${
+                                  displayedReaction === type
                                     ? "opacity-100"
                                     : "opacity-60"
                                 }`}
@@ -211,7 +244,7 @@ export default function SearchPage() {
 
                     <button
                       onClick={() => setShowComments(!showComments)}
-                      className="text-[#0896EF] hover:underline mb-2 text-sm"
+                      className="text-[#0896EF] hover:underline mb-2 text-sm cursor-pointer"
                     >
                       {showComments
                         ? "Hide Comments"
@@ -229,7 +262,7 @@ export default function SearchPage() {
                         />
                         <button
                           onClick={handleComment}
-                          className="bg-[#0896EF] text-white px-4 py-1 rounded hover:bg-[#2f576f]"
+                          className="bg-[#0896EF] text-white px-4 py-1 rounded hover:bg-[#2f576f] cursor-pointer"
                         >
                           Post
                         </button>
@@ -241,9 +274,18 @@ export default function SearchPage() {
                           </p>
                         ) : (
                           <ul className="mt-4 space-y-4 max-h-64 overflow-y-auto">
-                            {mainComments.map((c: any, i: any) => (
+                            {mainComments.slice(-3).map((c: any, i: any) => (
                               <li key={i} className="flex gap-3 items-start">
-                                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                                <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden relative">
+                                  <Image
+                                    src={c.userImage}
+                                    alt="name"
+                                    width={35}
+                                    height={35}
+                                    className="object-cover"
+                                  />
+                                </div>
+
                                 <div className="bg-gray-100 p-3 rounded-lg w-full">
                                   <p className="text-sm text-gray-800">
                                     {c?.content}
@@ -259,6 +301,7 @@ export default function SearchPage() {
                       </>
                     )}
                   </div>
+
                   {/* Share */}
                   <div className="mt-4">
                     <p className="text-md text-gray-500">Share this news:</p>
@@ -309,7 +352,7 @@ export default function SearchPage() {
                         }`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400"
+                        className="text-[#0896EF]"
                         aria-label="Share on Twitter"
                       >
                         <FaTwitter className="text-xl" />
