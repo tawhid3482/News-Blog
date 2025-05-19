@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import SlugSkeleton from "@/components/ui/Skeleton/SlugSkeleton";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
 import { useAppSelector } from "@/redux/features/hooks";
@@ -54,8 +55,8 @@ const NewsDetailsPage = ({ params }: Props) => {
   const [newComment, setNewComment] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [showAllReactions, setShowAllReactions] = useState(false);
+  if (isLoading) return <SlugSkeleton />;
 
-  if (isLoading) return <>Loading...</>;
   if (!newsItem) return <p>No news found.</p>;
 
   const mainReactions = countReactions(newsItem?.reactions || []);

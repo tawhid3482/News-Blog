@@ -11,13 +11,13 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 import { useGetAllPostQuery } from "@/redux/features/post/postApi";
-import LoadingSkeleton from "./Loading";
 import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
 import toast from "react-hot-toast";
 import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
 import { useGetMeQuery } from "@/redux/features/user/userApi";
 import { useAppSelector } from "@/redux/features/hooks";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import NewSkeleton from "../../Skeleton/NewsSkeleton";
 
 const truncateWords = (text: string, wordLimit: number) => {
   const words = text.split(" ");
@@ -54,7 +54,7 @@ const NewsSection = () => {
     useCreateReactionMutation();
   const [createComment, { isLoading: commentLoading }] =
     useCreateCommentMutation();
-    
+
   const news = data?.data || [];
   const mainNews = news[0];
   const relevantNews = news.filter(
@@ -74,7 +74,7 @@ const NewsSection = () => {
   const [showReactionPicker, setShowReactionPicker] = useState(false);
 
   if (isLoading) {
-    return <LoadingSkeleton></LoadingSkeleton>;
+    return <NewSkeleton />;
   }
 
   const mainReactions = countReactions(mainNews?.reactions || []);

@@ -1,5 +1,6 @@
-// Loading skeleton component
-const LoadingSkeleton = () => {
+import React from "react";
+
+const NewSkeleton = () => {
   return (
     <section className="max-w-7xl mx-auto px-4 py-10 animate-pulse">
       <h2 className="text-3xl font-bold mb-8 text-center bg-gray-300 rounded w-48 h-10 mx-auto"></h2>
@@ -35,4 +36,4 @@ const LoadingSkeleton = () => {
   );
 };
 
-export default LoadingSkeleton;
+export default NewSkeleton;

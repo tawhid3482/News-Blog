@@ -11,13 +11,13 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 import { useGetAllPostQuery } from "@/redux/features/post/postApi";
-import LoadingSkeleton from "@/components/ui/HomePage/News/Loading";
 import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
 import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
 import toast from "react-hot-toast";
 import { useAppSelector } from "@/redux/features/hooks";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { useGetMeQuery } from "@/redux/features/user/userApi";
+import NewSkeleton from "@/components/ui/Skeleton/NewsSkeleton";
 
 interface Params {
   params: Promise<{
@@ -66,6 +66,10 @@ const NewsCategoryPage = ({ params }: Params) => {
   const [createComment, { isLoading: commentLoading }] =
     useCreateCommentMutation();
 
+  if (isLoading) {
+    return <NewSkeleton />;
+  }
+
   const news = data?.data || [];
   const filteredNews = news.filter(
     (newsItem: any) =>
@@ -93,10 +97,6 @@ const NewsCategoryPage = ({ params }: Params) => {
   const otherNews = filteredNews.filter(
     (newsItem: any) => !excludedIds.includes(newsItem.id)
   );
-
-  if (isLoading) {
-    return <LoadingSkeleton></LoadingSkeleton>;
-  }
 
   const mainReactions = countReactions(mainNews?.reactions || []);
   const mainComments = mainNews?.comments || [];

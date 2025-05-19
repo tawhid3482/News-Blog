@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import LoadingSkeleton from "@/components/ui/HomePage/News/Loading";
+import NewSkeleton from "@/components/ui/Skeleton/NewsSkeleton";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
 import { useAppSelector } from "@/redux/features/hooks";
@@ -65,7 +65,7 @@ export default function SearchPage() {
     useCreateCommentMutation();
 
   if (isLoading) {
-    return <LoadingSkeleton />;
+    return <NewSkeleton />;
   }
 
   if (error) return <div>Something went wrong</div>;
