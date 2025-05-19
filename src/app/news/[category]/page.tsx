@@ -14,7 +14,7 @@ import {
   useCreatePostMutation,
   useGetAllPostQuery,
 } from "@/redux/features/post/postApi";
-import LoadingSkeleton from "@/components/ui/HomePage/News/Loding";
+import LoadingSkeleton from "@/components/ui/HomePage/News/Loading";
 
 interface Params {
   params: {
@@ -381,7 +381,7 @@ const NewsCategoryPage = ({
                 key={item.slug}
                 href={`/news/${item.category.slug}/${item.slug}`}
               >
-                <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+                <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer h-[340px]">
                   <div className="relative w-full h-48">
                     <Image
                       src={item.coverImage}

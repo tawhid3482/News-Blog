@@ -51,7 +51,7 @@ export default function RootLayout({
           <Navbar></Navbar>
           <main className="flex flex-col min-h-screen">
             <div className="flex-grow">
-              <Toaster position="top-center" />
+              <Toaster position="top-right" />
 
               {children}
             </div>

@@ -10,11 +10,12 @@ import {
   FaLinkedin,
   FaTwitter,
 } from "react-icons/fa";
-import {
-  useCreatePostMutation,
-  useGetAllPostQuery,
-} from "@/redux/features/post/postApi";
-import LoadingSkeleton from "./Loding";
+import { useGetAllPostQuery } from "@/redux/features/post/postApi";
+import LoadingSkeleton from "./Loading";
+import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
+import toast from "react-hot-toast";
+import { useAppSelector } from "@/redux/features/hooks";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 const truncateWords = (text: string, wordLimit: number) => {
   const words = text.split(" ");
@@ -26,7 +27,7 @@ const truncateWords = (text: string, wordLimit: number) => {
 const reactionEmojiMap: Record<string, string> = {
   LIKE: "👍",
   LOVE: "❤️",
-  HAHA: "😂",
+  FUNNY: "😂",
   WOW: "😮",
   SAD: "😢",
   ANGRY: "😡",
@@ -41,8 +42,11 @@ const countReactions = (reactions: { type: string }[]) => {
 };
 
 const NewsSection = () => {
+  const user = useAppSelector(selectCurrentUser);
+  console.log(user?.userId);
   const { data, isLoading } = useGetAllPostQuery("");
-
+  const [createReaction, { isLoading: reactionLoading }] =
+    useCreateReactionMutation();
   const news = data?.data || [];
   const mainNews = news[0];
   const relevantNews = news.filter(
@@ -57,8 +61,8 @@ const NewsSection = () => {
 
   const [newComment, setNewComment] = useState("");
   const [showComments, setShowComments] = useState(false);
-  const [createReaction, { isLoading: reactionLoading }] =
-    useCreatePostMutation();
+
+  // userReaction state রাখছি নতুন reaction এর জন্য
   const [userReaction, setUserReaction] = useState<string | null>(null);
   const [showReactionPicker, setShowReactionPicker] = useState(false);
 
@@ -74,11 +78,20 @@ const NewsSection = () => {
     (acc, count) => acc + count,
     0
   );
+
+  const userReactionFromData =
+    mainNews.reactions?.find((r: any) => r.userId === user?.userId)?.type ||
+    null;
+
+  // ডিসপ্লে করার জন্য উপযুক্ত রিয়্যাকশন টাইপ
+  const displayedReaction = userReaction || userReactionFromData;
+
   const handleReact = async (type: string) => {
     if (reactionLoading) return; // লোডিং হলে অপেক্ষা কর
 
     try {
       await createReaction({ postId: mainNews.id, type }).unwrap();
+      toast.success(`${reactionEmojiMap[type]} reacted!`);
       setUserReaction(type);
     } catch (error) {
       console.error("Failed to react:", error);
@@ -92,7 +105,6 @@ const NewsSection = () => {
       <h2 className="text-3xl font-bold mb-8 text-center">Latest News</h2>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Main News */}
         {/* Main News */}
         <div className="lg:w-2/3 w-full h-full relative">
           <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -135,8 +147,10 @@ const NewsSection = () => {
                   onMouseLeave={() => setShowReactionPicker(false)}
                 >
                   <button className="text-2xl p-2 rounded hover:bg-gray-100 transition">
-                    {userReaction ? reactionEmojiMap[userReaction] : "👍"}({" "}
-                    {totalReactions})
+                    {displayedReaction
+                      ? reactionEmojiMap[displayedReaction]
+                      : "👍"}{" "}
+                    ({totalReactions})
                   </button>
 
                   {showReactionPicker && (
@@ -147,7 +161,9 @@ const NewsSection = () => {
                           onClick={() => handleReact(type)}
                           disabled={reactionLoading}
                           className={`text-xl transition transform hover:scale-125 ${
-                            userReaction === type ? "opacity-100" : "opacity-60"
+                            displayedReaction === type
+                              ? "opacity-100"
+                              : "opacity-60"
                           }`}
                         >
                           {emoji}
@@ -344,15 +360,15 @@ const NewsSection = () => {
 
       {/* More News */}
       {otherNews.length > 0 && (
-        <div className="mt-12">
+        <div className="mt-12 ">
           <h3 className="text-2xl font-bold mb-6 text-center">More News</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
             {otherNews.map((item: any) => (
               <Link
                 key={item.slug}
                 href={`/news/${item.category.slug}/${item.slug}`}
               >
-                <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+                <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer h-[340px]">
                   <div className="relative w-full h-48">
                     <Image
                       src={item.coverImage}

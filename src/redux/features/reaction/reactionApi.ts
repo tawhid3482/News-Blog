@@ -1,22 +1,23 @@
 import { baseApi } from "@/redux/api/baseApi";
 
-const postApi = baseApi.injectEndpoints({
+const reactionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    createPost: builder.mutation({
+    createReaction: builder.mutation({
       query: (data) => ({
-        url: "/post/create-post",
+        url: "/reaction/create-react",
         method: "POST",
         body: data,
       }),
+      invalidatesTags:["news"]
     }),
-    getAllPost: builder.query({
+    getAllReaction: builder.query({
       query: () => ({
-        url: "/post",
+        url: "/reaction",
         method: "GET",
       }),
-      providesTags: ["news"],
+      providesTags: ["reaction"],
     }),
   }),
 });
 
-export const { useCreatePostMutation, useGetAllPostQuery } = postApi;
+export const { useCreateReactionMutation, useGetAllReactionQuery } = reactionApi;

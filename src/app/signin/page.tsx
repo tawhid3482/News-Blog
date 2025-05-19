@@ -35,10 +35,10 @@ const SignInPage = () => {
     };
 
     const res = await login(userData).unwrap();
-
-    if (res) {
-      const user = (await verifyToken(res.token)) as TUser;
-      dispatch(setUser({ user, token: res.token }));
+    const token = res?.data?.accessToken;
+    if (token) {
+      const user = (await verifyToken(token)) as TUser;
+      dispatch(setUser({ user, token }));
       toast.success("Logged in");
       router.push("/");
     }

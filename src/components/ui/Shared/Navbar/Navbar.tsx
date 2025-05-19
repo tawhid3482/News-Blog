@@ -1,10 +1,13 @@
 "use client";
+import { useRouter } from "next/navigation"; // ✅ This is the new router for App Router (Next 13+)
 import React, { useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "../../button";
+import { useAppSelector } from "@/redux/features/hooks";
+import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -25,10 +28,20 @@ const navItems = [
 const Navbar = () => {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const user = false;
+  const user = useAppSelector(selectCurrentUser);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const router = useRouter();
+
+  const handleSearch = () => {
+    if (searchQuery.trim() !== "") {
+      router.push(`/search?searchTerm=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery(""); // clear input after search
+    }
+  };
 
   const handleLogout = () => {
-    console.log("User logged out");
+    logout();
   };
 
   return (
@@ -50,10 +63,18 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center absolute left-1/2 transform -translate-x-1/2 w-full max-w-md bg-[#D9E6ED] p-2 rounded-lg">
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
             className="flex-grow text-black bg-transparent outline-none px-2"
             placeholder="Search here..."
           />
-          <button>
+
+          <button onClick={handleSearch}>
             <IoIosSearch className="text-2xl text-black" />
           </button>
         </div>

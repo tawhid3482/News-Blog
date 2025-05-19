@@ -5,7 +5,7 @@ const LoadingSkeleton = () => {
       <h2 className="text-3xl font-bold mb-8 text-center bg-gray-300 rounded w-48 h-10 mx-auto"></h2>
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Main News Skeleton */}
-        <div className="lg:w-2/3 w-full h-full bg-gray-300 rounded-lg"></div>
+        <div className="lg:w-2/3 w-[450px] h-[550px] bg-gray-400 rounded-lg "></div>
 
         {/* Relevant News Skeleton */}
         <div className="lg:w-1/3 w-full space-y-4">
