@@ -16,6 +16,13 @@ const authApi = baseApi.injectEndpoints({
         body: userInfo,
       }),
     }),
+    signupWithSocial: builder.mutation({
+      query: (userInfo) => ({
+        url: "/auth/social-login",
+        method: "POST",
+        body: userInfo,
+      }),
+    }),
     getAllUser: builder.query({
       query: () => ({
         url: "/users",
@@ -47,4 +54,5 @@ export const {
   useGetAllUserQuery,
   useGetUserByEmailQuery,
   useUpdateUserMutation,
+  useSignupWithSocialMutation
 } = authApi;

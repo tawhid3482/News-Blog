@@ -11,6 +11,7 @@ import { verifyToken } from "@/utils/verifyToken";
 import { setUser, TUser } from "@/redux/features/auth/authSlice";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import SocialLogin from "@/components/SocailLogin/SocailLogin";
 
 interface SignInFormData {
   email: string;
@@ -130,6 +131,15 @@ const SignInPage = () => {
               Sign In
             </button>
           </form>
+
+          <div className="flex items-center gap-2 my-4">
+            <hr className="flex-1" />
+            <span className="text-sm text-gray-500">OR</span>
+            <hr className="flex-1 " />
+          </div>
+          <div className="">
+            <SocialLogin />
+          </div>
 
           <p className="mt-6 text-center text-sm text-gray-600">
             Don't have an account?{" "}
