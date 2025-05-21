@@ -141,7 +141,7 @@ const NewsSection = () => {
                   alt={mainNews.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 66vw"
-                  className="object-cover"
+                  style={{ objectFit: "cover" }}
                 />
               </Link>
             </div>
@@ -369,7 +369,7 @@ const NewsSection = () => {
                       src={item.coverImage}
                       alt={item.title}
                       fill
-                      className="object-cover"
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
                   <div className="p-4 sm:w-2/3">
@@ -406,7 +406,7 @@ const NewsSection = () => {
                       src={item.coverImage}
                       alt={item.title}
                       fill
-                      className="object-cover"
+                     style={{ objectFit: "cover" }}
                     />
                   </div>
                   <div className="p-4">

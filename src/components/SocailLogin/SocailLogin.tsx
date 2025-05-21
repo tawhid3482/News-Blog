@@ -1,14 +1,9 @@
 // components/SocialLoginButtons.tsx
 "use client";
-import { useSignupWithSocialMutation } from "@/redux/features/auth/authApi";
 import { signIn } from "next-auth/react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 
 export default function SocialLogin() {
-
-  const [signupWithSocial] = useSignupWithSocialMutation()
-
-
   return (
     <div className="space-x-2 flex items-center justify-center gap-4">
       <button

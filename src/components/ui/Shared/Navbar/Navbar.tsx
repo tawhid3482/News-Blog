@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "../../button";
 import { useAppDispatch, useAppSelector } from "@/redux/features/hooks";
 import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { signOut } from "next-auth/react";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -48,6 +49,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
+    signOut({ callbackUrl: "/" }); 
     dispatch(logout());
   };
 
