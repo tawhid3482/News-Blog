@@ -1,63 +1,46 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
-import { useSignupMutation } from "@/redux/features/auth/authApi";
+import { FieldValues } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { useAppDispatch } from "@/redux/features/hooks";
-import { setUser, TUser } from "@/redux/features/auth/authSlice";
-import { verifyToken } from "@/utils/verifyToken";
 import SocialLogin from "@/components/SocailLogin/SocailLogin";
-
-interface SignUpFormData {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  gender: string;
-  profilePhoto: FileList;
-}
+import { modifyPayload } from "@/utils/modifyPayload";
+import { registerUser } from "@/services/actions/registerUser";
+import { userLogin } from "@/services/actions/userLogin";
+import { storeUserInfo } from "@/services/auth.services";
+import NInput from "@/components/Forms/NInput";
+import Forms from "@/components/Forms/Forms";
+import toast from "react-hot-toast";
+import NSelect from "@/components/Forms/NSelect";
+import ImgInput from "@/components/Forms/ImgInput";
 
 const SignUpPage = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<SignUpFormData>();
-
-  const dispatch = useAppDispatch();
   const router = useRouter();
-  const [signup] = useSignupMutation();
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  // const [signup] = useSignupMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = async (data: SignUpFormData) => {
+  const handleRegister = async (values: FieldValues) => {
     setIsSubmitting(true);
-    const formData = new FormData();
 
-    const userData = {
-      name: data.name,
-      gender: data.gender,
-      email: data.email,
-      password: data.password,
-      confirmPassword: data.confirmPassword,
-    };
-
-    formData.append("data", JSON.stringify(userData));
-    formData.append("file", data.profilePhoto[0]);
+    const data = modifyPayload(values);
 
     try {
-      const result = await signup(formData).unwrap();
-      const user = (await verifyToken(result.token)) as TUser;
-      dispatch(setUser({ user, token: result.token }));
-      toast.success("User created successfully");
-      router.push("/");
+      const result = await registerUser(data);
+      const res = await userLogin({
+        password: values.password,
+        email: values.email,
+      });
+      const token = res?.data?.accessToken;
+      if (token) {
+        storeUserInfo({ accessToken: token });
+        router.push("/");
+      }
+      // const user = (await verifyToken(result.token)) as TUser;
+      // dispatch(setUser({ user, token: result.token }));
+      toast.success(result.message);
     } catch (error: any) {
       toast.error(error?.data?.message || "Signup failed");
     } finally {
@@ -65,10 +48,7 @@ const SignUpPage = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) setImagePreview(URL.createObjectURL(file));
-  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 via-white to-blue-100 px-4">
@@ -90,140 +70,44 @@ const SignUpPage = () => {
             Create an Account
           </h2>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <Forms onSubmit={handleRegister}>
             {/* Name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <input
-                id="name"
-                type="text"
-                {...register("name", { required: "Name is required" })}
-                className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                placeholder="Enter your name"
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-              )}
+              <NInput name="name" label="User name" type="text" required />
             </div>
 
             {/* Gender */}
             <div>
-              <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
-                Gender
-              </label>
-              <select
-                id="gender"
-                {...register("gender", { required: "Gender is required" })}
-                className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              >
-                <option value="">Select gender</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-                <option value="OTHER">Other</option>
-              </select>
-              {errors.gender && (
-                <p className="text-red-500 text-sm mt-1">{errors.gender.message}</p>
-              )}
+              <NSelect
+                name="gender"
+                label="Gender"
+                required
+                options={[
+                  { label: "Male", value: "MALE" },
+                  { label: "Female", value: "FEMALE" },
+                  { label: "Other", value: "OTHER" },
+                ]}
+              />
             </div>
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                {...register("email", { required: "Email is required" })}
-                className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                placeholder="Enter your email"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-              )}
+              <NInput name="email" label="Email" type="email" required />
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
+              <NInput
+                name="password"
+                label="Password"
                 type="password"
-                {...register("password", { required: "Password is required" })}
-                className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                placeholder="Create a password"
+                required
               />
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-              )}
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                {...register("confirmPassword", {
-                  required: "Please confirm your password",
-                  validate: (value) =>
-                    value === watch("password") || "Passwords do not match",
-                })}
-                className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                placeholder="Confirm your password"
-              />
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
             </div>
 
             {/* Profile Photo */}
             <div>
-              <label htmlFor="profilePhoto" className="block text-sm font-medium text-gray-700">
-                Profile Photo
-              </label>
-              <div className="mt-2 flex items-center space-x-4">
-                {imagePreview ? (
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="w-20 h-20 object-cover rounded-full border"
-                  />
-                ) : (
-                  <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 border text-xs">
-                    No Image
-                  </div>
-                )}
-                <label
-                  htmlFor="profilePhoto"
-                  className="cursor-pointer inline-block bg-[#0896EF] text-white px-4 py-2 text-sm font-medium rounded hover:bg-blue-700 transition"
-                >
-                  Choose Photo
-                </label>
-              </div>
-              <input
-                id="profilePhoto"
-                type="file"
-                accept="image/*"
-                {...register("profilePhoto", {
-                  required: "Profile photo is required",
-                })}
-                onChange={handleImageChange}
-                className="hidden"
-              />
-              {errors.profilePhoto && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.profilePhoto.message as string}
-                </p>
-              )}
+              <ImgInput name="profilePhoto" label="Profile Photo" required />
             </div>
 
             {/* Submit Button */}
@@ -238,7 +122,7 @@ const SignUpPage = () => {
             >
               {isSubmitting ? "Signing Up..." : "Sign Up"}
             </button>
-          </form>
+          </Forms>
 
           {/* Divider */}
           <div className="flex items-center gap-2 my-4">

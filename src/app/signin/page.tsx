@@ -1,47 +1,45 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { FieldValues } from "react-hook-form";
 import Image from "next/image";
-import { useAppDispatch } from "@/redux/features/hooks";
-import { useLoginMutation } from "@/redux/features/auth/authApi";
-import { verifyToken } from "@/utils/verifyToken";
-import { setUser, TUser } from "@/redux/features/auth/authSlice";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import SocialLogin from "@/components/SocailLogin/SocailLogin";
+import { userLogin } from "@/services/actions/userLogin";
+import { storeUserInfo } from "@/services/auth.services";
+import Forms from "@/components/Forms/Forms";
+import NInput from "@/components/Forms/NInput";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-interface SignInFormData {
-  email: string;
-  password: string;
-  remember: boolean;
-}
+export const validationSchema = z.object({
+  email: z.string().email("Please enter a valid email address!"),
+  password: z.string().min(6, "Must be at least 6 characters"),
+});
 
 const SignInPage = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignInFormData>();
-  const dispatch = useAppDispatch();
   const router = useRouter();
-  const [login] = useLoginMutation();
+  const [error, setError] = useState("");
 
-  const onSubmit = async (data: SignInFormData) => {
-    const userData = {
-      email: data.email,
-      password: data.password,
-    };
-
-    const res = await login(userData).unwrap();
-    const token = res?.data?.accessToken;
-    if (token) {
-      const user = (await verifyToken(token)) as TUser;
-      dispatch(setUser({ user, token }));
-      toast.success("Logged in");
-      router.push("/");
+  const handleLogin = async (data: FieldValues) => {
+    try {
+      const res = await userLogin(data);
+      const token = res?.data?.accessToken;
+      if (token) {
+        // const user = (await verifyToken(token)) as TUser;
+        storeUserInfo({ accessToken: token });
+        // dispatch(setUser({ user, token }));
+        toast.success(res.message);
+        router.push("/");
+      } else {
+        setError(res.message);
+      }
+    } catch (err: any) {
+      console.error(err.message);
     }
   };
 
@@ -64,58 +62,34 @@ const SignInPage = () => {
           <h2 className="text-3xl font-bold text-center text-[#0896EF] mb-6">
             Welcome Back
           </h2>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div className="flex justify-center items-center">
+            {error && (
+              <span className="text-lg text-red-600 text-center">{error}</span>
+            )}
+          </div>
+          <Forms
+            onSubmit={handleLogin}
+            resolver={zodResolver(validationSchema)}
+            defaultValues={{
+              email: "",
+              password: "",
+            }}
+          >
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                {...register("email", { required: "Email is required" })}
-                className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                placeholder="Enter your email"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.email.message}
-                </p>
-              )}
+              <NInput name="email" label="Email" type="email" required />
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <input
-                id="password"
+              <NInput
+                name="password"
+                label="Password"
                 type="password"
-                {...register("password", { required: "Password is required" })}
-                className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                placeholder="Enter your password"
+                required
               />
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password.message}
-                </p>
-              )}
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 text-sm text-gray-600">
-                <input
-                  type="checkbox"
-                  {...register("remember")}
-                  className="accent-blue-500"
-                />
-                Remember me
-              </label>
+              <div className=""></div>
               <Link
                 href="/forgot-password"
                 className="text-sm text-[#0896EF] hover:underline"
@@ -130,7 +104,7 @@ const SignInPage = () => {
             >
               Sign In
             </button>
-          </form>
+          </Forms>
 
           <div className="flex items-center gap-2 my-4">
             <hr className="flex-1" />

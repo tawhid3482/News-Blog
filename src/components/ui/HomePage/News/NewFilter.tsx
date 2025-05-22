@@ -4,7 +4,13 @@ import NewsSection from "./News";
 import NewSkeleton from "../../Skeleton/NewsSkeleton";
 
 const NewFilter = ({ data }: { data: any[] }) => {
-  if (!data || data?.length === 0) return <NewSkeleton />;
+  if (!data || data?.length === 0)
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh]">
+        <NewSkeleton />
+      </div>
+    );
+
   const news = data;
   const mainNews = news[0];
   const relevantNews = news?.filter(

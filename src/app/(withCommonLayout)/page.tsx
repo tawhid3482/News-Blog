@@ -3,6 +3,7 @@ import Hero from "@/components/UI/HomePage/HeroSection/HeroSection";
 import Newsletter from "@/components/UI/HomePage/Newsletter/Newsletter";
 import VideoNews from "@/components/UI/HomePage/VideoNews/VideoNews";
 import NewFilter from "@/components/UI/HomePage/News/NewFilter";
+import NewSkeleton from "@/components/UI/Skeleton/NewsSkeleton";
 
 const getNewsData = async () => {
   try {
@@ -66,6 +67,9 @@ export async function generateMetadata() {
 // ✅ main page function
 export default async function HomePage() {
   const data = await getNewsData(); // server side fetch
+  if (!data || data.length === 0) {
+    return <NewSkeleton />;
+  }
   return (
     <>
       <Hero />

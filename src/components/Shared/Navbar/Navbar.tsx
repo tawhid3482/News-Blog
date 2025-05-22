@@ -1,14 +1,12 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { IoIosSearch } from "react-icons/io";
+import { usePathname } from "next/navigation";
+import React, {  useState } from "react";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import Link from "next/link";
-import { useAppDispatch, useAppSelector } from "@/redux/features/hooks";
-import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
-import { signOut } from "next-auth/react";
-import { Button } from "@/components/UI/button";
+// import AuthButton from "@/components/UI/AuthButton/AuthButton";
+import Searchbar from "@/components/UI/SearchBar/Searchbar";
+import dynamic from "next/dynamic";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -28,29 +26,10 @@ const navItems = [
 
 const Navbar = () => {
   const pathname = usePathname();
-  const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
-  const user = useAppSelector(selectCurrentUser);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isClient, setIsClient] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const handleSearch = () => {
-    if (searchQuery.trim() !== "") {
-      router.push(`/search?searchTerm=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery("");
-      setMenuOpen(false);
-    }
-  };
-
-  const handleLogout = () => {
-    signOut({ callbackUrl: "/" });
-    dispatch(logout());
-  };
+  const AuthButton = dynamic(() => import('@/components/UI/AuthButton/AuthButton'), { ssr: false })
+ 
+ 
 
   return (
     <nav className="w-full sticky top-0 z-50 bg-white ">
@@ -70,71 +49,12 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Search Bar - Large Screen */}
-        <div className="hidden lg:flex items-center absolute left-1/2 transform -translate-x-1/2 w-full max-w-md bg-[#D9E6ED] p-2 rounded-lg">
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch();
-            }}
-            className="flex-grow text-black bg-transparent outline-none px-2"
-            placeholder="Search here..."
-            aria-label="Search news"
-          />
-          <button
-            onClick={handleSearch}
-            aria-label="Search button"
-            className="focus:outline-none"
-          >
-            <IoIosSearch className="text-2xl text-black" />
-          </button>
-        </div>
-
-        {/* Search Bar - Mobile View */}
-        <div className="flex lg:hidden items-center w-full bg-[#D9E6ED] p-2 rounded-lg">
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch();
-            }}
-            className="flex-grow text-black bg-transparent outline-none px-2"
-            placeholder="Search here..."
-            aria-label="Search news"
-          />
-          <button
-            onClick={handleSearch}
-            aria-label="Search button"
-            className="focus:outline-none"
-          >
-            <IoIosSearch className="text-2xl text-black" />
-          </button>
-        </div>
+        {/* Reusable Searchbar */}
+        <Searchbar setMenuOpen={setMenuOpen} />
 
         {/* Auth Buttons */}
-        <div className="hidden lg:flex items-center gap-4 ml-auto">
-          {isClient && user ? (
-            <>
-              <Link href="/profile" className="text-lg font-medium hover:text-[#0896EF]">
-                Profile
-              </Link>
-              <Button onClick={handleLogout}>Logout</Button>
-            </>
-          ) : (
-            isClient && (
-              <>
-                <Link href="/signin" className="text-lg font-medium hover:text-[#0896EF]">
-                  <Button>Sign In</Button>
-                </Link>
-                <Link href="/signup" className="text-lg font-medium hover:text-[#0896EF]">
-                  <Button>Sign Up</Button>
-                </Link>
-              </>
-            )
-          )}
+        <div className=" lg:flex items-center gap-4 ml-auto">
+          <AuthButton />
         </div>
       </div>
 

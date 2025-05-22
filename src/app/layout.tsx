@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased max-w-7xl mx-auto`}>
           <main className="flex flex-col min-h-screen">
             <Toaster position="top-right" />
-            <AuthSessionHandler /> 
+            {/* <AuthSessionHandler />  */}
             {children}
           </main>
         </body>
