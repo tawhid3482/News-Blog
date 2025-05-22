@@ -3,7 +3,7 @@ import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 
 import type { AxiosRequestConfig, AxiosError } from "axios";
 import { instance as axiosInstance } from "./axiosInstance";
-import { IMeta } from "@/types/common";
+import { IMeta } from "@/types";
 
 export const axiosBaseQuery =
   (

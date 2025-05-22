@@ -14,6 +14,7 @@ import {
 import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
 import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
 import toast from "react-hot-toast";
+import { getUserInfo } from "@/services/auth.services";
 
 const reactionEmojiMap: Record<string, string> = {
   LIKE: "👍🏻",
@@ -39,7 +40,7 @@ const truncateWords = (text: string, wordLimit: number) => {
 };
 
 const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
-  const user = true;
+  const user = getUserInfo();
   const [newComment, setNewComment] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [showReactionPicker, setShowReactionPicker] = useState(false);
