@@ -2,7 +2,7 @@ import React from 'react';
 
 const SlugSkeleton = () => {
     return (
-        <div className="max-w-5xl mx-auto px-4 py-10 animate-pulse">
+        <div className="h-screen w-full lg:w-5xl mx-auto px-4 py-10 animate-pulse">
       {/* Title */}
       <div className="h-10 bg-gray-200 rounded w-3/4 mb-4"></div>
       {/* Summary */}

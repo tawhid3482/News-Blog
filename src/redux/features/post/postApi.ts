@@ -13,7 +13,6 @@ const postApi = baseApi.injectEndpoints({
 
     getAllPost: builder.query({
       query: (searchTerm: string) => {
-        console.log(searchTerm);
         return {
           url: "/post",
           method: "GET",

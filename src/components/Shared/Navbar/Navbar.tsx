@@ -1,14 +1,14 @@
 "use client";
-import { useRouter } from "next/navigation"; // ✅ This is the new router for App Router (Next 13+)
+
+import { useRouter, usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Button } from "../../button";
 import { useAppDispatch, useAppSelector } from "@/redux/features/hooks";
 import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { signOut } from "next-auth/react";
+import { Button } from "@/components/UI/button";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -32,24 +32,23 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const user = useAppSelector(selectCurrentUser);
   const [searchQuery, setSearchQuery] = useState("");
-
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const router = useRouter();
-
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
-      router.push(`/search?searchTerm=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery(""); // clear input after search
+      router.push(`/search?searchTerm=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+      setMenuOpen(false);
     }
   };
 
   const handleLogout = () => {
-    signOut({ callbackUrl: "/" }); 
+    signOut({ callbackUrl: "/" });
     dispatch(logout());
   };
 
@@ -59,31 +58,36 @@ const Navbar = () => {
       <div className="relative flex flex-col lg:flex-row items-center p-4 gap-4 max-w-7xl mx-auto w-full">
         {/* Logo + Mobile Menu Icon */}
         <div className="flex w-full justify-between items-center lg:w-auto">
-          <div className="text-2xl font-medium">TIS-News</div>
+          <Link href="/" aria-label="TIS-News Home" className="text-2xl font-bold text-[#0896EF]">
+            TIS-News
+          </Link>
           <button
-            className="text-3xl lg:hidden"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            className="text-3xl lg:hidden focus:outline-none"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <HiOutlineX /> : <HiOutlineMenuAlt3 />}
           </button>
         </div>
 
-        {/* Search Bar - Large Screen (Center) */}
+        {/* Search Bar - Large Screen */}
         <div className="hidden lg:flex items-center absolute left-1/2 transform -translate-x-1/2 w-full max-w-md bg-[#D9E6ED] p-2 rounded-lg">
           <input
-            type="text"
+            type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearch();
-              }
+              if (e.key === "Enter") handleSearch();
             }}
             className="flex-grow text-black bg-transparent outline-none px-2"
             placeholder="Search here..."
+            aria-label="Search news"
           />
-
-          <button onClick={handleSearch}>
+          <button
+            onClick={handleSearch}
+            aria-label="Search button"
+            className="focus:outline-none"
+          >
             <IoIosSearch className="text-2xl text-black" />
           </button>
         </div>
@@ -91,11 +95,21 @@ const Navbar = () => {
         {/* Search Bar - Mobile View */}
         <div className="flex lg:hidden items-center w-full bg-[#D9E6ED] p-2 rounded-lg">
           <input
-            type="text"
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch();
+            }}
             className="flex-grow text-black bg-transparent outline-none px-2"
             placeholder="Search here..."
+            aria-label="Search news"
           />
-          <button>
+          <button
+            onClick={handleSearch}
+            aria-label="Search button"
+            className="focus:outline-none"
+          >
             <IoIosSearch className="text-2xl text-black" />
           </button>
         </div>
@@ -104,7 +118,7 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center gap-4 ml-auto">
           {isClient && user ? (
             <>
-              <Link href="/profile" className="text-lg font-medium">
+              <Link href="/profile" className="text-lg font-medium hover:text-[#0896EF]">
                 Profile
               </Link>
               <Button onClick={handleLogout}>Logout</Button>
@@ -112,10 +126,10 @@ const Navbar = () => {
           ) : (
             isClient && (
               <>
-                <Link href="/signin" className="text-lg font-medium">
+                <Link href="/signin" className="text-lg font-medium hover:text-[#0896EF]">
                   <Button>Sign In</Button>
                 </Link>
-                <Link href="/signup" className="text-lg font-medium">
+                <Link href="/signup" className="text-lg font-medium hover:text-[#0896EF]">
                   <Button>Sign Up</Button>
                 </Link>
               </>
@@ -129,8 +143,10 @@ const Navbar = () => {
         className={`${
           menuOpen ? "flex" : "hidden"
         } lg:flex flex-wrap justify-center items-center px-4 py-2 max-w-6xl mx-auto text-sm sm:text-base transition-all duration-300 ease-in-out`}
+        role="menubar"
+        aria-label="Primary navigation"
       >
-        <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-6 lg:flex gap-4 w-full justify-center item-center">
+        <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-6 lg:flex gap-4 w-full justify-center items-center">
           {navItems.map(({ name, path }) => (
             <Link
               key={name}
@@ -139,9 +155,13 @@ const Navbar = () => {
               className={`font-medium text-lg transition-colors duration-200 hover:text-[#0896EF] text-center ${
                 pathname === path ? "text-[#0896EF]" : "text-black"
               }`}
+              role="menuitem"
+              aria-current={pathname === path ? "page" : undefined}
             >
               {name}
-              <span className="ml-2 hidden md:inline">|</span>
+              <span className="ml-2 hidden md:inline" aria-hidden="true">
+                |
+              </span>
             </Link>
           ))}
         </div>

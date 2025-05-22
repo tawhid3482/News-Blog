@@ -20,7 +20,6 @@ export default function AuthSessionHandler() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
- 
     if (status === "authenticated" && session?.token) {
       const user = verifyToken(session.token) as TUser;
       dispatch(setUser({ user, token: session.token }));

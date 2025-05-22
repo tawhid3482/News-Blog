@@ -1,20 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import SlugSkeleton from "@/components/ui/Skeleton/SlugSkeleton";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
 import { useAppSelector } from "@/redux/features/hooks";
-import { useGetAllPostQuery } from "@/redux/features/post/postApi";
 import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
-import { useGetMeQuery } from "@/redux/features/user/userApi";
 import Image from "next/image";
-import { use, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
-interface Props {
-  params: Promise<{ slug: string }>;
-}
+import { format } from "date-fns";
+// import SlugSkeleton from "../../Skeleton/SlugSkeleton";
 
 const reactionEmojiMap: Record<string, string> = {
   LIKE: "👍🏻",
@@ -36,16 +31,10 @@ const countReactions = (reactions: { type: string }[]) => {
     return acc;
   }, {});
 };
+const Slug = ({ newsItem }: { newsItem: any }) => {
+  
 
-const NewsDetailsPage = ({ params }: Props) => {
   const user = useAppSelector(selectCurrentUser);
-  const { data: Me } = useGetMeQuery("");
-  const mySelf = Me?.data || null;
-  const { slug } = use(params);
-  const newsSlug = slug;
-
-  const { data, isLoading } = useGetAllPostQuery("");
-  const newsItem = data?.data?.find((item: any) => item.slug === newsSlug);
 
   const [createReaction, { isLoading: reactionLoading }] =
     useCreateReactionMutation();
@@ -55,9 +44,13 @@ const NewsDetailsPage = ({ params }: Props) => {
   const [newComment, setNewComment] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [showAllReactions, setShowAllReactions] = useState(false);
-  if (isLoading) return <SlugSkeleton />;
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
-  if (!newsItem) return <p>No news found.</p>;
+  if (!hasMounted) return null;
+//   if (!newsItem || newsItem?.length === 0) return <SlugSkeleton />;
 
   const mainReactions = countReactions(newsItem?.reactions || []);
   const totalReactions = Object.values(mainReactions).reduce(
@@ -70,6 +63,8 @@ const NewsDetailsPage = ({ params }: Props) => {
   const userReaction =
     newsItem.reactions?.find((r: any) => r.userId === user?.userId)?.type ||
     null;
+
+
 
   const reactionCounts = reactions.map((r) => ({
     ...r,
@@ -90,7 +85,7 @@ const NewsDetailsPage = ({ params }: Props) => {
   const handleCommentSubmit = async () => {
     if (commentLoading || !newComment.trim()) return;
 
-    if (!mySelf || !mySelf.profilePhoto) {
+    if (!user?.profilePhoto) {
       toast.error("User information not loaded!");
       return;
     }
@@ -99,7 +94,7 @@ const NewsDetailsPage = ({ params }: Props) => {
       await createComment({
         postId: newsItem.id,
         content: newComment,
-        userImage: mySelf.profilePhoto,
+        userImage: user?.profilePhoto,
       });
       toast.success("Comment posted!");
       setNewComment("");
@@ -108,13 +103,12 @@ const NewsDetailsPage = ({ params }: Props) => {
       toast.error("Failed to post comment.");
     }
   };
-
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
+    <div className="max-w-5xl mx-auto px-4 py-10 h-full">
       <h1 className="text-4xl font-bold mb-2">{newsItem.title}</h1>
-      <p className="text-gray-600 text-lg mb-1">{newsItem.summary}</p>
-      <p className="text-sm text-gray-500 mb-4">
-        Published: {new Date(newsItem.createdAt).toLocaleString()}
+      <p className="text-gray-800 text-lg mb-1">{newsItem.summary}</p>
+      <p className="text-xs text-gray-800 mt-1">
+        Published: {format(new Date(newsItem?.createdAt), "yyyy-MM-dd HH:mm")}
       </p>
 
       <div className="relative w-full h-[350px] md:h-[500px] rounded-xl overflow-hidden mb-6 shadow">
@@ -122,7 +116,7 @@ const NewsDetailsPage = ({ params }: Props) => {
           src={newsItem.coverImage}
           alt={newsItem.title}
           layout="fill"
-          objectFit="cover"
+          style={{ objectFit: "cover" }}
         />
       </div>
 
@@ -247,4 +241,4 @@ const NewsDetailsPage = ({ params }: Props) => {
   );
 };
 
-export default NewsDetailsPage;
+export default Slug;

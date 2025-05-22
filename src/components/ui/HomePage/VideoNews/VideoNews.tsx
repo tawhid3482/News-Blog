@@ -18,6 +18,11 @@ const videoData = [
     title: "Political Analysis: Upcoming Elections",
     youtubeUrl: "https://www.youtube.com/embed/VIDEO_ID_3",
   },
+  {
+    id: 4,
+    title: "Political Analysis: Upcoming Elections",
+    youtubeUrl: "https://www.youtube.com/embed/VIDEO_ID_3",
+  },
 ];
 
 const VideoNews = () => {
@@ -28,7 +33,7 @@ const VideoNews = () => {
         Watch today's top headlines and live reports.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {videoData.map((video) => (
           <div
             key={video.id}

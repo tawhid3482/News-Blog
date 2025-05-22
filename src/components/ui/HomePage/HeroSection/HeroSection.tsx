@@ -1,4 +1,4 @@
-import React from "react";
+
 import Image from "next/image";
 import heroImage from "@/assets/image.png";
 import Link from "next/link";
@@ -11,13 +11,13 @@ const Hero = () => {
         <Image
           src={heroImage}
           alt="News background"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: "cover" }}
           quality={90}
           priority
           className="brightness-75"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-while/70 to-black/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-black/80"></div>
       </div>
 
       {/* Overlay Content */}
@@ -26,13 +26,13 @@ const Hero = () => {
           Breaking News. Bold Perspectives.
         </h1>
         <p className="text-lg md:text-xl max-w-2xl mx-auto mb-8 text-gray-300">
-          Dive into the world of current events, expert opinions, and reliable
-          journalism—all at your fingertips.
+          Dive into the world of current events, expert opinions, and reliable journalism—all at your fingertips.
         </p>
 
         <Link
           href="/news/world"
           className="inline-block bg-white text-[#0896EF] hover:bg-gray-100 font-semibold py-3 px-6 rounded-full transition shadow-md text-lg"
+          aria-label="Browse Top Stories"
         >
           Browse Top Stories
         </Link>
