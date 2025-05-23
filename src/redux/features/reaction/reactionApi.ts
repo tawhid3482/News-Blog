@@ -1,4 +1,5 @@
 import { baseApi } from "@/redux/api/baseApi";
+import { tagTypes } from "@/redux/tag-types";
 
 const reactionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,14 +9,14 @@ const reactionApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags:["news"]
+      invalidatesTags:[tagTypes.reaction]
     }),
     getAllReaction: builder.query({
       query: () => ({
         url: "/reaction",
         method: "GET",
       }),
-      providesTags: ["reaction"],
+      providesTags: [tagTypes.reaction],
     }),
   }),
 });

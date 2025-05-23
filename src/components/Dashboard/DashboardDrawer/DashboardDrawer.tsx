@@ -1,26 +1,43 @@
-// components/DashboardDrawer.tsx
-import { ReactNode, useState } from 'react';
-import Sidebar from '../Sidebar/Sidebar';
+"use client";
 
-interface DashboardDrawerProps {
-  children: ReactNode;
-}
+import { useEffect, useState } from "react";
+import { useGetSingleUserQuery } from "@/redux/features/user/userApi";
+import Sidebar from "../Sidebar/Sidebar";
+import AppNavbar from "./DashboardAppbar";
 
-export default function DashboardDrawer({ children }: DashboardDrawerProps) {
-  const [open, setOpen] = useState(true);
+export default function DashboardDrawer({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { data, isLoading } = useGetSingleUserQuery({});
+  console.log(data);
+  useEffect(() => {
+    const isLargeScreen = window.matchMedia("(min-width:1024px)").matches;
+    if (isLargeScreen) {
+      setIsOpen(true);
+    }
+  }, []);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-white text-gray-900">
-      <Sidebar open={open} toggle={() => setOpen(!open)} />
-
-      {/* Main Content */}
-      <main
-        className={`transition-all duration-300 flex-1 min-h-screen ${open ? 'ml-64' : 'ml-16'}`}
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar
+        open={isOpen}
+        role={data?.role.toLowerCase()}
+        toggle={() => setIsOpen(!isOpen)}
+      />
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          isOpen ? "ml-64" : "ml-16"
+        } lg:ml-0`}
       >
-        <div className="p-6 max-w-7xl mx-auto">
-          {children}
-        </div>
-      </main>
+        <AppNavbar
+          userName={isLoading ? "Loading..." : data?.name || "User"}
+          userImage={data?.profilePhoto}
+        />
+        <main className="p-6">{children}</main>
+      </div>
     </div>
   );
 }

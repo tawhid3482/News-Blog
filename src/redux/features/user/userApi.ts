@@ -1,23 +1,16 @@
 import { baseApi } from "@/redux/api/baseApi";
+import { tagTypes } from "@/redux/tag-types";
 
 const UserApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // createReaction: builder.mutation({
-    //   query: (data) => ({
-    //     url: "/reaction/create-react",
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    //   invalidatesTags:["news"]
-    // }),
-    getMe: builder.query({
+    getSingleUser: builder.query({
       query: () => ({
         url: "/user/me",
         method: "GET",
       }),
-      providesTags: ["users"],
+      providesTags: [tagTypes.user],
     }),
   }),
 });
 
-export const {  useGetMeQuery } = UserApi;
+export const {  useGetSingleUserQuery } = UserApi;

@@ -9,7 +9,7 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 type TDebouncedProps = {
   searchQuery: string;
-  delay: number;
+  delay: number; 
 };
 
 export const useDebounced = ({ searchQuery, delay }: TDebouncedProps) => {

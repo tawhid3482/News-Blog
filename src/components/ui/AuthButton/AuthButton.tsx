@@ -24,10 +24,10 @@ const AuthButton = () => {
       {isClient && userInfo?.userId ? (
         <div className="flex items-center gap-5">
           <Link
-            href="/profile"
+            href={`/dashboard/${userInfo.role}`}
             className="text-lg font-medium hover:text-[#0896EF]"
           >
-            Profile
+            Dashboard
           </Link>
           <Button onClick={handleLogout}>Logout</Button>
         </div>

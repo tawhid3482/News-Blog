@@ -1,33 +1,60 @@
-import { Menu, X, Home, Newspaper, Settings } from 'lucide-react';
-import SidebarItem from './SidebarItem';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import SidebarItem from "./SidebarItem";
+import { drawerItems } from "@/utils/drawerItems";
+import { UserRole } from "@/types";
+
 
 interface SidebarProps {
   open: boolean;
   toggle: () => void;
+  role: UserRole;
 }
 
-const menuItems = [
-  { name: 'Home', icon: Home, href: '/' },
-  { name: 'Headlines', icon: Newspaper, href: '/headlines' },
-  { name: 'Settings', icon: Settings, href: '/settings' },
-];
+export default function Sidebar({ open, toggle, role }: SidebarProps) {
+  const pathname = usePathname();
 
-export default function Sidebar({ open, toggle }: SidebarProps) {
   return (
-    <aside className={`fixed top-0 left-0 h-full bg-zinc-900 text-white shadow-lg z-50 transition-all duration-300 ${open ? 'w-64' : 'w-16'}`}>
-      <div className="flex items-center justify-between px-4 py-4 border-b border-zinc-800">
-        <span className={`font-bold text-xl transition-opacity ${open ? 'opacity-100' : 'opacity-0'} overflow-hidden`}>
-          NewsBlog
-        </span>
-        <button onClick={toggle} className="text-gray-300 hover:text-white">
-          {open ? <X size={20} /> : <Menu size={20} />}
+    <aside
+      className={`fixed top-0 left-0 h-full bg-zinc-900 text-white shadow-lg z-50 transition-all duration-300 ${
+        open ? "w-64" : "w-18"
+      }`}
+    >
+      <div className="h-16 flex items-center justify-between px-4 border-b border-zinc-800">
+        {open && (
+          <Link href="/">
+            <span className="font-bold text-xl transition-opacity">
+              TIS-News
+            </span>
+          </Link>
+        )}
+        <button
+          onClick={toggle}
+          className={`text-gray-300 hover:text-white cursor-pointer ${
+            !open ? "mx-auto" : ""
+          }`}
+        >
+          {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       <nav className="mt-6">
-        {menuItems.map((item) => (
-          <SidebarItem key={item.name} open={open} href={item.href} icon={item.icon} label={item.name} />
-        ))}
+        {role &&
+          drawerItems(role).map((item, index) => {
+            const linkPath = `/dashboard/${item.path}`;
+            const active = pathname === linkPath;
+            return (
+              <SidebarItem
+                key={index}
+                icon={item.icon}
+                label={item.title}
+                href={linkPath}
+                open={open}
+                active={active}
+              />
+            );
+          })}
       </nav>
     </aside>
   );

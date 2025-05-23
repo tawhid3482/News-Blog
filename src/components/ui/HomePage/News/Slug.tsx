@@ -3,12 +3,12 @@
 
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
-import { useAppSelector } from "@/redux/features/hooks";
 import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
+import { useAppSelector } from "@/redux/hooks";
 // import SlugSkeleton from "../../Skeleton/SlugSkeleton";
 
 const reactionEmojiMap: Record<string, string> = {
