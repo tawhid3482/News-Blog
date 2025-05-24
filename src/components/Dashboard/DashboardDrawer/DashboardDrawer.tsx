@@ -30,7 +30,7 @@ export default function DashboardDrawer({
   }
 
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-7xl mx-auto">
       <div
         className={`fixed z-30 inset-y-0 left-0 transition-all duration-300
           ${isOpen ? "w-64" : "w-16"} 
