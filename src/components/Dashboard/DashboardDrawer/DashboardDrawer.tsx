@@ -11,8 +11,6 @@ export default function DashboardDrawer({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { data, isLoading } = useGetSingleUserQuery({});
-  console.log(data);
   useEffect(() => {
     const isLargeScreen = window.matchMedia("(min-width:1024px)").matches;
     if (isLargeScreen) {
@@ -20,23 +18,41 @@ export default function DashboardDrawer({
     }
   }, []);
 
+  const { data, isLoading } = useGetSingleUserQuery({},{
+  refetchOnMountOrArgChange: true,
+});
+  if (isLoading || !data) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar
-        open={isOpen}
-        role={data?.role.toLowerCase()}
-        toggle={() => setIsOpen(!isOpen)}
-      />
+    <div className="flex h-screen w-full">
+      <div
+        className={`fixed z-30 inset-y-0 left-0 transition-all duration-300
+          ${isOpen ? "w-64" : "w-16"} 
+           
+        `}
+      >
+        <Sidebar
+          open={isOpen}
+          role={data?.role?.toLowerCase()}
+          toggle={() => setIsOpen(!isOpen)}
+        />
+      </div>
       <div
         className={`flex-1 transition-all duration-300 ${
           isOpen ? "ml-64" : "ml-16"
-        } lg:ml-0`}
+        } 2xl:ml-0`}
       >
         <AppNavbar
-          userName={isLoading ? "Loading..." : data?.name || "User"}
-          userImage={data?.profilePhoto}
+          userName={isLoading ? "Loading..." : data?.name || "user"}
+          userImage={data?.profilePhoto || "/default-user.png"}
         />
-        <main className="p-6">{children}</main>
+        <main className="p-4 flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>
   );

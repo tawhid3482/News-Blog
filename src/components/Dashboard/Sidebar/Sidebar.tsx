@@ -5,7 +5,6 @@ import SidebarItem from "./SidebarItem";
 import { drawerItems } from "@/utils/drawerItems";
 import { UserRole } from "@/types";
 
-
 interface SidebarProps {
   open: boolean;
   toggle: () => void;
@@ -39,23 +38,28 @@ export default function Sidebar({ open, toggle, role }: SidebarProps) {
         </button>
       </div>
 
-      <nav className="mt-6">
-        {role &&
-          drawerItems(role).map((item, index) => {
-            const linkPath = `/dashboard/${item.path}`;
-            const active = pathname === linkPath;
-            return (
-              <SidebarItem
-                key={index}
-                icon={item.icon}
-                label={item.title}
-                href={linkPath}
-                open={open}
-                active={active}
-              />
-            );
-          })}
-      </nav>
+      {/*Scrollable content wrapper*/}
+      <div className="overflow-y-auto h-[calc(100%-4rem)]">
+        {" "}
+        {/* 4rem = 64px = height of top bar */}
+        <nav className="mt-6 px-2">
+          {role &&
+            drawerItems(role).map((item, index) => {
+              const linkPath = `/dashboard/${item.path}`;
+              const active = pathname === linkPath;
+              return (
+                <SidebarItem
+                  key={index}
+                  icon={item.icon}
+                  label={item.title}
+                  href={linkPath}
+                  open={open}
+                  active={active}
+                />
+              );
+            })}
+        </nav>
+      </div>
     </aside>
   );
 }

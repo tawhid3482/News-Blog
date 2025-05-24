@@ -30,7 +30,7 @@ export default function AppNavbar({
         <h2 className="text-xs md:text-sm text-gray-600 uppercase">
           Hi, {userName}
         </h2>
-        <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-blue-600">
+        <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-[#0896EF]">
           Welcome to TIS-News
         </h1>
       </div>
@@ -39,20 +39,23 @@ export default function AppNavbar({
       <div className="relative">
         {/* Desktop View */}
         <div className="hidden sm:flex items-center space-x-4">
-          <button className="hover:text-zinc-600 transition">
+          <button className="hover:text-[#0896EF] cursor-pointer transition">
             <Mail size={24} />
           </button>
-          <button className="hover:text-zinc-600 transition">
+          <button className="hover:text-[#0896EF] cursor-pointer transition ">
             <Bell size={24} />
           </button>
-          <Link href={"/"} className="hover:text-zinc-600 transition">
+          <Link
+            href={"/"}
+            className="hover:text-[#0896EF] cursor-pointer transition"
+          >
             <FaHome size={24} />
           </Link>
           {userImage && (
             <div className="relative">
               <Image
                 onClick={() => setShowDropdown(!showDropdown)}
-                src={userImage}
+                src={userImage || '/default-user.png'}
                 alt="User"
                 width={32}
                 height={32}

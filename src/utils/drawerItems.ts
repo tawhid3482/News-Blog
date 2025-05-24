@@ -5,7 +5,7 @@ import { IoKey } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
 import { TbUsersGroup } from "react-icons/tb";
 import { BsFillPostcardHeartFill } from "react-icons/bs";
-// import { MdRateReview } from "react-icons/md";
+import { MdRateReview } from "react-icons/md";
 import { MdPostAdd } from "react-icons/md";
 import { TbCategoryPlus } from "react-icons/tb";
 import { SiGooglecampaignmanager360 } from "react-icons/si";
@@ -55,7 +55,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: FaPersonChalkboard,
         },
         {
-          title: "Mange Author",
+          title: "Manage Author",
           path: `${role}/manage-author`,
           icon: FaUsers,
         },
@@ -65,7 +65,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: FaPersonChalkboard,
         },
         {
-          title: "Mange Editor",
+          title: "Manage Editor",
           path: `${role}/manage-editor`,
           icon: FaUsers,
         },
@@ -75,8 +75,8 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: TbUsersGroup,
         },
         {
-          title: "Add Post",
-          path: `${role}/add-post`,
+          title: "Create Post",
+          path: `${role}/create-post`,
           icon: MdPostAdd,
         },
         {
@@ -85,8 +85,8 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: BsFillPostcardHeartFill,
         },
         {
-          title: "Add Category",
-          path: `${role}/add-category`,
+          title: "Create Category",
+          path: `${role}/create-category`,
           icon: TbCategoryPlus,
         },
         {
@@ -140,8 +140,8 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: TbUsersGroup,
         },
         {
-          title: "Add Post",
-          path: `${role}/add-post`,
+          title: "Create Post",
+          path: `${role}/create-post`,
           icon: MdPostAdd,
         },
         {
@@ -150,15 +150,11 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: BsFillPostcardHeartFill,
         },
         {
-          title: "Add Category",
-          path: `${role}/add-category`,
+          title: "Category",
+          path: `${role}/category`,
           icon: TbCategoryPlus,
-        },
-        {
-          title: "Manage Categories",
-          path: `${role}/manage-categories`,
-          icon: SiGooglecampaignmanager360,
         }
+      
       );
       break;
     case USER_ROLE.AUTHOR:
@@ -169,18 +165,18 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: MdDashboard,
         },
         {
-          title: "Add Post",
-          path: `${role}/add-post`,
+          title: "Create Post",
+          path: `${role}/create-post`,
           icon: MdPostAdd,
         },
         {
-          title: "Manage Post",
-          path: `${role}/manage-posts`,
+          title: "My Post",
+          path: `${role}/my-posts`,
           icon: BsFillPostcardHeartFill,
         },
         {
-          title: "Add Category",
-          path: `${role}/add-category`,
+          title: "Create Category",
+          path: `${role}/create-category`,
           icon: TbCategoryPlus,
         },
         {
@@ -206,15 +202,27 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           title: "Manage Categories",
           path: `${role}/manage-categories`,
           icon: SiGooglecampaignmanager360,
+        },
+        {
+          title: "Manage tags",
+          path: `${role}/manage-tags`,
+          icon: SiGooglecampaignmanager360,
         }
       );
       break;
     case USER_ROLE.USER:
-      roleMenus.push({
-        title: "Dashboard",
-        path: `${role}`,
-        icon: MdDashboard,
-      });
+      roleMenus.push(
+        {
+          title: "Dashboard",
+          path: `${role}`,
+          icon: MdDashboard,
+        },
+        {
+          title: "Review",
+          path: `${role}/review`,
+          icon: MdRateReview,
+        }
+      );
       break;
 
     default:
