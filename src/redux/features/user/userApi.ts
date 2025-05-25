@@ -19,12 +19,15 @@ const UserApi = baseApi.injectEndpoints({
     }),
 
     updateMYProfile: builder.mutation({
-      query: (formData) => ({
-        url: "/user/update-my-profile",
-        method: "PATCH",
-        body: formData,
-      }),
-      invalidatesTags: [tagTypes.user]
+      query: (data) => {
+        return {
+          url: "/user/update-my-profile",
+          method: "PATCH",
+          data,
+          contentType: "multipart/form-data",
+        };
+      },
+      invalidatesTags: [tagTypes.user],
     }),
   }),
 });

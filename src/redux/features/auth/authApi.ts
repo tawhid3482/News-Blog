@@ -1,3 +1,4 @@
+import { tagTypes } from "@/redux/tag-types";
 import { baseApi } from "../../api/baseApi";
 
 const authApi = baseApi.injectEndpoints({
@@ -28,22 +29,32 @@ const authApi = baseApi.injectEndpoints({
         url: "/users",
         method: "GET",
       }),
-      providesTags: ["users"],
+      providesTags: [tagTypes.user],
     }),
-    getUserByEmail: builder.query({
-      query: (email: string | undefined) => ({
-        url: `/auth/users/${email}`,
-        method: "GET",
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: `/auth/change-password`,
+        method: "POST",
+        contentType: "application/json",
+        data: data,
       }),
-      providesTags: ["users"],
+      invalidatesTags: [tagTypes.user],
     }),
-    updateUser: builder.mutation({
-      query: ({ email, payload }) => ({
-        url: `/users/${email}`,
-        method: "PATCH",
-        body: payload,
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: `/auth/forgot-password`,
+        method: "POST",
+        data: data,
       }),
-      invalidatesTags: ["users"],
+      invalidatesTags: [tagTypes.user],
+    }),
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: `/auth/reset-password`,
+        method: "POST",
+        data: data,
+      }),
+      invalidatesTags: [tagTypes.user],
     }),
   }),
 });
@@ -52,7 +63,8 @@ export const {
   useLoginMutation,
   useSignupMutation,
   useGetAllUserQuery,
-  useGetUserByEmailQuery,
-  useUpdateUserMutation,
-  useSignupWithSocialMutation
+  useSignupWithSocialMutation,
+  useChangePasswordMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation
 } = authApi;

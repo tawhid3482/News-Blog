@@ -9,6 +9,7 @@ import Forms from "@/components/Forms/Forms";
 import NInput from "@/components/Forms/NInput";
 import NSelect from "@/components/Forms/NSelect";
 import { useUpdateMYProfileMutation } from "@/redux/features/user/userApi";
+import { FieldValues } from "react-hook-form";
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -16,10 +17,8 @@ const profileSchema = z.object({
   gender: z.enum(["MALE", "FEMALE", "OTHER"], {
     required_error: "Gender is required",
   }),
-  profilePhoto: z.any().optional(),
 });
 
-type TProfileSchema = z.infer<typeof profileSchema>;
 
 const UpdateProfileModal = ({
   profile,
@@ -30,15 +29,8 @@ const UpdateProfileModal = ({
 }) => {
   const [updateMYProfile, { isLoading }] = useUpdateMYProfileMutation();
 
-  const handleProfile = async (data: TProfileSchema) => {
+  const handleProfile = async (data: FieldValues) => {
     const formData = new FormData();
-
-    // Append file if it exists
-    if (data.profilePhoto && data.profilePhoto instanceof File) {
-      formData.append("file", data.profilePhoto);
-    }
-
-    // Append other fields as JSON
     const profileDataToSend = {
       name: data.name,
       email: data.email,
@@ -94,11 +86,10 @@ const UpdateProfileModal = ({
               { label: "Other", value: "OTHER" },
             ]}
           />
-          <NInput name="profilePhoto" label="Profile Photo" type="file" />
 
           <button
             type="submit"
-            className="bg-blue-600 w-full py-2 text-white rounded-lg hover:bg-blue-700 transition"
+            className="bg-[#0896EF] w-full py-2 text-white rounded-lg hover:bg-blue-700 transition"
             disabled={isLoading}
           >
             {isLoading ? "Updating..." : "Save Changes"}

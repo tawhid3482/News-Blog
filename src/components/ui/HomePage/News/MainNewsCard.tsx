@@ -80,7 +80,9 @@ const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
   const handleReact = async (type: string) => {
     if (reactionLoading) return;
     try {
-      await createReaction({ postId: mainNews.id, type }).unwrap();
+    const res =  await createReaction({ postId: mainNews.id, type }).unwrap();
+    console.log(res)
+    // if(res.)
       toast.success(`${reactionEmojiMap[type]} reacted!`);
     } catch (error) {
       console.error("Failed to react:", error);
