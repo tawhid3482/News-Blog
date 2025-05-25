@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
 import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
-import { useAppSelector } from "@/redux/hooks";
+import { getUserInfo } from "@/services/auth.services";
 // import SlugSkeleton from "../../Skeleton/SlugSkeleton";
 
 const reactionEmojiMap: Record<string, string> = {
@@ -34,7 +33,7 @@ const countReactions = (reactions: { type: string }[]) => {
 const Slug = ({ newsItem }: { newsItem: any }) => {
   
 
-  const user = useAppSelector(selectCurrentUser);
+  const user = getUserInfo();
 
   const [createReaction, { isLoading: reactionLoading }] =
     useCreateReactionMutation();

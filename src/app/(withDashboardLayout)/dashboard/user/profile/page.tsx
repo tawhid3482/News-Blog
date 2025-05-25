@@ -105,7 +105,7 @@ const Profile = () => {
                   {
                     label: "🔐 Password Change",
                     value: needPasswordChange
-                      ? "✅ Required"
+                      ? " Required"
                       : "❌ Not Required",
                   },
                   {

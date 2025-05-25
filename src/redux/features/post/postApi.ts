@@ -1,14 +1,19 @@
 import { baseApi } from "@/redux/api/baseApi";
+import { tagTypes } from "@/redux/tag-types";
+
 
 const postApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createPost: builder.mutation({
-      query: (data) => ({
-        url: "/post/create-post",
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["news"],
+      query: (data) => {
+        return {
+          url: "/post/create-post",
+          method: "POST",
+          data,
+          contentType: "multipart/form-data",
+        };
+      },
+      invalidatesTags: [tagTypes.news],
     }),
 
     getAllPost: builder.query({
@@ -19,7 +24,7 @@ const postApi = baseApi.injectEndpoints({
           params: searchTerm ? { searchTerm } : {},
         };
       },
-      providesTags: ["news"],
+      providesTags: [tagTypes.news],
     }),
   }),
 });
