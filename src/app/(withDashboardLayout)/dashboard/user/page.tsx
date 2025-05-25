@@ -18,8 +18,18 @@ const reactionEmojis: Record<string, string> = {
 };
 
 export default function UserDashboard() {
-  const { data: user, isLoading } = useGetSingleUserQuery({});
-  const { data: stats, isLoading: loadingStats } = useGetUserStatsQuery({});
+  const { data: user, isLoading } = useGetSingleUserQuery(
+    {},
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+  const { data: stats, isLoading: loadingStats } = useGetUserStatsQuery(
+    {},
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   if (isLoading || !user || loadingStats || !stats) {
     return (
@@ -88,21 +98,24 @@ export default function UserDashboard() {
           {stats.lastReview ? (
             <>
               <h4 className="text-lg font-semibold mb-2">Your Last Review</h4>
-              <p className="text-gray-800 mb-4 text-lg">{stats.lastReview.content}</p>
-              <p className="text-gray-800 mb-4 text-lg ">You given: <span className="ml-1">{stats.lastReview.rating} ⭐</span></p>
+              <p className="text-gray-800 mb-4 text-lg">
+                {stats.lastReview.content}
+              </p>
+              <p className="text-gray-800 mb-4 text-lg ">
+                You given:{" "}
+                <span className="ml-1">{stats.lastReview.rating} ⭐</span>
+              </p>
               <p className="text-gray-500 text-sm">
                 <strong>Date:</strong>{" "}
                 {new Date(stats.lastReview.createdAt).toLocaleString()}
               </p>
             </>
           ) : (
-          <Link href={'/dashboard/review'}>
-            <button
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-            >
-              Add a Review
-            </button>
-          </Link>
+            <Link href={"/dashboard/user/review"}>
+              <button className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                Add a Review
+              </button>
+            </Link>
           )}
         </div>
       </div>

@@ -26,6 +26,7 @@ const ReviewPage = () => {
       const res = await createReview(payload).unwrap();
 
       if (res?.id) {
+        router.refresh()
         router.push("/dashboard/user");
         toast.success("Review submitted successfully!");
       } else {

@@ -15,6 +15,7 @@ import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi
 import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
 import toast from "react-hot-toast";
 import { getUserInfo } from "@/services/auth.services";
+import { useRouter } from "next/navigation";
 
 const reactionEmojiMap: Record<string, string> = {
   LIKE: "👍🏻",
@@ -40,6 +41,7 @@ const truncateWords = (text: string, wordLimit: number) => {
 };
 
 const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
+  const router = useRouter();
   const user = getUserInfo();
   const [newComment, setNewComment] = useState("");
   const [showComments, setShowComments] = useState(false);
@@ -80,10 +82,11 @@ const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
   const handleReact = async (type: string) => {
     if (reactionLoading) return;
     try {
-    const res =  await createReaction({ postId: mainNews.id, type }).unwrap();
-    console.log(res)
-    // if(res.)
-      toast.success(`${reactionEmojiMap[type]} reacted!`);
+      const res = await createReaction({ postId: mainNews.id, type }).unwrap();
+      router.refresh();
+      if (res) {
+        toast.success(`${reactionEmojiMap[type]} reacted!`);
+      }
     } catch (error) {
       console.error("Failed to react:", error);
     }
@@ -91,17 +94,17 @@ const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
 
   const handleComment = async () => {
     if (commentLoading || !newComment.trim()) return;
-    if (!user?.profilePhoto) {
-      toast.error("User information not loaded!");
-      return;
-    }
+
     try {
-      await createComment({
+      const res = await createComment({
         postId: mainNews.id,
         content: newComment,
         userImage: user.profilePhoto,
       }).unwrap();
-      toast.success("Comment posted!");
+      router.refresh();
+      if (res) {
+        toast.success(res.message);
+      }
       setNewComment("");
     } catch (error) {
       console.error("Failed to post comment:", error);

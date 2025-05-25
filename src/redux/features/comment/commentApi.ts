@@ -1,4 +1,5 @@
 import { baseApi } from "@/redux/api/baseApi";
+import { tagTypes } from "@/redux/tag-types";
 
 const commentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -6,16 +7,16 @@ const commentApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: "/comment/create-comment",
         method: "POST",
-        body: data,
+         data,
       }),
-      invalidatesTags:["news"]
+      invalidatesTags: [tagTypes.comment],
     }),
     getAllComment: builder.query({
       query: () => ({
         url: "/comment",
         method: "GET",
       }),
-      providesTags: ["comment"],
+      providesTags: [tagTypes.comment],
     }),
   }),
 });

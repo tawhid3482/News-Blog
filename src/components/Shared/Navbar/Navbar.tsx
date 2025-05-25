@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import React, {  useState } from "react";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import Link from "next/link";
-// import AuthButton from "@/components/UI/AuthButton/AuthButton";
 import Searchbar from "@/components/UI/SearchBar/Searchbar";
 import dynamic from "next/dynamic";
 

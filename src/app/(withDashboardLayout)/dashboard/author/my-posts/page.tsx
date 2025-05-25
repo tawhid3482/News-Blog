@@ -1,11 +1,11 @@
 import React from 'react';
 
-const EditorPage = () => {
+const page = () => {
     return (
         <div>
-            editor
+            aaaa
         </div>
     );
 };
 
-export default EditorPage;
+export default page;

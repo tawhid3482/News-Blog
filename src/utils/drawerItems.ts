@@ -178,11 +178,6 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           title: "Create Category",
           path: `${role}/create-category`,
           icon: TbCategoryPlus,
-        },
-        {
-          title: "Manage Categories",
-          path: `${role}/manage-categories`,
-          icon: SiGooglecampaignmanager360,
         }
       );
       break;
