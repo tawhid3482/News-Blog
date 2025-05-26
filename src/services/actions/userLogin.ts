@@ -4,7 +4,6 @@ import { FieldValues } from 'react-hook-form';
 // import setAccessToken from './setAccessToken';
 
 export const userLogin = async (data: FieldValues) => {
-  console.log(data);
   const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
     method: "POST",
     headers: {

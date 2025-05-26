@@ -1,7 +1,6 @@
 import { baseApi } from "@/redux/api/baseApi";
 import { tagTypes } from "@/redux/tag-types";
 
-
 const postApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createPost: builder.mutation({
@@ -16,17 +15,51 @@ const postApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.news],
     }),
 
-    getAllPost: builder.query({
-      query: (searchTerm: string) => {
+    getAllMyPost: builder.query({
+      query: () => ({
+        url: "/post/my-posts",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.news],
+    }),
+
+     updateNews: builder.mutation({
+      query: ({data,postId}) => {
         return {
-          url: "/post",
-          method: "GET",
-          params: searchTerm ? { searchTerm } : {},
+          url: `/post/${postId}/update-news`,
+          method: "PATCH",
+          data,
+          contentType: "multipart/form-data",
         };
       },
-      providesTags: [tagTypes.news],
+      invalidatesTags: [tagTypes.news],
+    }),
+
+
+
+
+    // 👇 View Tracking API
+    trackPostView: builder.mutation({
+      query: (postId: string) => ({
+        url: `/post/${postId}/view`,
+        method: "POST",
+      }),
+    }),
+
+    updateReadingTime: builder.mutation({
+      query: ({ postId, timeSpent }) => ({
+        url: `/post/${postId}/reading-time`,
+        method: "PATCH",
+        body: { timeSpent },
+      }),
     }),
   }),
 });
 
-export const { useCreatePostMutation, useGetAllPostQuery } = postApi;
+export const {
+  useCreatePostMutation,
+  useGetAllMyPostQuery,
+  useTrackPostViewMutation,
+  useUpdateReadingTimeMutation,
+  useUpdateNewsMutation
+} = postApi;

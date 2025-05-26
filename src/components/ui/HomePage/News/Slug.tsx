@@ -1,14 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
-import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { getUserInfo } from "@/services/auth.services";
-// import SlugSkeleton from "../../Skeleton/SlugSkeleton";
+import {
+  useTrackPostViewMutation,
+  // useUpdateReadingTimeMutation, ❌ Remove this
+} from "@/redux/features/post/postApi";
+import { useCreateReactionMutation } from "@/redux/features/reaction/reactionApi";
+import { useCreateCommentMutation } from "@/redux/features/comment/commentApi";
+import { useRouter } from "next/navigation";
 
 const reactionEmojiMap: Record<string, string> = {
   LIKE: "👍🏻",
@@ -30,11 +35,11 @@ const countReactions = (reactions: { type: string }[]) => {
     return acc;
   }, {});
 };
+
 const Slug = ({ newsItem }: { newsItem: any }) => {
-  
-
   const user = getUserInfo();
-
+  const router = useRouter();
+  const [trackPostView] = useTrackPostViewMutation();
   const [createReaction, { isLoading: reactionLoading }] =
     useCreateReactionMutation();
   const [createComment, { isLoading: commentLoading }] =
@@ -44,26 +49,63 @@ const Slug = ({ newsItem }: { newsItem: any }) => {
   const [showComments, setShowComments] = useState(false);
   const [showAllReactions, setShowAllReactions] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
+
   useEffect(() => {
     setHasMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (hasMounted && newsItem?.id) {
+      trackPostView(newsItem.id);
+    }
+  }, [hasMounted, newsItem?.id, trackPostView]);
+
+  // ✅ Updated Reading Time Tracker with sendBeacon
+  useEffect(() => {
+    if (!hasMounted || !newsItem?.id) return;
+
+    const startTime = Date.now();
+
+    const handleBeforeUnload = () => {
+      const endTime = Date.now();
+      const timeSpentInSeconds = Math.floor((endTime - startTime) / 1000);
+      if (timeSpentInSeconds <= 0) return;
+
+      const data = {
+        timeSpent: timeSpentInSeconds,
+        userId: user?.userId,
+      };
+
+      const blob = new Blob([JSON.stringify(data)], {
+        type: "application/json",
+      });
+
+      // ✅ Make sure this matches your actual backend route (use absolute path if needed)
+      navigator.sendBeacon(
+        `http://localhost:5000/api/s1/post/${newsItem.id}/reading-time`,
+        blob
+      );
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      handleBeforeUnload(); // flush on component unmount too
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [hasMounted, newsItem?.id]);
+
   if (!hasMounted) return null;
-//   if (!newsItem || newsItem?.length === 0) return <SlugSkeleton />;
 
   const mainReactions = countReactions(newsItem?.reactions || []);
   const totalReactions = Object.values(mainReactions).reduce(
     (acc, count) => acc + count,
     0
   );
-
   const totalComments = newsItem?.comments?.length || 0;
 
   const userReaction =
     newsItem.reactions?.find((r: any) => r.userId === user?.userId)?.type ||
     null;
-
-
 
   const reactionCounts = reactions.map((r) => ({
     ...r,
@@ -72,10 +114,12 @@ const Slug = ({ newsItem }: { newsItem: any }) => {
 
   const handleReaction = async (type: string) => {
     if (reactionLoading) return;
-
     try {
-      await createReaction({ postId: newsItem.id, type }).unwrap();
-      toast.success(`${reactionEmojiMap[type]} reacted!`);
+      const res = await createReaction({ postId: newsItem.id, type }).unwrap();
+      if (res) {
+        toast.success(`${reactionEmojiMap[type]} reacted!`);
+        router.refresh();
+      }
     } catch (error) {
       console.error("Failed to react:", error);
     }
@@ -84,24 +128,23 @@ const Slug = ({ newsItem }: { newsItem: any }) => {
   const handleCommentSubmit = async () => {
     if (commentLoading || !newComment.trim()) return;
 
-    if (!user?.profilePhoto) {
-      toast.error("User information not loaded!");
-      return;
-    }
-
     try {
-      await createComment({
+      const res = await createComment({
         postId: newsItem.id,
         content: newComment,
         userImage: user?.profilePhoto,
       });
-      toast.success("Comment posted!");
+      if (res) {
+        toast.success("Comment posted!");
+        router.refresh();
+      }
       setNewComment("");
     } catch (error) {
       console.error("Failed to post comment:", error);
       toast.error("Failed to post comment.");
     }
   };
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-10 h-full">
       <h1 className="text-4xl font-bold mb-2">{newsItem.title}</h1>

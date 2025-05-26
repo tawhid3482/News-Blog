@@ -62,7 +62,7 @@ const CategoryModal = ({ onClose, existingCategories }: { onClose: () => void; e
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded bg-blue-600 text-white"
+              className="px-4 py-2 rounded bg-[#0896EF] text-white"
             >
               Create
             </button>

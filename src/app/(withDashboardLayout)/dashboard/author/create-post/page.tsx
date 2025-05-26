@@ -34,8 +34,8 @@ const CreatePost = () => {
       setIsSubmitting(true);
       const res = await createPost(formData).unwrap();
       if (res) {
-        toast.success("News Created");
-        reset(); // ✅ Reset form after success
+        toast.success("News Created successfully");
+        reset(); 
       }
     } catch (error) {
       console.error("Post creation failed:", error);
@@ -60,7 +60,6 @@ const CreatePost = () => {
           tags: "",
           categoryId: "",
           file: "",
-          
         }}
       >
         <NInput name="title" label="Title" required />
@@ -82,7 +81,9 @@ const CreatePost = () => {
           type="submit"
           disabled={isSubmitting}
           className={`mt-4 px-6 py-2 w-full rounded text-white transition cursor-pointer ${
-            isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-[#0896EF] hover:bg-blue-700 "
+            isSubmitting
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[#0896EF] hover:bg-blue-700 "
           }`}
         >
           {isSubmitting ? "Submitting..." : "Submit"}
