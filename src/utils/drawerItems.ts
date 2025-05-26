@@ -105,34 +105,14 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: MdDashboard,
         },
         {
-          title: "Create Admin",
-          path: `${role}/create-admin`,
+          title: "Create Super User",
+          path: `${role}/create-super-user`,
           icon: GrUserAdmin,
         },
         {
-          title: "Manage Admin",
-          path: `${role}/manage-admin`,
+          title: "Manage Super User",
+          path: `${role}/manage-super-user`,
           icon: RiAdminLine,
-        },
-        {
-          title: "Create Author",
-          path: `${role}/create-author`,
-          icon: FaPersonChalkboard,
-        },
-        {
-          title: "Manage Author",
-          path: `${role}/manage-author`,
-          icon: FaUsers,
-        },
-        {
-          title: "Create Editor",
-          path: `${role}/create-editor`,
-          icon: FaPersonChalkboard,
-        },
-        {
-          title: "Manage Editor",
-          path: `${role}/manage-editor`,
-          icon: FaUsers,
         },
         {
           title: "Manage Users",

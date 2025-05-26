@@ -1,19 +1,44 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import Forms from "@/components/Forms/Forms";
 import ImgInput from "@/components/Forms/ImgInput";
 import NInput from "@/components/Forms/NInput";
 import NSelect from "@/components/Forms/NSelect";
 import { useGetAllCategoryQuery } from "@/redux/features/category/categoryApi";
-import { useUpdateNewsMutation } from "@/redux/features/post/postApi";
-import React, { useState } from "react";
+import {
+  useGetSinglePostQuery,
+  useUpdateNewsMutation,
+} from "@/redux/features/post/postApi";
+import React, { use, useState } from "react";
 import toast from "react-hot-toast";
 
-const page = ({ params }: { params: { id: string } }) => {
-  const { id } = params;
-  const [updateNews]=useUpdateNewsMutation()
-  const { data: categories, isLoading } = useGetAllCategoryQuery({});
+const Page = ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = use(params);
+
+  // Fetch single news post
+  const { data: news, isLoading: isNewsLoading } = useGetSinglePostQuery({
+    postId: id,
+  });
+
+  // Fetch all categories
+  const { data: categories, isLoading: isCategoryLoading } =
+    useGetAllCategoryQuery({});
+
+  const [updateNews] = useUpdateNewsMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handlePost = async (data: any, reset: () => void) => {
+  // If data is loading
+  if (isNewsLoading || isCategoryLoading) {
+    return (
+      <div className="text-center py-10 text-gray-500">
+        Loading post and categories...
+      </div>
+    );
+  }
+
+  // Handle post update
+  const handlePost = async (data: any) => {
     const formData = new FormData();
     const file = data.image?.[0];
 
@@ -31,14 +56,14 @@ const page = ({ params }: { params: { id: string } }) => {
 
     try {
       setIsSubmitting(true);
-      //   const res = await createPost(formData).unwrap();
+      const res = await updateNews({ data: formData, postId: id }).unwrap();
+
       if (res) {
-        toast.success("News Created successfully");
-        
+        toast.success("News updated successfully");
       }
     } catch (error) {
-      console.error("Post creation failed:", error);
-      toast.error("Failed to create news");
+      console.error("News update failed:", error);
+      toast.error("Failed to update news");
     } finally {
       setIsSubmitting(false);
     }
@@ -51,12 +76,12 @@ const page = ({ params }: { params: { id: string } }) => {
         <Forms
           onSubmit={handlePost}
           defaultValues={{
-            title: "",
-            slug: "",
-            summary: "",
-            content: "",
-            tags: "",
-            categoryId: "",
+            title: news?.title || "",
+            slug: news?.slug || "",
+            summary: news?.summary || "",
+            content: news?.content || "",
+            tags: news?.tags?.map((tag: any) => tag.name).join(", ") || "",
+            categoryId: news?.categoryId || "",
             file: "",
           }}
         >
@@ -65,26 +90,31 @@ const page = ({ params }: { params: { id: string } }) => {
           <NInput name="summary" label="Summary" required />
           <NInput name="content" label="Content" type="textarea" required />
           <NInput name="tags" label="Tags (comma-separated)" required />
+
           <NSelect
             name="categoryId"
             label="Category"
             required
-            options={categories.map((cat: any) => ({
-              label: cat.name,
-              value: cat.id,
-            }))}
+            options={
+              categories?.map((cat: any) => ({
+                label: cat.name,
+                value: cat.id,
+              })) || []
+            }
           />
-          <ImgInput name="image" label="Post Image" required />
+
+          <ImgInput name="image" label="Post Image (optional)" />
+
           <button
             type="submit"
             disabled={isSubmitting}
             className={`mt-4 px-6 py-2 w-full rounded text-white transition cursor-pointer ${
               isSubmitting
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-[#0896EF] hover:bg-blue-700 "
+                : "bg-[#0896EF] hover:bg-blue-700"
             }`}
           >
-            {isSubmitting ? "Submitting..." : "Submit"}
+            {isSubmitting ? "Submitting..." : "Update News"}
           </button>
         </Forms>
       </div>
@@ -92,4 +122,4 @@ const page = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default page;
+export default Page;

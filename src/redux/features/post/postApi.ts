@@ -23,8 +23,16 @@ const postApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.news],
     }),
 
-     updateNews: builder.mutation({
-      query: ({data,postId}) => {
+    getSinglePost: builder.query({
+      query: ({ postId }) => ({
+        url: `/post/${postId}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.news],
+    }),
+
+    updateNews: builder.mutation({
+      query: ({ data, postId }) => {
         return {
           url: `/post/${postId}/update-news`,
           method: "PATCH",
@@ -34,10 +42,6 @@ const postApi = baseApi.injectEndpoints({
       },
       invalidatesTags: [tagTypes.news],
     }),
-
-
-
-
     // 👇 View Tracking API
     trackPostView: builder.mutation({
       query: (postId: string) => ({
@@ -61,5 +65,6 @@ export const {
   useGetAllMyPostQuery,
   useTrackPostViewMutation,
   useUpdateReadingTimeMutation,
-  useUpdateNewsMutation
+  useUpdateNewsMutation,
+  useGetSinglePostQuery,
 } = postApi;

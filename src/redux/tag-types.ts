@@ -8,6 +8,7 @@ export enum tagTypes {
   category="category",
   tag="tag",
   author="author",
+  superUser="superUser",
 }
 
-export const tagTypesList = [tagTypes.admin, tagTypes.user, tagTypes.review, tagTypes.category, tagTypes.reaction, tagTypes.news,tagTypes.tag,tagTypes.comment, tagTypes.author];
+export const tagTypesList = [tagTypes.admin,tagTypes.superUser, tagTypes.user, tagTypes.review, tagTypes.category, tagTypes.reaction, tagTypes.news,tagTypes.tag,tagTypes.comment, tagTypes.author];
