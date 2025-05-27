@@ -58,6 +58,17 @@ const UserApi = baseApi.injectEndpoints({
       },
       invalidatesTags: [tagTypes.user],
     }),
+
+    updateUserStatus: builder.mutation({
+      query: ({ id, data }) => {
+        return {
+          url: `/user/${id}/update-status`,
+          method: "PATCH",
+          data,
+        };
+      },
+      invalidatesTags: [tagTypes.user],
+    }),
   }),
 });
 
@@ -68,4 +79,5 @@ export const {
   useGetAllUserQuery,
   useGetAllSuperUserQuery,
   useUpdateSuperUserMutation,
+  useUpdateUserStatusMutation,
 } = UserApi;

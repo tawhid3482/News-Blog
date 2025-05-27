@@ -1,28 +1,49 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useGetAllUserQuery } from "@/redux/features/user/userApi";
+import {
+  useGetAllUserQuery,
+  useUpdateUserStatusMutation,
+} from "@/redux/features/user/userApi";
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 
 const statusOptions = ["ACTIVE", "BLOCKED", "DELETED"];
 
 const ManageUsers = () => {
   const { data: users, isLoading } = useGetAllUserQuery({});
+  const [updateUserStatus, { isLoading: isUpdating }] = useUpdateUserStatusMutation();
   const [selectedStatus, setSelectedStatus] = useState<Record<string, string>>({});
 
   if (isLoading) {
-    return <div className="text-center py-10 text-lg font-semibold">Loading...</div>;
+    return (
+      <div className="text-center py-10 text-lg font-semibold">Loading...</div>
+    );
   }
 
   const handleStatusChange = (id: string, status: string) => {
     setSelectedStatus((prev) => ({ ...prev, [id]: status }));
   };
 
-  const handleUpdateStatus = (id: string) => {
+  const handleUpdateStatus = async (id: string) => {
     const newStatus = selectedStatus[id];
-    if (newStatus) {
-      console.log(`Updating user ${id} status to ${newStatus}`);
-      // Call API mutation here
+    if (!newStatus) return;
+
+    try {
+      await updateUserStatus({
+        id,
+        data: { status: newStatus },
+      }).unwrap();
+
+      toast.success(`User status updated to ${newStatus}`);
+      setSelectedStatus((prev) => {
+        const updated = { ...prev };
+        delete updated[id];
+        return updated;
+      });
+    } catch (error: any) {
+      console.error("Error updating status:", error);
+      toast.error(error?.message || "Failed to update status");
     }
   };
 
@@ -49,7 +70,9 @@ const ManageUsers = () => {
                 <td className="px-6 py-3">{user.email}</td>
                 <td className="px-6 py-3 capitalize">{user.gender}</td>
                 <td className="px-6 py-3">{user.role}</td>
-                <td className="px-6 py-3 font-medium text-blue-600">{user.status}</td>
+                <td className="px-6 py-3 font-medium text-blue-600">
+                  {user.status}
+                </td>
                 <td className="px-6 py-3">
                   <select
                     className="border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -67,15 +90,17 @@ const ManageUsers = () => {
                 <td className="px-6 py-3 text-center">
                   <button
                     onClick={() => handleUpdateStatus(user.id)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded"
-                    disabled={!selectedStatus[user.id]}
+                    className={`bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded ${
+                      !selectedStatus[user.id] ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                    disabled={!selectedStatus[user.id] || isUpdating}
                   >
-                    Update
+                    {isUpdating ? "Updating..." : "Update"}
                   </button>
                 </td>
               </tr>
             ))}
-            {users?.data?.length === 0 && (
+            {users?.length === 0 && (
               <tr>
                 <td colSpan={7} className="text-center py-6 text-gray-500">
                   No users found.
