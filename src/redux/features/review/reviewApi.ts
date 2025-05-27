@@ -21,6 +21,7 @@ const reviewApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.review],
     }),
+
     getMyReview: builder.query({
       query: () => ({
         url: "/review/my-review",
@@ -38,7 +39,6 @@ const reviewApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.review],
     }),
-
     // ✅ Delete Review (Soft delete)
     deleteReview: builder.mutation({
       query: (id: string) => ({
@@ -46,6 +46,17 @@ const reviewApi = baseApi.injectEndpoints({
         method: "DELETE",
         body: { id },
       }),
+      invalidatesTags: [tagTypes.review],
+    }),
+    // reviewApi.ts
+    updateReviewStatus: builder.mutation({
+      query: ({ id, data }) => {
+        return {
+          url: `/review/${id}/update-review-status`,
+          method: "PATCH",
+          data,
+        };
+      },
       invalidatesTags: [tagTypes.review],
     }),
   }),
@@ -57,4 +68,5 @@ export const {
   useGetMyReviewQuery,
   useUpdateReviewMutation,
   useDeleteReviewMutation,
+  useUpdateReviewStatusMutation,
 } = reviewApi;

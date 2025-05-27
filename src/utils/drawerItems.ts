@@ -13,6 +13,7 @@ import { GrUserAdmin } from "react-icons/gr";
 import { RiAdminLine } from "react-icons/ri";
 import { FaPersonChalkboard } from "react-icons/fa6";
 import { FaUsers } from "react-icons/fa";
+import { GoCodeReview } from "react-icons/go";
 
 //icons
 export const drawerItems = (role: UserRole): DrawerItem[] => {
@@ -179,9 +180,9 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: SiGooglecampaignmanager360,
         },
         {
-          title: "Manage tags",
-          path: `${role}/manage-tags`,
-          icon: SiGooglecampaignmanager360,
+          title: "Manage reviews",
+          path: `${role}/manage-reviews`,
+          icon: GoCodeReview,
         }
       );
       break;

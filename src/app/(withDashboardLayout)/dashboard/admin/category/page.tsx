@@ -7,7 +7,12 @@ import CategoryModal from "./components/categoryModal";
 const CategoryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { data: categories = [], isLoading } = useGetAllCategoryQuery({});
+  const { data: categories = [], isLoading } = useGetAllCategoryQuery(
+    {},
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const filteredCategories = categories.filter((cat: any) =>
     cat.name.toLowerCase().includes(search.toLowerCase())
@@ -54,7 +59,7 @@ const CategoryPage = () => {
       {isModalOpen && (
         <CategoryModal
           onClose={() => setIsModalOpen(false)}
-          existingCategories={categories.map((cat:any) => cat.name)}
+          existingCategories={categories.map((cat: any) => cat.name)}
         />
       )}
     </div>
