@@ -10,6 +10,36 @@ const UserApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.user],
     }),
+    getAllUser: builder.query({
+      query: () => ({
+        url: "/user",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.user],
+    }),
+    getAllSuperUser: builder.query({
+      query: () => ({
+        url: "/user/super-users",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.user],
+    }),
+
+    updateSuperUser: builder.mutation({
+      query: ({
+        id,
+        field,
+      }: {
+        id: string;
+        field: "isActive" | "isVerified" | "isDeleted";
+      }) => ({
+        url: `/user/update-super-user/${id}`,
+        method: "PATCH",
+        data: { field },
+      }),
+      invalidatesTags: [tagTypes.user],
+    }),
+
     getUserStats: builder.query({
       query: () => ({
         url: "/user/stats",
@@ -17,7 +47,6 @@ const UserApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.user],
     }),
-
     updateMYProfile: builder.mutation({
       query: (data) => {
         return {
@@ -36,4 +65,7 @@ export const {
   useGetSingleUserQuery,
   useGetUserStatsQuery,
   useUpdateMYProfileMutation,
+  useGetAllUserQuery,
+  useGetAllSuperUserQuery,
+  useUpdateSuperUserMutation,
 } = UserApi;
