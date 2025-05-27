@@ -17,7 +17,14 @@ const postApi = baseApi.injectEndpoints({
 
     getAllMyPost: builder.query({
       query: () => ({
-        url: "/post/my-posts",
+        url: "/post",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.news],
+    }),
+    getAllPost: builder.query({
+      query: () => ({
+        url: "/post/al-posts",
         method: "GET",
       }),
       providesTags: [tagTypes.news],
@@ -48,6 +55,7 @@ const postApi = baseApi.injectEndpoints({
         url: `/post/${postId}/view`,
         method: "POST",
       }),
+      invalidatesTags: [tagTypes.news],
     }),
 
     updateReadingTime: builder.mutation({
@@ -56,6 +64,16 @@ const postApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: { timeSpent },
       }),
+      invalidatesTags: [tagTypes.news],
+    }),
+
+    manageNews: builder.mutation({
+      query: ({ postId, data }) => ({
+        url: `/post/${postId}/manage-news`,
+        method: "PATCH",
+        data,
+      }),
+      invalidatesTags: [tagTypes.news],
     }),
   }),
 });
@@ -67,4 +85,6 @@ export const {
   useUpdateReadingTimeMutation,
   useUpdateNewsMutation,
   useGetSinglePostQuery,
+  useManageNewsMutation,
+  useGetAllPostQuery,
 } = postApi;
