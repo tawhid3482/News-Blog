@@ -21,7 +21,6 @@ const mainColor = "#0896EF";
 
 const AdminDash = () => {
   const { data: stats, isLoading } = useGetAdminStatsQuery({});
-  console.log(stats);
   if (isLoading) return <div className="p-6 text-center">Loading...</div>;
   if (!stats) return <div className="p-6 text-center">No data found</div>;
 

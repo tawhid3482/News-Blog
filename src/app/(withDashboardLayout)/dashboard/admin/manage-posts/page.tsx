@@ -5,12 +5,12 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import {
-  useGetAllMyPostQuery,
+  useGetAllPostQuery,
   useManageNewsMutation,
 } from '@/redux/features/post/postApi';
 
 const PostTable = () => {
-  const { data, isLoading } = useGetAllMyPostQuery({});
+  const { data, isLoading } = useGetAllPostQuery({});
   const [manageNews] = useManageNewsMutation();
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 

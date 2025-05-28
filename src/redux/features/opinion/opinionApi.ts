@@ -18,6 +18,15 @@ const opinionApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.opinion],
     }),
+
+    getAllOpinionForSuperUser: builder.query({
+      query: () => ({
+        url: "/opinion/all-opinion",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.opinion],
+    }),
+
     getSingleOpinion: builder.query({
       query: (id: string) => ({
         url: `/opinion/${id}`,
@@ -45,14 +54,15 @@ const opinionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.opinion],
     }),
+
     updateOpinionStatus: builder.mutation({
-      query: ({ id, data }) => ({
-        url: `/opinion/${id}/update-opinion-status`,
+      query: ({ opinionId }) => ({
+        url: `/opinion/${opinionId}/update-status`,
         method: "PATCH",
-        body: data,
       }),
       invalidatesTags: [tagTypes.opinion],
     }),
+
     getAllMyOpinion: builder.query({
       query: () => ({
         url: "/opinion/my-opinions",
@@ -80,4 +90,5 @@ export const {
   useUpdateOpinionStatusMutation,
   useGetAllMyOpinionQuery,
   useGetSingleAllMyOpinionQuery,
+  useGetAllOpinionForSuperUserQuery
 } = opinionApi;

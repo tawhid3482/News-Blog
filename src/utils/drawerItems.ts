@@ -131,6 +131,11 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: BsFillPostcardHeartFill,
         },
         {
+          title: "Manage Opinion",
+          path: `${role}/manage-opinion`,
+          icon: BsFillPostcardHeartFill,
+        },
+        {
           title: "Category",
           path: `${role}/category`,
           icon: TbCategoryPlus,
