@@ -7,7 +7,7 @@ interface IFileUploadButton {
   label?: string;
   accept?: string;
   icon?: ReactElement;
-  variant?: "contained" | "text";
+  variant?: "contained" | "text"| "icon";
   onFileUpload: (file: File) => void;
 }
 

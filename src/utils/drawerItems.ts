@@ -11,8 +11,6 @@ import { TbCategoryPlus } from "react-icons/tb";
 import { SiGooglecampaignmanager360 } from "react-icons/si";
 import { GrUserAdmin } from "react-icons/gr";
 import { RiAdminLine } from "react-icons/ri";
-import { FaPersonChalkboard } from "react-icons/fa6";
-import { FaUsers } from "react-icons/fa";
 import { GoCodeReview } from "react-icons/go";
 
 //icons
@@ -35,40 +33,20 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
   switch (role) {
     case USER_ROLE.SUPER_ADMIN:
       roleMenus.push(
-        {
+          {
           title: "Dashboard",
           path: `${role}`,
           icon: MdDashboard,
         },
         {
-          title: "Create Admin",
-          path: `${role}/create-admin`,
+          title: "Create Super User",
+          path: `${role}/create-super-user`,
           icon: GrUserAdmin,
         },
         {
-          title: "Manage Admin",
-          path: `${role}/manage-admin`,
+          title: "Manage Super User",
+          path: `${role}/manage-super-user`,
           icon: RiAdminLine,
-        },
-        {
-          title: "Create Author",
-          path: `${role}/create-author`,
-          icon: FaPersonChalkboard,
-        },
-        {
-          title: "Manage Author",
-          path: `${role}/manage-author`,
-          icon: FaUsers,
-        },
-        {
-          title: "Create Editor",
-          path: `${role}/create-editor`,
-          icon: FaPersonChalkboard,
-        },
-        {
-          title: "Manage Editor",
-          path: `${role}/manage-editor`,
-          icon: FaUsers,
         },
         {
           title: "Manage Users",
@@ -86,14 +64,14 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: BsFillPostcardHeartFill,
         },
         {
-          title: "Create Category",
-          path: `${role}/create-category`,
-          icon: TbCategoryPlus,
+          title: "Manage Opinion",
+          path: `${role}/manage-opinion`,
+          icon: BsFillPostcardHeartFill,
         },
         {
-          title: "Manage Categories",
-          path: `${role}/manage-categories`,
-          icon: SiGooglecampaignmanager360,
+          title: "Category",
+          path: `${role}/category`,
+          icon: TbCategoryPlus,
         }
       );
       break;
@@ -187,6 +165,11 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
         {
           title: "Manage Post",
           path: `${role}/manage-posts`,
+          icon: BsFillPostcardHeartFill,
+        },
+        {
+          title: "Manage Opinions",
+          path: `${role}/manage-opinions`,
           icon: BsFillPostcardHeartFill,
         },
         {

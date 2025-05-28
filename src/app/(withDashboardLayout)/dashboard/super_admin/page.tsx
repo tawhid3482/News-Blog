@@ -1,10 +1,11 @@
+import AdminDash from "../admin/page";
 
-const page = () => {
+const SDashboard = () => {
   return (
     <div>
-      uper
+      <AdminDash />
     </div>
   );
 };
 
-export default page;
+export default SDashboard;

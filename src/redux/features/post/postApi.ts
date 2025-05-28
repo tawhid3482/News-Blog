@@ -30,6 +30,13 @@ const postApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.news],
     }),
+    getAllPostForSuperUser: builder.query({
+      query: () => ({
+        url: "/post/all-posts",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.news],
+    }),
 
     getSinglePost: builder.query({
       query: ({ postId }) => ({
@@ -88,4 +95,5 @@ export const {
   useGetSinglePostQuery,
   useManageNewsMutation,
   useGetAllPostQuery,
+  useGetAllPostForSuperUserQuery
 } = postApi;

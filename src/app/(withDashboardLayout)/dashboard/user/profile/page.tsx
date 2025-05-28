@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -10,19 +11,29 @@ import { format } from "date-fns";
 import { Pencil } from "lucide-react";
 import UpdateProfileModal from "./Components/UpdateProfile";
 import AutoFileUploader from "@/components/Forms/AutoFileUploader";
+import { logoutUser } from "@/services/actions/logoutUser";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: profile, isLoading } = useGetSingleUserQuery({});
   const [updateMYProfile, { isLoading: updating }] =
     useUpdateMYProfileMutation();
+  const router = useRouter();
 
-  const fileUploadHandler = (file: File) => {
+  const fileUploadHandler = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("data", JSON.stringify({}));
 
-    updateMYProfile(formData);
+    try {
+      const res = await updateMYProfile(formData).unwrap();
+      logoutUser(router);
+      toast.success("Profile Updated Successfully");
+    } catch (error) {
+      toast.error("Failed to update profile.");
+    }
   };
 
   if (isLoading) {
@@ -51,9 +62,9 @@ const Profile = () => {
                 <Image
                   src={profilePhoto}
                   alt="Profile Photo"
-                  width={160}
-                  height={160}
-                  className="rounded-full border-4 border-white shadow-xl object-cover group-hover:brightness-110 transition duration-300"
+                  width={180}
+                  height={200}
+                  className="rounded-full h-full lg:h-60 border-4 border-white shadow-xl object-cover group-hover:brightness-110 transition duration-300"
                 />
 
                 {/* Pencil + FileUploader */}
@@ -86,7 +97,9 @@ const Profile = () => {
                   <h1 className="text-4xl md:text-5xl font-bold text-gray-900 capitalize">
                     {name}
                   </h1>
-                  <p className="text-gray-600 mt-1 text-xl md:text-xl">{email}</p>
+                  <p className="text-gray-600 mt-1 text-xl md:text-xl">
+                    {email}
+                  </p>
                 </div>
 
                 <button
@@ -104,13 +117,13 @@ const Profile = () => {
                   { label: "🚻 Gender", value: gender || "Not specified" },
                   {
                     label: "🔐 Password Change",
-                    value: needPasswordChange
-                      ? " Required"
-                      : "❌ Not Required",
+                    value: needPasswordChange ? " Required" : "❌ Not Required",
                   },
                   {
                     label: "📅 Joined",
-                    value: createdAt ? format(new Date(createdAt), "PPP") : "N/A",
+                    value: createdAt
+                      ? format(new Date(createdAt), "PPP")
+                      : "N/A",
                   },
                 ].map((item, i) => (
                   <div
@@ -131,7 +144,10 @@ const Profile = () => {
 
       {/* Update Modal */}
       {isModalOpen && (
-        <UpdateProfileModal profile={profile} onClose={() => setIsModalOpen(false)} />
+        <UpdateProfileModal
+          profile={profile}
+          onClose={() => setIsModalOpen(false)}
+        />
       )}
     </>
   );

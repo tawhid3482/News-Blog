@@ -11,6 +11,7 @@ export enum tagTypes {
   superUser = "superUser",
   subscriber = "subscriber",
   opinion = "opinion",
+  editor = "editor",
 }
 
 export const tagTypesList = [
@@ -26,4 +27,5 @@ export const tagTypesList = [
   tagTypes.author,
   tagTypes.subscriber,
   tagTypes.opinion,
+  tagTypes.editor,
 ];
