@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/utils/authOptions.ts
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import FacebookProvider from "next-auth/providers/facebook";
 import axios from "axios";
 import { NextAuthOptions } from "next-auth";
-
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -26,32 +27,46 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
-  async jwt({ token, user, account }) {
-    if (account && user) {
-      try {
-        const { data } = await axios.post("http://localhost:5000/api/s1/auth/social-login", {
-          name: user.name,
-          email: user.email,
-          profilePhoto: user.image,
-          gender: "OTHER",
-          password: "pass123",
-        });
+    async jwt({ token, user, account }) {
+      if (account && user) {
+        try {
+          const { data } = await axios.post(
+            "http://localhost:5000/api/s1/auth/social-login",
+            {
+              name: user?.name,
+              email: user?.email,
+              profilePhoto: user?.image,
+              gender: "OTHER",
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
 
-        token.token = data.token; 
-        token.data = data.data; 
+          console.log("data", data);
 
-      } catch (err) {
-        console.error("JWT login error:", err);
+          // Don't overwrite token — just add new properties
+          token.accessToken = data.token;
+          token.refreshToken = data.refreshToken;
+          token.userData = data.data;
+
+          // ⚠️ Warning: storeUserInfo should only be used on **client side**
+          // Don't use this on server callback like here
+          // storeUserInfo({ accessToken: data.token });
+        } catch (err: any) {
+          console.error("JWT login error:", err.response?.data || err.message);
+        }
       }
-    }
-    return token;
-  },
+      return token;
+    },
 
-  async session({ session, token }) {
-    session.user = token.data as typeof session.user;
-    session.token = token.token as typeof session.token;
-    return session;
+    async session({ session, token }) {
+      (session as any).accessToken = token.accessToken;
+      (session as any).refreshToken = token.refreshToken;
+      session.user = token.userData as typeof session.user;
+      return session;
+    },
   },
-},
-
 };

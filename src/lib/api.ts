@@ -1,5 +1,5 @@
 export async function fetchSingleNews(slug: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}`, {
+  const res = await fetch(`${process.env.BACKEND_URL}/posts/${slug}`, {
     cache: "no-store", // SSR + fresh data
   });
   if (!res.ok) throw new Error("Failed to fetch news");

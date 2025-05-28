@@ -17,6 +17,7 @@ const authApi = baseApi.injectEndpoints({
         body: userInfo,
       }),
     }),
+    
     signupWithSocial: builder.mutation({
       query: (userInfo) => ({
         url: "/auth/social-login",

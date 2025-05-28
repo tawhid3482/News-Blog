@@ -1,27 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import NextAuth, { DefaultSession, DefaultUser, JWT } from "next-auth";
+// types/next-auth.d.ts
+import NextAuth from "next-auth";
 
 declare module "next-auth" {
   interface Session {
+    accessToken?: string;
+    refreshToken?: string;
     user: {
-      userId: string;
-      name: string;
+      id: string;
       email: string;
+      name: string;
+      profilePhoto: string;
       role: string;
-      backendToken: string;
-      profilePhoto?: string | null;
-    } & DefaultSession["user"];
+      status: string;
+      gender: string;
+      needPasswordChange: boolean;
+      createdAt: string;
+      updatedAt: string;
+    };
   }
-}
 
-declare module "next-auth/jwt" {
   interface JWT {
-    userId: string;
-    name: string;
-    email: string;
-    role: string;
-    backendToken: string;
-    profilePhoto?: string | null;
+    accessToken?: string;
+    refreshToken?: string;
+    userData?: Session["user"];
   }
 }
-

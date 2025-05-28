@@ -38,8 +38,6 @@ const SignUpPage = () => {
         storeUserInfo({ accessToken: token });
         router.push("/");
       }
-      // const user = (await verifyToken(result.token)) as TUser;
-      // dispatch(setUser({ user, token: result.token }));
       toast.success(result.message);
     } catch (error: any) {
       toast.error(error?.data?.message || "Signup failed");
