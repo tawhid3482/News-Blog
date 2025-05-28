@@ -1,7 +1,7 @@
 import Editorials from "@/components/UI/HomePage/Editorials/Editorials";
 import Hero from "@/components/UI/HomePage/HeroSection/HeroSection";
 import Newsletter from "@/components/UI/HomePage/Newsletter/Newsletter";
-import VideoNews from "@/components/UI/HomePage/VideoNews/VideoNews";
+// import VideoNews from "@/components/UI/HomePage/VideoNews/VideoNews";
 import NewFilter from "@/components/UI/HomePage/News/NewFilter";
 import NewSkeleton from "@/components/UI/Skeleton/NewsSkeleton";
 
@@ -74,7 +74,7 @@ export default async function HomePage() {
     <>
       <Hero />
       <NewFilter data={data} />
-      <VideoNews />
+      {/* <VideoNews /> */}
       <Newsletter />
       <Editorials />
     </>

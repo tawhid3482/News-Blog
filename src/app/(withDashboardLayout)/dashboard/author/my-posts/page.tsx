@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const MyPosts = () => {
-  const user = getUserInfo()
+  const user = getUserInfo();
   const { data: myNews, isLoading } = useGetAllMyPostQuery({});
   // console.log(myNews)
   if (isLoading) {
@@ -58,7 +58,9 @@ const MyPosts = () => {
               </div>
 
               {/* 🟡 Update Button */}
-              <Link href={`http://localhost:3000/dashboard/${user.role}/my-posts/update-news/${post.id}`}>
+              <Link
+                href={`/dashboard/${user.role}/my-posts/update-news/${post.id}`}
+              >
                 <button
                   className="mt-4 w-full bg-[#0896EF] text-white text-sm font-medium py-2 rounded hover:bg-[#accce1] transition"
                   onClick={() => {

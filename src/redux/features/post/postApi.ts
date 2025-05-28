@@ -22,6 +22,7 @@ const postApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.news],
     }),
+    
     getAllPost: builder.query({
       query: () => ({
         url: "/post/al-posts",

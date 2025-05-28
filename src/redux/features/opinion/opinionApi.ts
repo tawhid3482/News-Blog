@@ -7,13 +7,13 @@ const opinionApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: "/opinion/create-opinion",
         method: "POST",
-        body: data,
+        data,
       }),
       invalidatesTags: [tagTypes.opinion],
     }),
     getAllOpinion: builder.query({
       query: () => ({
-        url: "/opinion",
+        url: "/opinion?page=1&limit=6",
         method: "GET",
       }),
       providesTags: [tagTypes.opinion],
@@ -25,14 +25,19 @@ const opinionApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.opinion],
     }),
+
     updateOpinion: builder.mutation({
-      query: (data) => ({
-        url: "/opinion/update-opinion",
-        method: "PATCH",
-        body: data,
-      }),
+      query: ({ opinionId, data }) => {
+        console.log("Updating opinionId:", opinionId);
+        return {
+          url: `/opinion/update-opinion/${opinionId}`,
+          method: "PATCH",
+          data,
+        };
+      },
       invalidatesTags: [tagTypes.opinion],
     }),
+
     deleteOpinion: builder.mutation({
       query: (id: string) => ({
         url: `/opinion/delete-opinion/${id}`,
@@ -48,6 +53,21 @@ const opinionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.opinion],
     }),
+    getAllMyOpinion: builder.query({
+      query: () => ({
+        url: "/opinion/my-opinions",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.opinion],
+    }),
+
+    getSingleAllMyOpinion: builder.query({
+      query: (id: string) => ({
+        url: `/opinion/${id}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.opinion],
+    }),
   }),
 });
 
@@ -58,4 +78,6 @@ export const {
   useUpdateOpinionMutation,
   useDeleteOpinionMutation,
   useUpdateOpinionStatusMutation,
+  useGetAllMyOpinionQuery,
+  useGetSingleAllMyOpinionQuery,
 } = opinionApi;
