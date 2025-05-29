@@ -192,7 +192,7 @@ const EditorDashboardOverview = () => {
       </section>
 
       {/* Daily Stats Charts */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white shadow rounded-xl p-4 border border-gray-100">
           <h3 className="text-xl font-semibold mb-3 text-gray-800">Daily Post Stats</h3>
           <ResponsiveContainer width="100%" height={200}>

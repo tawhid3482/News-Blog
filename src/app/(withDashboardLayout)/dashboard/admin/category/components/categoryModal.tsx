@@ -8,6 +8,7 @@ import NSelect from "@/components/Forms/NSelect";
 const ALL_CATEGORIES = [
   "WORLD",
   "NATIONAL",
+  "POLITICS",
   "SPORTS",
   "SCIENCE",
   "EDUCATION",
@@ -17,12 +18,21 @@ const ALL_CATEGORIES = [
   "HEALTH",
   "ENTERTAINMENT",
   "INVESTIGATION",
+  "OTHER"
 ];
 
-const CategoryModal = ({ onClose, existingCategories }: { onClose: () => void; existingCategories: string[] }) => {
+const CategoryModal = ({
+  onClose,
+  existingCategories,
+}: {
+  onClose: () => void;
+  existingCategories: string[];
+}) => {
   const [createCategory] = useCreateCategoryMutation();
 
-  const availableOptions = ALL_CATEGORIES.filter((cat) => !existingCategories.includes(cat));
+  const availableOptions = ALL_CATEGORIES.filter(
+    (cat) => !existingCategories.includes(cat)
+  );
 
   const handleCategory = async (data: any) => {
     const { name } = data;
@@ -31,12 +41,12 @@ const CategoryModal = ({ onClose, existingCategories }: { onClose: () => void; e
       const res = await createCategory({ name, slug }).unwrap();
       if (res?.id) {
         onClose();
-        toast.success(res.message);
+        toast.success("Category created successfully");
       } else {
         toast.error("Category not created");
       }
     } catch (err: any) {
-      console.log(err)
+      console.log(err);
       toast.error("Failed to create category");
     }
   };
@@ -49,7 +59,10 @@ const CategoryModal = ({ onClose, existingCategories }: { onClose: () => void; e
           <NSelect
             name="name"
             label="Category Name"
-            options={availableOptions.map((opt) => ({ label: opt, value: opt }))}
+            options={availableOptions.map((opt) => ({
+              label: opt,
+              value: opt,
+            }))}
             required
           />
           <div className="flex justify-end gap-2 mt-4">

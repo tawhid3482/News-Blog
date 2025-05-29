@@ -7,6 +7,7 @@ import { removeUser } from "@/services/auth.services";
 import { useRouter } from "next/navigation";
 import { FaHome } from "react-icons/fa";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 export default function AppNavbar({
   userName,
@@ -18,8 +19,9 @@ export default function AppNavbar({
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const router = useRouter();
-  const handleLogout = () => {
+  const handleLogout = async () => {
     removeUser();
+    await signOut({ redirect: false });
     router.push("/");
   };
 
@@ -27,7 +29,6 @@ export default function AppNavbar({
     <header className="bg-gray-200 shadow-md px-4 md:px-6 py-3 flex justify-between items-center sticky top-0 z-10">
       {/* Left Side */}
       <div>
-      
         <h1 className="text-lg uppercase md:text-xl lg:text-2xl font-bold text-[#0896EF]">
           Hi, {userName}
         </h1>
@@ -53,7 +54,7 @@ export default function AppNavbar({
             <div className="relative">
               <Image
                 onClick={() => setShowDropdown(!showDropdown)}
-                src={userImage || '/default-user.png'}
+                src={userImage || "/default-user.png"}
                 alt="User"
                 width={32}
                 height={32}

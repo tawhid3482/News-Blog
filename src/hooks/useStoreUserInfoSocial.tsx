@@ -7,11 +7,9 @@ import { useEffect } from "react";
 
 export const useStoreUserInfo = () => {
   const { data: session } = useSession();
-  console.log(session)
 
 useEffect(() => {
   if (session?.accessToken) {
-    console.log("Storing access token:", session.accessToken);
     storeUserInfo({ accessToken: session.accessToken });
   }
 }, [session?.accessToken]);

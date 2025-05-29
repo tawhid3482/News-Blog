@@ -44,9 +44,7 @@ export const authOptions: NextAuthOptions = {
               },
             }
           );
-
-          console.log("data", data);
-
+          
           // Don't overwrite token — just add new properties
           token.accessToken = data.token;
           token.refreshToken = data.refreshToken;

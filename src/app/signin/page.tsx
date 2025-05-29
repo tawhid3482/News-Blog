@@ -100,7 +100,7 @@ const SignInPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-[#0896EF] hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
+              className="w-full bg-[#0896EF] hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200 cursor-pointer"
             >
               Sign In
             </button>
@@ -115,9 +115,9 @@ const SignInPage = () => {
             <SocialLogin />
           </div>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-gray-600 ">
             Don't have an account?{" "}
-            <Link href="/signup" className="text-[#0896EF] hover:underline">
+            <Link href="/signup" className="text-[#0896EF] hover:underline cursor-pointer">
               Sign Up
             </Link>
           </p>

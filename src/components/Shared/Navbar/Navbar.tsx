@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import Link from "next/link";
 import Searchbar from "@/components/UI/SearchBar/Searchbar";
@@ -26,9 +26,10 @@ const navItems = [
 const Navbar = () => {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const AuthButton = dynamic(() => import('@/components/UI/AuthButton/AuthButton'), { ssr: false })
- 
- 
+  const AuthButton = dynamic(
+    () => import("@/components/UI/AuthButton/AuthButton"),
+    { ssr: false }
+  );
 
   return (
     <nav className="w-full sticky top-0 z-50 bg-white ">
@@ -36,7 +37,11 @@ const Navbar = () => {
       <div className="relative flex flex-col lg:flex-row items-center p-4 gap-4 max-w-7xl mx-auto w-full">
         {/* Logo + Mobile Menu Icon */}
         <div className="flex w-full justify-between items-center lg:w-auto">
-          <Link href="/" aria-label="TIS-News Home" className="text-2xl font-bold text-[#0896EF]">
+          <Link
+            href="/"
+            aria-label="TIS-News Home"
+            className="text-2xl font-bold text-[#0896EF]"
+          >
             TIS-News
           </Link>
           <button

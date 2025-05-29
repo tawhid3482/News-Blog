@@ -1,21 +1,23 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { Button } from "../button";
 import { getUserInfo, removeUser } from "@/services/auth.services";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const AuthButton = () => {
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
   const userInfo = getUserInfo();
 
-    useEffect(() => {
+  useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     removeUser();
+    await signOut({ redirect: false });
     router.refresh();
   };
 

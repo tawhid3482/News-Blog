@@ -4,11 +4,12 @@ import Newsletter from "@/components/UI/HomePage/Newsletter/Newsletter";
 // import VideoNews from "@/components/UI/HomePage/VideoNews/VideoNews";
 import NewFilter from "@/components/UI/HomePage/News/NewFilter";
 import NewSkeleton from "@/components/UI/Skeleton/NewsSkeleton";
+import Review from "@/components/WebReviews/Review";
 
 const getNewsData = async () => {
   try {
     const res = await fetch(
-      `${process.env.BACKEND_URL}/post?page=1&limit=20`,
+      `${process.env.BACKEND_URL}/post?page=1&limit=13`,
       {
         cache: "no-store",
       }
@@ -77,6 +78,7 @@ export default async function HomePage() {
       {/* <VideoNews /> */}
       <Newsletter />
       <Editorials />
+      <Review />
     </>
   );
 }
