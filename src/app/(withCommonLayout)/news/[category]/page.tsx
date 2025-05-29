@@ -11,7 +11,7 @@ const getNewsData = async (category: string, page: number = 1) => {
   try {
     const res = await fetch(
       `${
-        process.env.BACKEND_URL
+        process.env.NEXT_PUBLIC_BACKEND_URL
       }/post?category=${category.toUpperCase()}&page=${page}&limit=2`,
       { cache: "no-store" }
     );

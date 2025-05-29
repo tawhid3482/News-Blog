@@ -113,7 +113,7 @@ const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
   };
 
   return (
-    <div className="w-full h-full relative">
+    <div className=" w-full h-full relative p-5">
       {/* Main News */}
       <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
         <div className="relative w-full h-72 md:h-[520px] md:w-2/3">

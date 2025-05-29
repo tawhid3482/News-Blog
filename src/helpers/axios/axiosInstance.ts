@@ -29,7 +29,6 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   //@ts-ignore
   function (response) {
-
     const responseObject: ResponseSuccessType = {
       data: response?.data?.data,
       meta: response?.data?.meta,
@@ -38,17 +37,15 @@ instance.interceptors.response.use(
   },
   async function (error) {
     const config = error.config;
-
     if (error?.response?.status === 401) {
       if (typeof window !== "undefined") {
         toast.error("Please login to continue");
 
         setTimeout(() => {
           window.location.href = "/signin";
-        }, 1000); 
+        }, 1000);
       }
     }
-
     // console.log(config);
     if (error?.response?.status === 500 && !config.sent) {
       config.sent = true;

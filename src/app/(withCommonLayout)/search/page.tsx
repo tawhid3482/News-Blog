@@ -9,7 +9,7 @@ import Pagination from "@/components/UI/Pagination/Pagination";
 const getNewsData = async (searchTerm: string, page: number = 1) => {
   try {
     const res = await fetch(
-      `${process.env.BACKEND_URL}/post?searchTerm=${searchTerm}&page=${page}&limit=2`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/post?searchTerm=${searchTerm}&page=${page}&limit=2`,
       { cache: "no-store" }
     );
     if (!res.ok) return null;
@@ -114,7 +114,7 @@ const NewsSearchPage = async ({
 
   return (
     <div>
-      <h2 className="text-3xl font-medium text-left uppercase mb-4">
+      <h2 className="text-3xl font-medium text-left uppercase mb-4 ml-3 ">
         Search result for: {searchTerm}
       </h2>
       <NewsSection

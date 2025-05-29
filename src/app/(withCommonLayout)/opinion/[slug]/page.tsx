@@ -7,7 +7,7 @@ interface Props {
 const getOpinionData = async (slug: string) => {
   console.log("Fetching news data for slug:", slug);
   try {
-    const res = await fetch(`${process.env.BACKEND_URL}/opinion/${slug}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/opinion/${slug}`, {
       cache: "no-store",
     });
     if (!res.ok) {

@@ -28,15 +28,17 @@ const SignInPage = () => {
   const handleLogin = async (data: FieldValues) => {
     try {
       const res = await userLogin(data);
+      console.log(res)
       const token = res?.data?.accessToken;
       if (token) {
-        // const user = (await verifyToken(token)) as TUser;
         storeUserInfo({ accessToken: token });
-        // dispatch(setUser({ user, token }));
         toast.success(res.message);
         router.push("/");
       } else {
-        setError(res.message);
+        if (res) {
+          setError(res.message);
+        }
+        toast.error("Something Went Wrong")
       }
     } catch (err: any) {
       console.error(err.message);
@@ -92,7 +94,7 @@ const SignInPage = () => {
               <div className=""></div>
               <Link
                 href="/forgot-password"
-                className="text-sm text-[#0896EF] hover:underline"
+                className="text-sm mb-1 text-[#0896EF] hover:underline"
               >
                 Forgot password?
               </Link>
@@ -117,7 +119,10 @@ const SignInPage = () => {
 
           <p className="mt-6 text-center text-sm text-gray-600 ">
             Don't have an account?{" "}
-            <Link href="/signup" className="text-[#0896EF] hover:underline cursor-pointer">
+            <Link
+              href="/signup"
+              className="text-[#0896EF] hover:underline cursor-pointer"
+            >
               Sign Up
             </Link>
           </p>

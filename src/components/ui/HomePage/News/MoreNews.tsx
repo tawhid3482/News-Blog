@@ -13,7 +13,7 @@ const truncateWords = (text: string, wordLimit: number) => {
 
 const MoreNewsGrid = ({ moreNews }: { moreNews: any[] }) => {
   return (
-    <div className="mt-8">
+    <div className="mt-8 p-5">
       {/* More News */}
       {moreNews?.length > 0 && (
         <div className="mt-12">

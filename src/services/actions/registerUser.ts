@@ -2,7 +2,7 @@
 
 export const registerUser = async (formData: FormData) => {
   const res = await fetch(
-    `${process.env.BACKEND_URL}/auth/sign-up`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/sign-up`,
     {
       method: "POST",
       body: formData,

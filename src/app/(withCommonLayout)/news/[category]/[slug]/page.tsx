@@ -7,7 +7,7 @@ interface Props {
 
 const getNewsData = async (slug: string) => {
   try {
-    const res = await fetch(`${process.env.BACKEND_URL}/post?slug=${slug}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post?slug=${slug}`, {
       cache: "no-store",
     });
     if (!res.ok) {

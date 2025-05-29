@@ -16,7 +16,7 @@ const RelevantNewsList = ({ relevantNews }: { relevantNews: any[] }) => {
   return (
     <div>
       {relevantNews?.length > 0 && (
-        <div className=" w-full">
+        <div className=" w-full p-5 lg:p-0">
           <h3 className="text-2xl font-bold mb-4 text-center lg:text-left">
             Relevant News
           </h3>

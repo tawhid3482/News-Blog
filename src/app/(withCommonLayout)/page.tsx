@@ -9,7 +9,7 @@ import Review from "@/components/WebReviews/Review";
 const getNewsData = async () => {
   try {
     const res = await fetch(
-      `${process.env.BACKEND_URL}/post?page=1&limit=13`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/post?page=1&limit=13`,
       {
         cache: "no-store",
       }
