@@ -29,14 +29,14 @@ const AdminDash = () => {
   return (
     <div className="p-6 space-y-8 max-w-7xl mx-auto">
       {/* Summary Cards */}
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard title="Total Users" value={userStats.totalUsers} />
         <StatCard title="Total Admins" value={userStats.totalAdmins} />
         <StatCard title="Total Authors" value={userStats.totalAuthors} />
         <StatCard title="Total Editors" value={userStats.totalEditors} />
       </section>
 
-      <section className="grid grid-cols-1 md:grid-cols-5 gap-6 mt-6">
+      <section className="grid grid-cols-1 md:grid-cols-3  lg:grid-cols-5 gap-6 mt-6">
         <StatCard
           title="New Users This Month"
           value={userStats.newUsersThisMonth}

@@ -58,10 +58,10 @@ const PostTable = () => {
   }
 
   return (
-    <div className="p-4">
+    <div className="p-4 w-lg md:w-2xl lg:w-4xl 2xl:w-7xl">
       <h2 className="text-2xl font-bold text-[#0896EF] mb-6">My Posts</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-300 rounded-lg">
+      <div className=" overflow-x-auto lg:overflow-x-visible rounded-md border border-gray-300">
+        <table className="min-w-full divide-y divide-gray-300 bg-white text-sm sm:text-base">
           <thead className="bg-[#0896EF] text-white">
             <tr>
               <th className="p-2 text-left">Image</th>

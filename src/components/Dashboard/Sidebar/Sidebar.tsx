@@ -42,22 +42,21 @@ export default function Sidebar({ open, toggle, role }: SidebarProps) {
       <div className="overflow-y-auto h-[calc(100%-4rem)]">
         {" "}
         {/* 4rem = 64px = height of top bar */}
-        <nav className="mt-6 px-2">
-          {role &&
-            drawerItems(role).map((item, index) => {
-              const linkPath = `/dashboard/${item.path}`;
-              const active = pathname === linkPath;
-              return (
-                <SidebarItem
-                  key={index}
-                  icon={item.icon}
-                  label={item.title}
-                  href={linkPath}
-                  open={open}
-                  active={active}
-                />
-              );
-            })}
+        <nav className="mt-4 px-1 sm:px-2 space-y-1">
+          {drawerItems(role).map((item, index) => {
+            const linkPath = `/dashboard/${item.path}`;
+            const active = pathname === linkPath;
+            return (
+              <SidebarItem
+                key={index}
+                icon={item.icon}
+                label={item.title}
+                href={linkPath}
+                open={open}
+                active={active}
+              />
+            );
+          })}
         </nav>
       </div>
     </aside>

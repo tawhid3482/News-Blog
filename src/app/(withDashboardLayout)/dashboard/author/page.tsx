@@ -35,15 +35,15 @@ export default function AuthorDashboardOverview() {
   const analyticsData = stats?.monthlyAnalytics || [];
 
   return (
-    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 space-y-8 bg-gray-50 min-h-screen">
       {/* Summary Cards */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {summaryData.map((item: any, idx: number) => (
           <div
             key={idx}
             className="bg-white p-5 rounded-2xl shadow flex items-center gap-4"
           >
-            <div className="p-3 bg-[#0896EF1A] rounded-full text-[#0896EF]">
+            <div className="p-3 bg-[#0896EF1A] rounded-full text-[#0896EF] min-w-[40px] flex justify-center items-center">
               {item.icon === "FileText" && <FileText />}
               {item.icon === "Eye" && <Eye />}
               {item.icon === "ThumbsUp" && <ThumbsUp />}
@@ -62,7 +62,7 @@ export default function AuthorDashboardOverview() {
         <h2 className="text-xl font-semibold mb-4 text-[#0896EF]">
           📊 Recent Activities
         </h2>
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1  lg:grid-cols-3 gap-6">
           {/* Latest Posts */}
           <div className="bg-[#F9FAFB] p-4 rounded-xl shadow-inner h-full">
             <h4 className="text-sm font-semibold text-[#0896EF] mb-2">
@@ -150,7 +150,7 @@ export default function AuthorDashboardOverview() {
         <h2 className="text-xl font-semibold mb-4 text-[#0896EF]">
           📈 Monthly Analytics
         </h2>
-        <div className="w-full h-80">
+        <div className="w-full h-64 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={analyticsData}>
               <XAxis dataKey="month" stroke="#888" />
@@ -161,8 +161,6 @@ export default function AuthorDashboardOverview() {
           </ResponsiveContainer>
         </div>
       </section>
-
-
     </div>
   );
 }

@@ -33,7 +33,7 @@ const ManageReviews = () => {
   if (isLoading) return <p className="text-center text-lg">loading</p>;
 
   return (
-    <div className="p-6">
+    <div className="p-6 w-lg md:w-full">
       <h2 className="text-2xl font-semibold mb-4">
         Total Reviews: {reviews?.length}
       </h2>

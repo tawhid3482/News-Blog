@@ -55,7 +55,7 @@ const ManageSuperUser = () => {
     const roleKey = roleKeyMap[role];
 
     return (
-      <div className="mb-10 lg:max-w-4xl 2xl:max-w-7xl">
+      <div className="mb-10 max-w-lg md:max-w-2xl lg:max-w-4xl 2xl:max-w-7xl">
         <h3 className="text-2xl font-bold mb-4 text-gray-800">{role}s</h3>
         <div className="overflow-x-auto rounded-lg border shadow-sm">
           <table className="min-w-full divide-y divide-gray-300 text-[16px] sm:text-[17px]">

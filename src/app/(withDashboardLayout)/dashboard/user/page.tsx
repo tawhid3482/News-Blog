@@ -42,7 +42,7 @@ export default function UserDashboard() {
   return (
     <div className="p-6 space-y-10 max-w-6xl mx-auto">
       {/* Welcome Section */}
-      <div className="bg-white shadow-xl rounded-2xl p-6 flex items-center gap-6">
+      <div className="bg-white shadow-xl rounded-2xl p-6 md:flex items-center gap-6">
         <Image
           src={user.profilePhoto || "/default-user.png"}
           alt="Profile"
@@ -112,7 +112,7 @@ export default function UserDashboard() {
             </>
           ) : (
             <Link href={"/dashboard/user/review"}>
-              <button className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+              <button className="px-6 py-2 bg-[#0896EF] text-white rounded-lg hover:bg-indigo-700 transition">
                 Add a Review
               </button>
             </Link>
@@ -167,7 +167,7 @@ export default function UserDashboard() {
 function InfoCard({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="bg-white shadow-lg rounded-xl p-5 text-center hover:shadow-xl transition">
-      <div className="text-3xl font-extrabold text-indigo-600">{value}</div>
+      <div className="text-3xl font-extrabold text-[#0896EF]">{value}</div>
       <div className="text-sm text-gray-600 mt-1">{label}</div>
     </div>
   );

@@ -1,28 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import NewsSection from "@/components/UI/HomePage/News/News";
+import Pagination from "@/components/UI/Pagination/Pagination";
 
 interface Params {
-  params: {
-    category: string;
-  };
+  params: { category: string };
+  searchParams: { page?: string };
 }
 
-const getNewsData = async (category: string) => {
+const getNewsData = async (category: string, page: number = 1) => {
   try {
     const res = await fetch(
       `${
         process.env.BACKEND_URL
-      }/post?category=${category.toUpperCase()}&page=1&limit=20`,
-      {
-        cache: "no-store",
-      }
+      }/post?category=${category.toUpperCase()}&page=${page}&limit=2`,
+      { cache: "no-store" }
     );
+
     if (!res.ok) {
       return null;
     }
+
     const news = await res.json();
-    const data = news?.data || [];
-    return data;
+    return {
+      data: news?.data || [],
+      meta: news?.meta || { total: 0, page: 1, limit: 6 },
+    };
   } catch (error) {
     console.error("Fetch failed:", error);
     return null;
@@ -37,7 +39,7 @@ export async function generateMetadata({
   // এখানে async await safe, error আর হবে না
   const data = await getNewsData(params.category);
 
-  const firstNews = data?.[0];
+  const firstNews = data?.data[0];
 
   if (!firstNews) {
     return {
@@ -74,14 +76,21 @@ export async function generateMetadata({
   };
 }
 
-const NewsCategoryPage = async ({ params }: Params) => {
+const NewsCategoryPage = async ({ params, searchParams }: Params) => {
   const { category } = params;
-  const filteredNews = await getNewsData(category);
+  const page = parseInt(searchParams.page || "1");
 
-  if (!filteredNews || filteredNews.length === 0) {
+  const result = await getNewsData(category, page);
+
+  const filteredNews = result?.data || [];
+  const totalItems = result?.meta?.total || 0;
+  const limit = result?.meta?.limit || 13;
+  const totalPages = Math.ceil(totalItems / limit);
+
+  if (filteredNews.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[80vh]">
-        <p className="text-4xl font-bold text-[#0896EF]">
+      <div className="flex justify-center items-center h-[80vh]">
+        <p className="text-2xl text-[#0896EF]">
           No news found for this category.
         </p>
       </div>
@@ -89,26 +98,27 @@ const NewsCategoryPage = async ({ params }: Params) => {
   }
 
   const mainNews = filteredNews[0];
-
   const relevantNews = filteredNews.slice(1, 4);
-  const excludedIds = [
-    mainNews.id,
-    ...relevantNews?.map((newsItem: any) => newsItem.id),
-  ];
-  const otherNews = filteredNews?.filter(
-    (newsItem: any) => !excludedIds.includes(newsItem.id)
+  const excludedIds = [mainNews.id, ...relevantNews.map((n: any) => n.id)];
+  const otherNews = filteredNews.filter(
+    (n: any) => !excludedIds.includes(n.id)
   );
 
   return (
     <div>
-      <h2 className="text-3xl font-medium text-left uppercase">
-        {category} News
-      </h2>
+      <h2 className="text-3xl font-medium uppercase">{category} News</h2>
       <NewsSection
         mainNews={mainNews}
         relevantNews={relevantNews}
         moreNews={otherNews}
-      ></NewsSection>
+      />
+      <div className="flex justify-end">
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          basePath={`/news/${category}`}
+        />
+      </div>
     </div>
   );
 };

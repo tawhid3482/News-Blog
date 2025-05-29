@@ -104,7 +104,7 @@ const EditorDashboardOverview = () => {
       {/* Post Stats Section */}
       <section>
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">Post Stats</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatItemCard
             icon={<FaNewspaper />}
             label="Total Posts"
@@ -131,7 +131,7 @@ const EditorDashboardOverview = () => {
       {/* Opinion Stats Section */}
       <section>
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">Opinion Stats</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4gap-4">
           <StatItemCard
             icon={<FaCommentDots />}
             label="Total Opinions"
@@ -153,7 +153,7 @@ const EditorDashboardOverview = () => {
       {/* Review Stats Section */}
       <section>
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">Review Stats</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <ReviewItemCard
             icon={<FaStar />}
             label="Total Reviews"

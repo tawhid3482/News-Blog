@@ -48,34 +48,49 @@ const ManageUsers = () => {
   };
 
   return (
-    <div className="p-8">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800">Manage Users</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-300 border border-gray-300 rounded-md text-base">
+    <div className="p-4 w-lg md:w-2xl lg:w-4xl 2xl:w-7xl">
+      <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">Manage Users</h2>
+      {/* Overflow-x auto only on sm and md, visible on lg+ */}
+      <div className="overflow-x-auto lg:overflow-x-visible rounded-md border border-gray-300">
+        <table className="min-w-full divide-y divide-gray-300 bg-white text-sm sm:text-base">
           <thead className="bg-gray-200">
             <tr>
-              <th className="px-6 py-4 text-left font-semibold text-gray-700">Name</th>
-              <th className="px-6 py-4 text-left font-semibold text-gray-700">Email</th>
-              <th className="px-6 py-4 text-left font-semibold text-gray-700">Gender</th>
-              <th className="px-6 py-4 text-left font-semibold text-gray-700">Role</th>
-              <th className="px-6 py-4 text-left font-semibold text-gray-700">Current Status</th>
-              <th className="px-6 py-4 text-left font-semibold text-gray-700">Change Status</th>
-              <th className="px-6 py-4 text-center font-semibold text-gray-700">Actions</th>
+              <th className="px-3 sm:px-6 py-3 text-left font-semibold text-gray-700 whitespace-nowrap">
+                Name
+              </th>
+              <th className="px-3 sm:px-6 py-3 text-left font-semibold text-gray-700 whitespace-nowrap">
+                Email
+              </th>
+              <th className="px-3 sm:px-6 py-3 text-left font-semibold text-gray-700 whitespace-nowrap">
+                Gender
+              </th>
+              <th className="px-3 sm:px-6 py-3 text-left font-semibold text-gray-700 whitespace-nowrap">
+                Role
+              </th>
+              <th className="px-3 sm:px-6 py-3 text-left font-semibold text-gray-700 whitespace-nowrap">
+                Current Status
+              </th>
+              <th className="px-3 sm:px-6 py-3 text-left font-semibold text-gray-700 whitespace-nowrap">
+                Change Status
+              </th>
+              <th className="px-3 sm:px-6 py-3 text-center font-semibold text-gray-700 whitespace-nowrap">
+                Actions
+              </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className="divide-y divide-gray-200">
             {users?.map((user: any) => (
               <tr key={user.id} className="hover:bg-gray-50">
-                <td className="px-6 py-3">{user.name}</td>
-                <td className="px-6 py-3">{user.email}</td>
-                <td className="px-6 py-3 capitalize">{user.gender}</td>
-                <td className="px-6 py-3">{user.role}</td>
-                <td className="px-6 py-3 font-medium text-blue-600">
+                <td className="px-3 sm:px-6 py-2 whitespace-nowrap">{user.name}</td>
+                <td className="px-3 sm:px-6 py-2 whitespace-nowrap">{user.email}</td>
+                <td className="px-3 sm:px-6 py-2 capitalize whitespace-nowrap">{user.gender}</td>
+                <td className="px-3 sm:px-6 py-2 whitespace-nowrap">{user.role}</td>
+                <td className="px-3 sm:px-6 py-2 font-medium text-blue-600 whitespace-nowrap">
                   {user.status}
                 </td>
-                <td className="px-6 py-3">
+                <td className="px-3 sm:px-6 py-2 whitespace-nowrap">
                   <select
-                    className="border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                     value={selectedStatus[user.id] || ""}
                     onChange={(e) => handleStatusChange(user.id, e.target.value)}
                   >
@@ -87,10 +102,10 @@ const ManageUsers = () => {
                     ))}
                   </select>
                 </td>
-                <td className="px-6 py-3 text-center">
+                <td className="px-3 sm:px-6 py-2 text-center whitespace-nowrap">
                   <button
                     onClick={() => handleUpdateStatus(user.id)}
-                    className={`bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded ${
+                    className={`bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded ${
                       !selectedStatus[user.id] ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                     disabled={!selectedStatus[user.id] || isUpdating}
