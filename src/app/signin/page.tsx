@@ -28,20 +28,22 @@ const SignInPage = () => {
   const handleLogin = async (data: FieldValues) => {
     try {
       const res = await userLogin(data);
-      console.log(res)
+      console.log(res);
       const token = res?.data?.accessToken;
       if (token) {
         storeUserInfo({ accessToken: token });
         toast.success(res.message);
         router.push("/");
       } else {
-        if (res) {
-          setError(res.message);
-        }
-        toast.error("Something Went Wrong")
+        setError(res.message);
       }
     } catch (err: any) {
-      console.error(err.message);
+      console.log(err);
+      const message =
+        err?.response?.data?.message || err?.message || "Something went wrong!";
+      console.error("Login failed:", message);
+      setError(message);
+      toast.error(message);
     }
   };
 

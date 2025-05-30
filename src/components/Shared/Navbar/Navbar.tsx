@@ -54,7 +54,7 @@ const Navbar = () => {
         </div>
 
         {/* Reusable Searchbar */}
-        <Searchbar setMenuOpen={setMenuOpen} />
+          <Searchbar setMenuOpen={setMenuOpen} />
 
         {/* Auth Buttons */}
         <div className=" lg:flex items-center gap-4 ml-auto">

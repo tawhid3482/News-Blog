@@ -39,12 +39,10 @@ export const authOptions: NextAuthOptions = {
               gender: "OTHER",
             },
             {
-              headers: {
-                "Content-Type": "application/json",
-              },
+              withCredentials: true, // ✅ এটা দিতে হবে
             }
           );
-          
+
           // Don't overwrite token — just add new properties
           token.accessToken = data.token;
           token.refreshToken = data.refreshToken;

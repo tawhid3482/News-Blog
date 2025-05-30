@@ -15,6 +15,9 @@ export const userLogin = async (data: FieldValues) => {
     // cache: "no-store",
   });
   const userInfo = await res.json();
+  if (!res.ok) {
+    throw new Error(userInfo?.message || "Login failed");
+  }
 
    const passwordChangeRequired = userInfo.data.needPasswordChange;
 
