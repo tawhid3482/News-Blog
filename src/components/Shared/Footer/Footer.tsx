@@ -2,17 +2,18 @@
 
 import SocialMedia from "@/components/UI/HomePage/SocialMedia/SocialMedia";
 
-
-
 const Footer = () => {
   const handleSubscribe = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // এখানে সাবস্ক্রাইব লজিক লিখতে পারো (যেমন API কল)
-    alert("Subscribed!"); // ডেমো হিসেবে
+
+    alert("Subscribed!");
   };
 
   return (
-    <footer className="bg-gray-900 text-white py-10 mt-10 border-t" role="contentinfo">
+    <footer
+      className="bg-gray-900 text-white py-10 mt-10 border-t"
+      role="contentinfo"
+    >
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* About Section */}
         <section aria-labelledby="footer-about">
@@ -20,7 +21,9 @@ const Footer = () => {
             TIS-News
           </h2>
           <p className="text-gray-400 text-sm">
-            Stay informed with the latest headlines from around the world. Your trusted source for breaking news, in-depth analysis, and expert opinion.
+            Stay informed with the latest headlines from around the world. Your
+            trusted source for breaking news, in-depth analysis, and expert
+            opinion.
           </p>
         </section>
 
