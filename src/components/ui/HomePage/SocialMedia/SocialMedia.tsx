@@ -1,6 +1,6 @@
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
 
-const SocialMediaLinks = () => {
+const SocialMedia = () => {
   return (
     <div className="flex justify-center space-x-6 mt-8">
       {/* Facebook */}
@@ -56,4 +56,4 @@ const SocialMediaLinks = () => {
   );
 };
 
-export default SocialMediaLinks;
+export default SocialMedia;
