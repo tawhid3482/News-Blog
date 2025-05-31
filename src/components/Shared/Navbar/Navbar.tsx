@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import Searchbar from "@/components/UI/Searchbar/Searchbar";
+import Searchbar from "@/components/UI/SearchBar/Searchbar";
 
 const navItems = [
   { name: "Home", path: "/" },
