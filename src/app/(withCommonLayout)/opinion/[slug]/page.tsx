@@ -68,7 +68,7 @@ export async function generateMetadata({
 const OpinionSlugPage = async ({ params }: Props) => {
   const data = await getOpinionData(params.slug);
     const newsItem = data;
-    // console.log("News item for slug:", params.slug, newsItem);
+    console.log("News item for slug:", params.slug, newsItem);
 
   return (
     <>

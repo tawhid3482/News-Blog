@@ -37,7 +37,7 @@ const OpinionSlug = ({ opinion }: { opinion: any }) => {
               height={40}
               src={author?.profilePhoto}
               alt={author?.name}
-              className="h-10 w-10 rounded-full object-cover border"
+              className="h-10 rounded-full object-cover border"
             />
             <div>
               <p className="font-medium text-gray-800">{author?.name}</p>
