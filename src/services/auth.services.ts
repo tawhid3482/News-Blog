@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { authKey } from "@/contants/authkey";
 import { decodedToken } from "@/utils/jwt";
-import { getFromLocalStorage, removeFromLocalStorage, setToLocalStorage } from "@/utils/local-storage";
-import { instance as axiosInstance } from '@/helpers/axios/axiosInstance';
+import {
+  getFromLocalStorage,
+  removeFromLocalStorage,
+  setToLocalStorage,
+} from "@/utils/local-storage";
+import { instance as axiosInstance } from "@/helpers/axios/axiosInstance";
 
 export const storeUserInfo = ({ accessToken }: { accessToken: string }) => {
   return setToLocalStorage(authKey, accessToken);
@@ -35,7 +39,7 @@ export const removeUser = () => {
 
 export const getNewAccessToken = async () => {
   return await axiosInstance({
-    url: "http://localhost:5000/api/s1/auth/refresh-token",
+    url: "https://news-blog-server-production-ba38.up.railway.app/api/s1/auth/refresh-token",
     method: "POST",
     headers: { "Content-Type": "application/json" },
     withCredentials: true,

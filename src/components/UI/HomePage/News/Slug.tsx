@@ -82,7 +82,7 @@ const Slug = ({ newsItem }: { newsItem: any }) => {
 
       // ✅ Make sure this matches your actual backend route (use absolute path if needed)
       navigator.sendBeacon(
-        `http://localhost:5000/api/s1/post/${newsItem.id}/reading-time`,
+        `https://news-blog-server-production-ba38.up.railway.app/api/s1/post/${newsItem.id}/reading-time`,
         blob
       );
     };

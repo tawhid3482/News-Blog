@@ -15,7 +15,7 @@ export const useStoreUserInfo = () => {
       if (session?.user?.email && !posted && !isLoggedIn()) {
         try {
           const res = await axios.post(
-            "http://localhost:5000/api/s1/auth/social-login",
+            "https://news-blog-server-production-ba38.up.railway.app/api/s1/auth/social-login",
             {
               name: session.user.name,
               email: session.user.email,
