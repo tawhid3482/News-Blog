@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
-import { Button } from "../button";
 import { getUserInfo, removeUser } from "@/services/auth.services";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { Button } from "../button";
 
 const AuthButton = () => {
   const [isClient, setIsClient] = useState(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import SocialMedia from "@/components/UI/HomePage/SocialMedia/SocialMedia";
+import SocialMedia from "@/components/ui/HomePage/SocialMedia/SocialMedia";
 
 
 const Footer = () => {

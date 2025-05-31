@@ -1,9 +1,9 @@
-import Editorials from "@/components/UI/HomePage/Editorials/Editorials";
-import Hero from "@/components/UI/HomePage/HeroSection/HeroSection";
-import Newsletter from "@/components/UI/HomePage/Newsletter/Newsletter";
+import Editorials from "@/components/ui/HomePage/Editorials/Editorials";
+import Hero from "@/components/ui/HomePage/HeroSection/HeroSection";
+import Newsletter from "@/components/ui/HomePage/Newsletter/Newsletter";
 // import VideoNews from "@/components/UI/HomePage/VideoNews/VideoNews";
-import NewFilter from "@/components/UI/HomePage/News/NewFilter";
-import NewSkeleton from "@/components/UI/Skeleton/NewsSkeleton";
+import NewFilter from "@/components/ui/HomePage/News/NewFilter";
+import NewSkeleton from "@/components/ui/Skeleton/NewsSkeleton";
 import Review from "@/components/WebReviews/Review";
 
 const getNewsData = async () => {
