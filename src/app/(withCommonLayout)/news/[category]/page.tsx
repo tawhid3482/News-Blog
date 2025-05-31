@@ -2,10 +2,10 @@
 import NewsSection from "@/components/UI/HomePage/News/News";
 import Pagination from "@/components/UI/Pagination/Pagination";
 
-interface Params {
+type PageProps = {
   params: { category: string };
   searchParams: { page?: string };
-}
+};
 
 const getNewsData = async (category: string, page: number = 1) => {
   try {
@@ -76,7 +76,7 @@ export async function generateMetadata({
   };
 }
 
-const NewsCategoryPage = async ({ params, searchParams }: Params) => {
+const NewsCategoryPage = async ({ params, searchParams }: PageProps) => {
   const { category } = params;
   const page = parseInt(searchParams.page || "1");
 

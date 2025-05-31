@@ -14,7 +14,7 @@ export interface DrawerItem {
   title: string;
   path: string;
   parentPath?: string;
-  icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & { muiName: string };
+  icon?: string; // icon name
   child?: DrawerItem[];
 }
 

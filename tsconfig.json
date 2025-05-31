@@ -1,9 +1,17 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
-    "typeRoots": ["./types", "./node_modules/@types"],
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ],
+    "types": [],
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -20,15 +28,21 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "next-env.d.ts",
+    "src/components/Dashboard/DashboardDrawer",
+    "src/components/Dashboard/Sidebar",
     "src/types/next-auth.d.ts",
     ".next/types/**/*.ts"
-, "src/components/Dashboard/DashboardDrawer", "src/components/Dashboard/Sidebar"  ],
-  "exclude": ["node_modules"]
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

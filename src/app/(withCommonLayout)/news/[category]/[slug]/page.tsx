@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import Slug from "@/components/UI/HomePage/News/Slug";
 
 interface Props {

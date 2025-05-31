@@ -2,10 +2,10 @@
 
 import SocialMedia from "@/components/UI/HomePage/SocialMedia/SocialMedia";
 
+
 const Footer = () => {
   const handleSubscribe = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     alert("Subscribed!");
   };
 
