@@ -3,7 +3,10 @@
 import Slug from "@/components/UI/HomePage/News/Slug";
 
 interface Props {
-  params: { slug: string };
+  params: {
+    category: string;
+    slug: string;
+  };
 }
 
 const getNewsData = async (slug: string) => {
