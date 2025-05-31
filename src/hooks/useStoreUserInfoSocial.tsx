@@ -19,14 +19,14 @@ export const useStoreUserInfo = () => {
             {
               name: session.user.name,
               email: session.user.email,
-              profilePhoto: session.user.profilePhoto,
+              profilePhoto: session.user.profilePhoto ?? "", 
               gender: "OTHER",
             },
             {
               withCredentials: true,
             }
           );
-
+          console.log(res);
           const userInfo = res.data;
 
           if (res.status < 200 || res.status >= 300) {

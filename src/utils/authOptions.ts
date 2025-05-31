@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
               gender: "OTHER",
             },
             {
-              withCredentials: true, // ✅ এটা দিতে হবে
+              withCredentials: true, 
             }
           );
 
