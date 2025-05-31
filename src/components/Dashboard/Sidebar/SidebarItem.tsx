@@ -1,8 +1,9 @@
+// SidebarItem.tsx
 import Link from "next/link";
-import { LucideIcon } from "lucide-react";
+import { IconType } from "react-icons";
 
 interface SidebarItemProps {
-  icon: LucideIcon;
+  icon: IconType; // React-icons এর icon type
   label: string;
   href: string;
   open: boolean;
@@ -29,9 +30,7 @@ export default function SidebarItem({
     >
       <Icon size={28} />
       {open && (
-        <span className="ml-3 text-lg font-medium transition-opacity">
-          {label}
-        </span>
+        <span className="ml-3 text-lg font-medium transition-opacity">{label}</span>
       )}
     </Link>
   );

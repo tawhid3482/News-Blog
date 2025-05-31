@@ -7,12 +7,11 @@ type PageProps = {
   searchParams: { page?: string };
 };
 
+
 const getNewsData = async (category: string, page: number = 1) => {
   try {
     const res = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_BACKEND_URL
-      }/post?category=${category.toUpperCase()}&page=${page}&limit=2`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/post?category=${category.toUpperCase()}&page=${page}&limit=2`,
       { cache: "no-store" }
     );
 
@@ -34,10 +33,10 @@ const getNewsData = async (category: string, page: number = 1) => {
 export async function generateMetadata({
   params,
 }: {
-  params: { category: string };
+  params: { category: string; slug: string };
 }) {
-  // এখানে async await safe, error আর হবে না
-  const data = await getNewsData(params.category);
+  const { category } =  params;
+  const data = await getNewsData(category);
 
   const firstNews = data?.data[0];
 
@@ -54,7 +53,7 @@ export async function generateMetadata({
     openGraph: {
       title: firstNews.title,
       description: firstNews.summary,
-      url: `https://example.com/news/${params.category}`,
+      url: `https://example.com/news/${category}`,
       siteName: "MySite",
       images: [
         {
@@ -77,10 +76,11 @@ export async function generateMetadata({
 }
 
 const NewsCategoryPage = async ({ params, searchParams }: PageProps) => {
-  const { category } = params;
-  const page = parseInt(searchParams.page || "1");
+  const { category } = await params;
+  const { page } = await searchParams;
+  const currentPage = parseInt(page || "1");
 
-  const result = await getNewsData(category, page);
+  const result = await getNewsData(category, currentPage);
 
   const filteredNews = result?.data || [];
   const totalItems = result?.meta?.total || 0;
@@ -114,7 +114,7 @@ const NewsCategoryPage = async ({ params, searchParams }: PageProps) => {
       />
       <div className="flex justify-end">
         <Pagination
-          currentPage={page}
+          currentPage={currentPage}
           totalPages={totalPages}
           basePath={`/news/${category}`}
         />

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { USER_ROLE } from "@/contants/role";
+import { IconType } from "react-icons/lib";
 
 export type IMeta = {
   page: number;
@@ -14,7 +15,7 @@ export interface DrawerItem {
   title: string;
   path: string;
   parentPath?: string;
-  icon?: string; // icon name
+  icon?: IconType; // icon name
   child?: DrawerItem[];
 }
 

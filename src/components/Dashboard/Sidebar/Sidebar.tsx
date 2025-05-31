@@ -1,6 +1,8 @@
+// Sidebar.tsx
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { IconType } from "react-icons"; // টাইপ ইম্পোর্ট
+import { FaBars, FaTimes, FaFileAlt } from "react-icons/fa"; // React-icons এর আইকনগুলো
 import SidebarItem from "./SidebarItem";
 import { drawerItems } from "@/utils/drawerItems";
 import { UserRole } from "@/types";
@@ -23,9 +25,7 @@ export default function Sidebar({ open, toggle, role }: SidebarProps) {
       <div className="h-16 flex items-center justify-between px-4 border-b border-zinc-800">
         {open && (
           <Link href="/">
-            <span className="font-bold text-xl transition-opacity">
-              TIS-News
-            </span>
+            <span className="font-bold text-xl transition-opacity">TIS-News</span>
           </Link>
         )}
         <button
@@ -34,22 +34,21 @@ export default function Sidebar({ open, toggle, role }: SidebarProps) {
             !open ? "mx-auto" : ""
           }`}
         >
-          {open ? <X size={24} /> : <Menu size={24} />}
+          {open ? <FaTimes size={24} /> : <FaBars size={24} />}
         </button>
       </div>
 
-      {/*Scrollable content wrapper*/}
       <div className="overflow-y-auto h-[calc(100%-4rem)]">
-        {" "}
-        {/* 4rem = 64px = height of top bar */}
         <nav className="mt-4 px-1 sm:px-2 space-y-1">
           {drawerItems(role).map((item, index) => {
             const linkPath = `/dashboard/${item.path}`;
             const active = pathname === linkPath;
+            const IconComponent: IconType = item.icon ?? FaFileAlt; // ডিফল্ট আইকন React-icons এর
+
             return (
               <SidebarItem
                 key={index}
-                icon={item.icon}
+                icon={IconComponent}
                 label={item.title}
                 href={linkPath}
                 open={open}
