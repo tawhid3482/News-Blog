@@ -1,4 +1,4 @@
-import OpinionSlug from "@/components/ui/HomePage/News/OpinionSlug";
+import OpinionSlug from "@/components/UI/HomePage/News/OpinionSlug";
 
 interface Props {
   params: { slug: string };

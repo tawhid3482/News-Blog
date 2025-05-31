@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import Searchbar from "@/components/ui/Searchbar/Searchbar";
+import Searchbar from "@/components/UI/Searchbar/Searchbar";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -27,7 +27,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const AuthButton = dynamic(
-    () => import("@/components/ui/AuthButton/AuthButton"),
+    () => import("@/components/UI/AuthButton/AuthButton"),
     { ssr: false }
   );
 

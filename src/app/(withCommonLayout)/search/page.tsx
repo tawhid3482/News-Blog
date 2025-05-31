@@ -3,8 +3,8 @@
 export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
-import NewsSection from "@/components/ui/HomePage/News/News";
-import Pagination from "@/components/ui/Pagination/Pagination";
+import NewsSection from "@/components/UI/HomePage/News/News";
+import Pagination from "@/components/UI/Pagination/Pagination";
 
 const getNewsData = async (searchTerm: string, page: number = 1) => {
   try {
