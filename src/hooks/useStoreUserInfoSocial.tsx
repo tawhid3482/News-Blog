@@ -53,5 +53,5 @@ export const useStoreUserInfo = () => {
     };
 
     postUser();
-  }, [session, posted, status,router]);
+  }, [session, posted, status, router]);
 };

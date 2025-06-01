@@ -19,14 +19,14 @@ export const userLogin = async (data: FieldValues) => {
     throw new Error(userInfo?.message || "Login failed");
   }
 
-   const passwordChangeRequired = userInfo.data.needPasswordChange;
+  const passwordChangeRequired = userInfo.data.needPasswordChange;
 
-   if (userInfo.data.accessToken) {
-      setAccessToken(userInfo.data.accessToken, {
-         redirect: '/',
-         passwordChangeRequired,
-      });
-   }
+  if (userInfo.data.accessToken) {
+    setAccessToken(userInfo.data.accessToken, {
+      redirect: "/",
+      passwordChangeRequired,
+    });
+  }
 
   return userInfo;
 };
