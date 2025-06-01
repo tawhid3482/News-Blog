@@ -7,7 +7,6 @@ import { storeUserInfo, isLoggedIn } from "@/services/auth.services";
 export const useStoreUserInfo = () => {
   const { data: session, status } = useSession();
   const [posted, setPosted] = useState(false);
-  console.log(session);
   useEffect(() => {
     if (status === "loading") return;
 
@@ -19,7 +18,7 @@ export const useStoreUserInfo = () => {
             {
               name: session.user.name,
               email: session.user.email,
-              profilePhoto: session.user.profilePhoto ?? null,
+              profilePhoto: session.user.profilePhoto,
               gender: "OTHER",
             },
             {
