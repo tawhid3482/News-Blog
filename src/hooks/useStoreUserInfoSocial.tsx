@@ -40,7 +40,7 @@ export const useStoreUserInfo = () => {
             if (userInfo.data.needPasswordChange) {
               window.location.href = "/dashboard/change-password";
             } else {
-              router.push("/");
+              router.refresh();
             }
           }, 200);
         }
@@ -53,5 +53,5 @@ export const useStoreUserInfo = () => {
     };
 
     postUser();
-  }, [session, posted, status]);
+  }, [session, posted, status,router]);
 };
