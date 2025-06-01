@@ -6,7 +6,7 @@ import { authKey } from '@/contants/authkey';
 import { redirect } from 'next/navigation';
 
 const setAccessToken = async (token: string, option?: any) => {
-  const cookieStore = await cookies(); // await লাগবে Promise resolve করার জন্য
+  const cookieStore = await cookies(); 
   cookieStore.set(authKey, token);
 
   if (option && option.passwordChangeRequired) {
