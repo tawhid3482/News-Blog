@@ -3,8 +3,10 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { storeUserInfo, isLoggedIn } from "@/services/auth.services";
+import { useRouter } from "next/navigation";
 
 export const useStoreUserInfo = () => {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [posted, setPosted] = useState(false);
 
@@ -38,7 +40,7 @@ export const useStoreUserInfo = () => {
             if (userInfo.data.needPasswordChange) {
               window.location.href = "/dashboard/change-password";
             } else {
-              window.location.href = "/";
+              router.push("/");
             }
           }, 200);
         }
