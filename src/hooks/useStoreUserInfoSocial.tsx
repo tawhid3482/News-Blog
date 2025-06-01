@@ -35,7 +35,7 @@ export const useStoreUserInfo = () => {
           if (userInfo.token) {
             storeUserInfo({ accessToken: userInfo.token });
 
-            setPosted(true); // ✅ prevent re-post
+            setPosted(true); 
 
             if (userInfo.data.needPasswordChange) {
               window.location.href = "/dashboard/change-password";
