@@ -28,7 +28,7 @@ const Searchbar = ({
 
       try {
         const res = await axios.get(
-          `https://news-blog-server-production-ba38.up.railway.app/api/s1/search-news?searchTerm=${encodeURIComponent(
+          `https://news-blog-server-production-ba38.up.railway.app/search-news?searchTerm=${encodeURIComponent(
             searchQuery.trim()
           )}`
         );

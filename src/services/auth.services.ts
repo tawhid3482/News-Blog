@@ -39,7 +39,7 @@ export const removeUser = () => {
 
 export const getNewAccessToken = async () => {
   return await axiosInstance({
-    url: "https://news-blog-server-production-ba38.up.railway.app/api/s1/auth/refresh-token",
+    url: "https://news-blog-server-production-ba38.up.railway.app/auth/refresh-token",
     method: "POST",
     headers: { "Content-Type": "application/json" },
     withCredentials: true,
