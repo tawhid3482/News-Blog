@@ -43,7 +43,7 @@ export async function generateMetadata({
     openGraph: {
       title: firstNews.title,
       description: firstNews.summary,
-      url: `http://localhost:3000/opinion/${params.slug}`,
+      url: `https://news-blog-drab.vercel.app/opinion/${params.slug}`,
       siteName: "TIS-News",
       images: [
         {
