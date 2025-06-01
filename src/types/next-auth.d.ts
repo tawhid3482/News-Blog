@@ -8,8 +8,8 @@ declare module "next-auth" {
     refreshToken?: string;
     user: {
       id: string;
-      email: string;
-      name: string;
+      email: string ;
+      name: string ;
       profilePhoto: string;
       role: string;
       status: string;

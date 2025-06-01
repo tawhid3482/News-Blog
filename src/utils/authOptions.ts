@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/utils/authOptions.ts
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import FacebookProvider from "next-auth/providers/facebook";
-import axios from "axios";
 import { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
@@ -27,41 +25,22 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, account, user }) {
       if (account && user) {
-        try {
-          const { data } = await axios.post(
-            "https://news-blog-server-production-ba38.up.railway.app/api/s1/auth/social-login",
-            {
-              name: user?.name,
-              email: user?.email,
-              profilePhoto: user?.image,
-              gender: "OTHER",
-            },
-            {
-              withCredentials: true,
-            }
-          );
-
-          // Don't overwrite token — just add new properties
-          token.accessToken = data.token;
-          token.refreshToken = data.refreshToken;
-          token.userData = data.data;
-
-          // ⚠️ Warning: storeUserInfo should only be used on **client side**
-          // Don't use this on server callback like here
-          // storeUserInfo({ accessToken: data.token });
-        } catch (err: any) {
-          console.error("JWT login error:", err.response?.data || err.message);
-        }
+        token.email = user.email;
+        token.name = user.name;
+        token.image = user.image;
       }
       return token;
     },
 
     async session({ session, token }) {
-      (session as any).accessToken = token.accessToken;
-      (session as any).refreshToken = token.refreshToken;
-      session.user = token.userData as typeof session.user;
+      session.user = {
+        ...session.user,
+        email: token.email as string,
+        name: token.name as string,
+        profilePhoto: token.image as string,
+      };
       return session;
     },
   },
