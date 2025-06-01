@@ -7,7 +7,7 @@ import { storeUserInfo, isLoggedIn } from "@/services/auth.services";
 export const useStoreUserInfo = () => {
   const { data: session, status } = useSession();
   const [posted, setPosted] = useState(false);
-
+  console.log(session);
   useEffect(() => {
     if (status === "loading") return;
 
@@ -19,7 +19,7 @@ export const useStoreUserInfo = () => {
             {
               name: session.user.name,
               email: session.user.email,
-              profilePhoto: session.user.profilePhoto ?? "",
+              profilePhoto: session.user.profilePhoto ?? null,
               gender: "OTHER",
             },
             {
@@ -35,7 +35,7 @@ export const useStoreUserInfo = () => {
           if (userInfo.token) {
             storeUserInfo({ accessToken: userInfo.token });
 
-            setPosted(true); 
+            setPosted(true);
 
             if (userInfo.data.needPasswordChange) {
               window.location.href = "/dashboard/change-password";
@@ -44,10 +44,7 @@ export const useStoreUserInfo = () => {
             }
           }
         } catch (error: any) {
-          console.error(
-            "Social login",
-            error.response?.data || error.message
-          );
+          console.error("Social login", error.response?.data || error.message);
         }
       }
     };
