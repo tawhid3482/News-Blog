@@ -96,6 +96,12 @@ const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
     if (commentLoading || !newComment.trim()) return;
 
     try {
+      console.log("Creating comment:", {
+        postId: mainNews.id,
+        content: newComment,
+        userImage: user?.userImage 
+      });
+
       const res = await createComment({
         postId: mainNews.id,
         content: newComment,

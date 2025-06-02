@@ -105,7 +105,7 @@ const ManageUsers = () => {
                 <td className="px-3 sm:px-6 py-2 text-center whitespace-nowrap">
                   <button
                     onClick={() => handleUpdateStatus(user.id)}
-                    className={`bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded ${
+                    className={`bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded cursor-pointer ${
                       !selectedStatus[user.id] ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                     disabled={!selectedStatus[user.id] || isUpdating}

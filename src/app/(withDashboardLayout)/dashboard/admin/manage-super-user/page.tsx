@@ -34,7 +34,6 @@ const ManageSuperUser = () => {
     field: "isActive" | "isVerified" | "isDeleted",
     currentValue: boolean
   ) => {
-    // const updatedValue = !currentValue; // এটা এখানে দরকার নাই
 
     try {
       console.log("Updating super user:", { id, field });
@@ -125,7 +124,7 @@ const ManageSuperUser = () => {
                         onClick={() =>
                           handleUpdate(user.id, "isActive", roleData.isActive)
                         }
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-md transition"
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-md transition cursor-pointer"
                       >
                         Toggle Active
                       </button>
@@ -137,7 +136,7 @@ const ManageSuperUser = () => {
                             roleData.isVerified
                           )
                         }
-                        className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md transition"
+                        className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md transition cursor-pointer"
                       >
                         Toggle Verified
                       </button>
@@ -150,7 +149,7 @@ const ManageSuperUser = () => {
                               roleData.isDeleted
                             )
                           }
-                          className="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-md transition"
+                          className="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-md transition cursor-pointer"
                         >
                           Toggle Deleted
                         </button>

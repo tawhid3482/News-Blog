@@ -32,7 +32,7 @@ const ManageOpinion = () => {
 
   return (
     <div className="p-4 w-lg md:w-2xl lg:w-4xl 2xl:w-7xl">
-      <h2 className="text-2xl font-bold text-[#0896EF] mb-6">My Posts</h2>
+      <h2 className="text-2xl font-bold text-[#0896EF] mb-6">Manage Opinions</h2>
       <div className=" overflow-x-auto lg:overflow-x-visible rounded-md border border-gray-300">
         <table className="min-w-full divide-y divide-gray-300 bg-white text-sm sm:text-base">
           <thead className="bg-[#0896EF] text-white">
@@ -60,7 +60,7 @@ const ManageOpinion = () => {
                   <button
                     onClick={() => handleTogglePublish(post)}
                     disabled={updatingId === post.id}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition cursor-pointer ${
                       post.isPublished ? "bg-green-500" : "bg-gray-300"
                     }`}
                   >

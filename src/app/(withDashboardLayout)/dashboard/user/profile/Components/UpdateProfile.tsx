@@ -89,7 +89,7 @@ const UpdateProfileModal = ({
 
           <button
             type="submit"
-            className="bg-[#0896EF] w-full py-2 text-white rounded-lg hover:bg-blue-700 transition"
+            className="bg-[#0896EF] w-full py-2 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer"
             disabled={isLoading}
           >
             {isLoading ? "Updating..." : "Save Changes"}

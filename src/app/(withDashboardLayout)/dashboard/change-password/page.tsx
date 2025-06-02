@@ -61,7 +61,7 @@ const ChangePassword = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2 px-4 bg-[#0896EF] text-white font-semibold rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          className="w-full py-2 px-4 bg-[#0896EF] text-white font-semibold rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
         >
           {isLoading ? "Changing..." : "Change Password"}
         </button>

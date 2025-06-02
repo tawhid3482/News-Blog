@@ -26,7 +26,7 @@ const ReviewPage = () => {
       const res = await createReview(payload).unwrap();
 
       if (res?.id) {
-        router.refresh()
+        router.refresh();
         router.push("/dashboard/user");
         toast.success("Review submitted successfully!");
       } else {
@@ -79,7 +79,7 @@ const ReviewPage = () => {
         <div className="flex justify-end mt-6">
           <button
             type="submit"
-            className="px-4 py-2 bg-[#0896EF] hover:bg-blue-700 text-white rounded-md transition duration-200"
+            className="px-4 py-2 bg-[#0896EF] hover:bg-blue-700 text-white rounded-md transition duration-200 cursor-pointer"
           >
             Submit Review
           </button>

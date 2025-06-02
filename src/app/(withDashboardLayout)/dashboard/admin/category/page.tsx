@@ -23,7 +23,7 @@ const CategoryPage = () => {
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-[#0896EF] hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+          className="bg-[#0896EF] hover:bg-blue-700 text-white px-4 py-2 rounded shadow cursor-pointer"
         >
           + Create Category
         </button>

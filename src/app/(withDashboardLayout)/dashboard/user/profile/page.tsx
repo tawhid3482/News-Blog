@@ -104,7 +104,7 @@ const Profile = () => {
 
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="bg-[#0896EF] hover:bg-blue-700 text-white px-5 py-2 rounded-full shadow transition text-base sm:text-lg md:text-xl"
+                  className="bg-[#0896EF] hover:bg-blue-700 text-white px-5 py-2 rounded-full shadow transition text-base sm:text-lg md:text-xl cursor-pointer"
                 >
                   ✏️ Update Profile
                 </button>

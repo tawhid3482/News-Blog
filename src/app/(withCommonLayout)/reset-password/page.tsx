@@ -17,7 +17,6 @@ const validationSchema = z.object({
   newPassword: z.string().min(6, "Must be at least 6 characters long"),
 });
 
-
 const ResetPassword = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -80,7 +79,7 @@ const ResetPassword = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition cursor-pointer "
         >
           Reset Password
         </button>

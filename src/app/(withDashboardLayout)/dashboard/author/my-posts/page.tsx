@@ -62,7 +62,7 @@ const MyPosts = () => {
                 href={`/dashboard/${user.role}/my-posts/update-news/${post.id}`}
               >
                 <button
-                  className="mt-4 w-full bg-[#0896EF] text-white text-sm font-medium py-2 rounded hover:bg-[#accce1] transition"
+                  className="mt-4 w-full bg-[#0896EF] text-white text-sm font-medium py-2 rounded hover:bg-[#accce1] transition cursor-pointer"
                   onClick={() => {
                     console.log("Update Post:", post.id);
                   }}
