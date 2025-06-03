@@ -9,7 +9,7 @@ import Pagination from "@/components/UI/Pagination/Pagination";
 const getNewsData = async (searchTerm: string, page: number = 1) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/post?searchTerm=${searchTerm}&page=${page}&limit=2`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/post?searchTerm=${searchTerm}&page=${page}&limit=13`,
       { cache: "no-store" }
     );
     if (!res.ok) return null;

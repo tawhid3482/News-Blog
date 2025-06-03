@@ -71,8 +71,10 @@ const Review = () => {
                 </div>
               </div>
               <p className="text-gray-700 italic flex-grow">
-                "{review.content}"
+                "{review.content?.split(" ").slice(0, 20).join(" ")}
+                {review.content?.split(" ").length > 20 ? "..." : ""}"
               </p>
+
               <div className="mt-4 text-yellow-500">
                 {"⭐".repeat(review.rating)}
               </div>

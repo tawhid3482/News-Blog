@@ -70,7 +70,7 @@ const Footer = () => {
           <h3 id="footer-subscribe" className="text-lg font-semibold mb-4">Subscribe</h3>
 
           {submitted ? (
-            <p className="text-green-400 font-semibold">Thank you for subscribing!</p>
+            <p className="text-[#0896EF] font-semibold">Thank you for subscribing!</p>
           ) : (
             <form aria-label="Subscribe to newsletter" className="flex flex-col gap-2" onSubmit={handleSubscribe}>
               <input
@@ -85,7 +85,7 @@ const Footer = () => {
               />
               <button
                 type="submit"
-                className="bg-[#0896EF] hover:bg-blue-600 text-white px-4 py-2 rounded font-medium transition disabled:opacity-50"
+                className="bg-[#0896EF] hover:bg-blue-600 text-white px-4 py-2 rounded font-medium transition disabled:opacity-50 cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? "Subscribing..." : "Subscribe"}

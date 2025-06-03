@@ -11,7 +11,7 @@ type PageProps = {
 const getNewsData = async (category: string, page: number = 1) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/post?category=${category.toUpperCase()}&page=${page}&limit=2`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/post?category=${category.toUpperCase()}&page=${page}&limit=13`,
       { cache: "no-store" }
     );
 
@@ -22,7 +22,7 @@ const getNewsData = async (category: string, page: number = 1) => {
     const news = await res.json();
     return {
       data: news?.data || [],
-      meta: news?.meta || { total: 0, page: 1, limit: 6 },
+      meta: news?.meta || { total: 0, page: 1, limit: 13 },
     };
   } catch (error) {
     console.error("Fetch failed:", error);
