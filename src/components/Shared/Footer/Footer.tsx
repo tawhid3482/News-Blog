@@ -49,7 +49,7 @@ const Footer = () => {
         {/* About Section */}
         <section aria-labelledby="footer-about">
           <h2 id="footer-about" className="text-xl font-semibold mb-4">TIS-News</h2>
-          <p className="text-gray-400 text-sm">
+          <p className="text-white text-sm">
             Stay informed with the latest headlines from around the world. Your trusted source for breaking news, in-depth analysis, and expert opinion.
           </p>
         </section>
@@ -57,7 +57,7 @@ const Footer = () => {
         {/* Quick Links */}
         <nav aria-label="Footer Quick Links">
           <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-          <ul className="space-y-2 text-sm text-gray-400">
+          <ul className="space-y-2 text-sm text-white">
             <li><a href="/about" className="hover:text-white transition">About Us</a></li>
             <li><a href="/contact" className="hover:text-white transition">Contact</a></li>
             <li><a href="/privacy" className="hover:text-white transition">Privacy Policy</a></li>

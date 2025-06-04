@@ -61,7 +61,7 @@ const ManageUsers = () => {
         </h2>
         <h2 className="text-xl font-bold text-[#0896EF] mb-6">
           Total Inactive{" "}
-          {users?.filter((user: any) => !user.ACTIVE)?.length}
+          {users?.filter((user: any) => !user.status.ACTIVE)?.length}
         </h2>
       </div>
       {/* Overflow-x auto only on sm and md, visible on lg+ */}
