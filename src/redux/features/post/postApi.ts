@@ -57,7 +57,6 @@ const postApi = baseApi.injectEndpoints({
       },
       invalidatesTags: [tagTypes.news],
     }),
-    // 👇 View Tracking API
     trackPostView: builder.mutation({
       query: (postId: string) => ({
         url: `/post/${postId}/view`,
