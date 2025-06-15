@@ -2,7 +2,6 @@
 
 import { FieldValues } from "react-hook-form";
 import setAccessToken from "./setAccessToken";
-// import setAccessToken from './setAccessToken';
 
 export const userLogin = async (data: FieldValues) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`, {
