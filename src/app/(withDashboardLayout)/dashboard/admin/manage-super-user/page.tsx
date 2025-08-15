@@ -71,7 +71,7 @@ const ManageSuperUser = () => {
                   ...(role === "ADMIN" ? ["isDeleted"] : []),
                   "Created At",
                   "Actions",
-                ].map((head, index) => (
+                ]?.map((head, index) => (
                   <th
                     key={index}
                     className="px-4 py-3 text-left font-semibold whitespace-nowrap"
@@ -82,7 +82,7 @@ const ManageSuperUser = () => {
               </tr>
             </thead>
             <tbody className="divide-y bg-white text-gray-800">
-              {filtered.map((user: any) => {
+              {filtered?.map((user: any) => {
                 const roleData = user[roleKey];
                 if (!roleData) return null;
 

@@ -59,7 +59,7 @@ const CategoryModal = ({
           <NSelect
             name="name"
             label="Category Name"
-            options={availableOptions.map((opt) => ({
+            options={availableOptions?.map((opt) => ({
               label: opt,
               value: opt,
             }))}

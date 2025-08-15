@@ -38,7 +38,7 @@ const NRole = ({ name, label = "", required = false, options, onChange }: TSelec
               }}
             >
               <option value="">Select {label.toLowerCase()}</option>
-              {options.map((opt) => (
+              {options?.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>

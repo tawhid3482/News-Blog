@@ -22,7 +22,7 @@ const OpinionSlug = ({ opinion }: { opinion: any }) => {
 
       {/* Content */}
       <article className="prose prose-sm sm:prose lg:prose-lg max-w-none text-justify text-lg">
-        {content?.split("\n").map((para: string, idx: number) => (
+        {content?.split("\n")?.map((para: string, idx: number) => (
           <p key={idx}>{para}</p>
         ))}
       </article>

@@ -33,7 +33,7 @@ const NSelect = ({ name, label = "", required = false, options }: TSelectProps) 
               } rounded-lg focus:ring-2 focus:ring-blue-400 outline-none`}
             >
               <option value="">Select {label.toLowerCase()}</option>
-              {options.map((opt) => (
+              {options?.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>

@@ -40,7 +40,7 @@ export default function Sidebar({ open, toggle, role }: SidebarProps) {
 
       <div className="overflow-y-auto h-[calc(100%-4rem)]">
         <nav className="mt-4 px-1 sm:px-2 space-y-1">
-          {drawerItems(role).map((item, index) => {
+          {drawerItems(role)?.map((item, index) => {
             const linkPath = `/dashboard/${item.path}`;
             const active = pathname === linkPath;
             const IconComponent: IconType = item.icon ?? FaFileAlt; // ডিফল্ট আইকন React-icons এর

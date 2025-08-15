@@ -21,7 +21,7 @@ const RelevantNewsList = ({ relevantNews }: { relevantNews: any[] }) => {
             Relevant News
           </h3>
           <div className="flex flex-col gap-4">
-            {relevantNews.slice(0, 3).map((item: any) => (
+            {relevantNews.slice(0, 3)?.map((item: any) => (
               <Link
                 key={item.slug}
                 href={`/news/${item.category.slug}/${item.slug}`}

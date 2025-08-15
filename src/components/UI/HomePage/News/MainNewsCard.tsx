@@ -41,6 +41,7 @@ const truncateWords = (text: string, wordLimit: number) => {
 };
 
 const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
+  console.log("Main News:", mainNews);
   const router = useRouter();
   const user = getUserInfo();
   const [newComment, setNewComment] = useState("");
@@ -189,7 +190,7 @@ const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
               {Object.entries(mainReactions)?.length === 0 ? (
                 <span className="text-gray-500">No reactions yet</span>
               ) : (
-                Object.entries(mainReactions).map(([type, count]) => (
+                Object.entries(mainReactions)?.map(([type, count]) => (
                   <div
                     key={type}
                     className="flex items-center gap-1 text-gray-600 border px-2 py-1 rounded-full text-xs"
@@ -235,7 +236,7 @@ const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
                   <p className="text-gray-500 text-sm mt-2">No comments yet.</p>
                 ) : (
                   <ul className="mt-4 space-y-4 max-h-64 overflow-y-auto">
-                    {mainComments.slice(-3).map((c: any, i: number) => (
+                    {mainComments.slice(-3)?.map((c: any, i: number) => (
                       <li key={i} className="flex gap-3 items-start">
                         <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden relative">
                           <Image

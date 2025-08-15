@@ -28,7 +28,6 @@ const SignInPage = () => {
   const handleLogin = async (data: FieldValues) => {
     try {
       const res = await userLogin(data);
-      console.log(res);
       const token = res?.data?.accessToken;
       if (token) {
         storeUserInfo({ accessToken: token });

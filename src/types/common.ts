@@ -36,3 +36,5 @@ export type IGenericErrorMessage = {
 };
 
 export const Gender = ["MALE", "FEMALE"];
+
+

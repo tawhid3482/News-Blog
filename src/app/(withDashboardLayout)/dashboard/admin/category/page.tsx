@@ -40,7 +40,7 @@ const CategoryPage = () => {
         <p>Loading categories...</p>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-          {filteredCategories.map((category: any) => (
+          {filteredCategories?.map((category: any) => (
             <div
               key={category.id}
               className="border border-gray-300 p-4 rounded shadow-sm bg-white flex flex-col justify-between"
@@ -59,7 +59,7 @@ const CategoryPage = () => {
       {isModalOpen && (
         <CategoryModal
           onClose={() => setIsModalOpen(false)}
-          existingCategories={categories.map((cat: any) => cat.name)}
+          existingCategories={categories?.map((cat: any) => cat.name)}
         />
       )}
     </div>

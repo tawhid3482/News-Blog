@@ -102,7 +102,7 @@ export default function AppNavbar({
                 <h3 className="font-semibold mb-2">Notifications</h3>
                 {notification && notification.length > 0 ? (
                   <ul className="text-sm space-y-2">
-                    {notification.map((note: any) => (
+                    {notification?.map((note: any) => (
                       <li
                         key={note.id}
                         className="border-b pb-2 last:border-none"
@@ -227,7 +227,7 @@ export default function AppNavbar({
                 <div className="px-4 py-2 max-h-48 overflow-y-auto bg-gray-50 text-sm">
                   {notification && notification.length > 0 ? (
                     <ul>
-                      {notification.map((note: any) => (
+                      {notification?.map((note: any) => (
                         <li
                           key={note.id}
                           className="border-b py-1 last:border-none"

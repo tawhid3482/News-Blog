@@ -28,13 +28,13 @@ const Searchbar = ({
 
       try {
         const res = await axios.get(
-          `https://news-blog-server-production-ba38.up.railway.app/api/s1/search-news?searchTerm=${encodeURIComponent(
+          `http://localhost:5000/api/s1/search-news?searchTerm=${encodeURIComponent(
             searchQuery.trim()
           )}`
         );
 
         const hits = res.data?.data?.hits || [];
-        const formattedSuggestions = hits.map((hit: any) => ({
+        const formattedSuggestions = hits?.map((hit: any) => ({
           id: hit.id,
           title: hit.title,
           image: hit.image,
@@ -109,7 +109,7 @@ const Searchbar = ({
         {/* Suggestions dropdown */}
         {suggestions.length > 0 && (
           <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg shadow-md max-h-60 overflow-y-auto mt-1">
-            {suggestions.map((item) => (
+            {suggestions?.map((item) => (
               <div
                 key={item.id}
                 onClick={() => navigateToSearch(item.title)}
@@ -156,7 +156,7 @@ const Searchbar = ({
         {/* Suggestions dropdown */}
         {suggestions.length > 0 && (
           <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg shadow-md max-h-60 overflow-y-auto mt-1">
-            {suggestions.map((item) => (
+            {suggestions?.map((item) => (
               <div
                 key={item.id}
                 onClick={() => navigateToSearch(item.title)}

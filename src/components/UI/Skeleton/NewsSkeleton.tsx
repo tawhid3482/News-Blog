@@ -10,7 +10,7 @@ const NewSkeleton = () => {
 
         {/* Relevant News Skeleton */}
         <div className="lg:w-1/3 w-full space-y-4">
-          {[...Array(3)].map((_, i) => (
+          {[...Array(3)]?.map((_, i) => (
             <div
               key={i}
               className="flex flex-col sm:flex-row bg-gray-300 rounded-lg overflow-hidden"
@@ -28,7 +28,7 @@ const NewSkeleton = () => {
 
       {/* More News Skeleton */}
       <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(6)]?.map((_, i) => (
           <div key={i} className="bg-gray-300 rounded-lg h-64"></div>
         ))}
       </div>

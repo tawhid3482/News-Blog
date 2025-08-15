@@ -24,7 +24,7 @@ const CreatePost = () => {
       summary: data.summary,
       content: data.content,
       categoryId: data.categoryId,
-      tags: data.tags.split(",").map((tag: string) => ({ name: tag.trim() })),
+      tags: data.tags.split(",")?.map((tag: string) => ({ name: tag.trim() })),
     };
 
     formData.append("data", JSON.stringify(postData));
@@ -71,7 +71,7 @@ const CreatePost = () => {
           name="categoryId"
           label="Category"
           required
-          options={categories.map((cat: any) => ({
+          options={categories?.map((cat: any) => ({
             label: cat.name,
             value: cat.id,
           }))}

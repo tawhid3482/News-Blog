@@ -119,7 +119,7 @@ const ManageUsers = () => {
                     }
                   >
                     <option value="">Select Status</option>
-                    {statusOptions.map((status) => (
+                    {statusOptions?.map((status) => (
                       <option key={status} value={status}>
                         {status}
                       </option>

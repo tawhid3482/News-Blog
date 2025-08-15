@@ -54,7 +54,7 @@ const OpinionPage = () => {
           name="categoryId"
           label="Category"
           required
-          options={categories.map((cat: any) => ({
+          options={categories?.map((cat: any) => ({
             label: cat.name,
             value: cat.id,
           }))}

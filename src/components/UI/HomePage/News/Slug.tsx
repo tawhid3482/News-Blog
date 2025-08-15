@@ -24,7 +24,7 @@ const reactionEmojiMap: Record<string, string> = {
   ANGRY: "😡",
 };
 
-const reactions = Object.entries(reactionEmojiMap).map(([type, emoji]) => ({
+const reactions = Object.entries(reactionEmojiMap)?.map(([type, emoji]) => ({
   type,
   emoji,
 }));
@@ -82,7 +82,7 @@ const Slug = ({ newsItem }: { newsItem: any }) => {
 
       // ✅ Make sure this matches your actual backend route (use absolute path if needed)
       navigator.sendBeacon(
-        `https://news-blog-server-production-ba38.up.railway.app/api/s1/post/${newsItem.id}/reading-time`,
+        `http://localhost:5000/api/s1/post/${newsItem.id}/reading-time`,
         blob
       );
     };
@@ -107,7 +107,7 @@ const Slug = ({ newsItem }: { newsItem: any }) => {
     newsItem.reactions?.find((r: any) => r.userId === user?.userId)?.type ||
     null;
 
-  const reactionCounts = reactions.map((r) => ({
+  const reactionCounts = reactions?.map((r) => ({
     ...r,
     count: mainReactions[r.type] || 0,
   }));
@@ -163,7 +163,7 @@ const Slug = ({ newsItem }: { newsItem: any }) => {
       </div>
 
       <div className="my-5 flex flex-wrap gap-2">
-        {newsItem.tags.map((tag: any) => (
+        {newsItem.tags?.map((tag: any) => (
           <span
             key={tag.id}
             className="px-3 py-1 bg-gray-200 text-sm rounded-full"
@@ -189,7 +189,7 @@ const Slug = ({ newsItem }: { newsItem: any }) => {
           <span className="text-2xl ml-2">({totalReactions})</span>
           {showAllReactions && (
             <div className="absolute -top-11 left-0 bg-white border shadow px-3 py-2 rounded-full flex gap-2 z-20">
-              {reactions.map((r) => (
+              {reactions?.map((r) => (
                 <button
                   key={r.type}
                   onClick={() => handleReaction(r.type)}
@@ -213,7 +213,7 @@ const Slug = ({ newsItem }: { newsItem: any }) => {
       <p className="text-sm text-gray-600 mb-6">
         {reactionCounts
           .filter((r) => r.count > 0)
-          .map((r) => `${r.emoji} ${r.count}`)
+          ?.map((r) => `${r.emoji} ${r.count}`)
           .join("  ") || "No reactions yet"}
       </p>
 
@@ -237,7 +237,7 @@ const Slug = ({ newsItem }: { newsItem: any }) => {
               <p className="text-gray-500 text-sm mt-2">No comments yet.</p>
             ) : (
               <ul className="mt-4 space-y-4 max-h-64 overflow-y-auto">
-                {[...newsItem.comments].reverse().map((c: any, i: number) => (
+                {[...newsItem.comments].reverse()?.map((c: any, i: number) => (
                   <li key={i} className="flex gap-3 items-start">
                     <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden relative">
                       <Image

@@ -15,14 +15,14 @@ const SlugSkeleton = () => {
 
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-6">
-        {Array.from({ length: 3 }).map((_, i) => (
+        {Array.from({ length: 3 })?.map((_, i) => (
           <div key={i} className="px-6 py-2 bg-gray-200 rounded-full w-20 h-6"></div>
         ))}
       </div>
 
       {/* Content */}
       <div className="space-y-4 mb-6">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 6 })?.map((_, i) => (
           <div key={i} className="h-4 bg-gray-200 rounded w-full"></div>
         ))}
       </div>

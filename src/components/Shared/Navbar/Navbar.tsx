@@ -71,7 +71,7 @@ const Navbar = () => {
         aria-label="Primary navigation"
       >
         <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-6 lg:flex gap-4 w-full justify-center items-center">
-          {navItems.map(({ name, path }) => (
+          {navItems?.map(({ name, path }) => (
             <Link
               key={name}
               href={path}

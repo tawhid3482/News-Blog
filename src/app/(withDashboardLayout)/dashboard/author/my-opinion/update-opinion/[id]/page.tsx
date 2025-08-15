@@ -39,7 +39,7 @@ const UpdateOpinion = ({ params }: { params: Promise<{ id: string }> }) => {
       slug: data.slug,
       content: data.content,
       categoryId: data.categoryId,
-      tags: data.tags.split(",").map((tag: string) => ({ name: tag.trim() })),
+      tags: data.tags.split(",")?.map((tag: string) => ({ name: tag.trim() })),
     };
     console.log(postData)
 

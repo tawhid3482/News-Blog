@@ -99,7 +99,7 @@ const NewsCategoryPage = async ({ params, searchParams }: PageProps) => {
 
   const mainNews = filteredNews[0];
   const relevantNews = filteredNews.slice(1, 4);
-  const excludedIds = [mainNews.id, ...relevantNews.map((n: any) => n.id)];
+  const excludedIds = [mainNews.id, ...relevantNews?.map((n: any) => n.id)];
   const otherNews = filteredNews.filter(
     (n: any) => !excludedIds.includes(n.id)
   );

@@ -48,7 +48,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       summary: data.summary,
       content: data.content,
       categoryId: data.categoryId,
-      tags: data.tags.split(",").map((tag: string) => ({ name: tag.trim() })),
+      tags: data.tags.split(",")?.map((tag: string) => ({ name: tag.trim() })),
     };
 
     formData.append("data", JSON.stringify(postData));

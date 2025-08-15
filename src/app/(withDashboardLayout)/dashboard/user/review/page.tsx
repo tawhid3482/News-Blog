@@ -56,7 +56,7 @@ const ReviewPage = () => {
         <NSelect
           name="rating"
           label="Rating"
-          options={ratingOptions.map((r) => ({
+          options={ratingOptions?.map((r) => ({
             label: `${r} Star`,
             value: r,
           }))}

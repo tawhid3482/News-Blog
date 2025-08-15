@@ -13,6 +13,7 @@ import { MessageCircle, ThumbsUp, Eye, FileText } from "lucide-react";
 import Image from "next/image";
 import { useGetAuthorStatsQuery } from "@/redux/features/author/authorApi";
 
+
 const reactionEmojis: Record<string, string> = {
   LIKE: "👍",
   LOVE: "❤️",
@@ -38,7 +39,7 @@ export default function AuthorDashboardOverview() {
     <div className="p-4 sm:p-6 space-y-8 bg-gray-50 min-h-screen">
       {/* Summary Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        {summaryData.map((item: any, idx: number) => (
+        {summaryData?.map((item: any, idx: number) => (
           <div
             key={idx}
             className="bg-white p-5 rounded-2xl shadow flex items-center gap-4"
@@ -70,7 +71,7 @@ export default function AuthorDashboardOverview() {
             </h4>
             <ul className="text-sm text-gray-700 list-disc pl-4 space-y-1">
               {recentPosts.length > 0 ? (
-                recentPosts.map((post: any, i: number) => (
+                recentPosts?.map((post: any, i: number) => (
                   <li key={i}>
                     <span className="font-medium">{post.title}</span> (
                     {post.status})

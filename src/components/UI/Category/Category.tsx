@@ -8,7 +8,7 @@ const Category = ({ categories }: Props) => {
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-      {categories.map((category) => (
+      {categories?.map((category) => (
         <div
           key={category.id}
           className="border border-gray-300 p-4 rounded flex justify-between items-center"

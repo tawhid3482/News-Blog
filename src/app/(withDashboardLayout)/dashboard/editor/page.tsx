@@ -86,15 +86,15 @@ const EditorDashboardOverview = () => {
   if (isLoading || !stats) return <div className="p-4">Loading...</div>;
 
   // Daily data ready
-  const dailyPostData = stats.dailyStats.posts.map((item:any) => ({
+  const dailyPostData = stats.dailyStats.posts?.map((item:any) => ({
     date: item.date,
     count: item.count,
   }));
-  const dailyOpinionData = stats.dailyStats.opinions.map((item:any) => ({
+  const dailyOpinionData = stats.dailyStats.opinions?.map((item:any) => ({
     date: item.date,
     count: item.count,
   }));
-  const dailyReviewData = stats.dailyStats.reviews.map((item:any) => ({
+  const dailyReviewData = stats.dailyStats.reviews?.map((item:any) => ({
     date: item.date,
     count: item.count,
   }));
@@ -175,7 +175,7 @@ const EditorDashboardOverview = () => {
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-2">Recent Reviews</h3>
           <ul className="space-y-3">
-            {stats.reviewStats.recent.map((review: any) => (
+            {stats.reviewStats.recent?.map((review: any) => (
               <li
                 key={review.id}
                 className="bg-gray-50 p-3 rounded-md shadow-sm border border-gray-100"

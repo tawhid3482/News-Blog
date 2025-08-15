@@ -96,7 +96,7 @@ const AdminDash = () => {
       <section className="mt-6">
         <h2 className="text-xl font-semibold mb-4">Most Active Authors</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
-          {userStats.activeAuthors.map((author: any) => (
+          {userStats.activeAuthors?.map((author: any) => (
             <div
               key={author.authorId}
               className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow cursor-default"
@@ -154,7 +154,7 @@ const NewsList = ({
     </h4>
     <ul className="space-y-3 max-h-72 overflow-y-auto">
       {news.length === 0 && <li className="text-gray-500">No data</li>}
-      {news.map((item) => (
+      {news?.map((item) => (
         <li
           key={item.postId ?? item.id}
           className="flex justify-between items-center"

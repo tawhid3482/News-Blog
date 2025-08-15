@@ -82,7 +82,7 @@ const AboutPage = () => {
         <section>
           <h2 className="text-3xl font-bold text-[#0896EF] mb-6 text-center">Frequently Asked Questions</h2>
           <div className="max-w-3xl mx-auto space-y-4">
-            {faqData.map(({ question, answer }, idx) => (
+            {faqData?.map(({ question, answer }, idx) => (
               <div key={idx} className="border rounded-lg shadow-sm overflow-hidden">
                 <button
                   onClick={() => toggleFAQ(idx)}

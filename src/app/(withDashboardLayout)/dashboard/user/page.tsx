@@ -78,7 +78,7 @@ export default function UserDashboard() {
         <div className="bg-white shadow-xl rounded-2xl p-6 flex-1">
           <h4 className="text-lg font-semibold mb-4">Your Reactions</h4>
           <div className="flex flex-wrap gap-3">
-            {Object.entries(stats.reactionTypeCounts).map(([type, count]) => (
+            {Object.entries(stats.reactionTypeCounts)?.map(([type, count]) => (
               <span
                 key={type}
                 className="flex items-center gap-2 bg-gray-100 text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:bg-gray-200 transition"

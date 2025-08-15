@@ -125,7 +125,7 @@ const Profile = () => {
                       ? format(new Date(createdAt), "PPP")
                       : "N/A",
                   },
-                ].map((item, i) => (
+                ]?.map((item, i) => (
                   <div
                     key={i}
                     className="bg-white/80 p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition"

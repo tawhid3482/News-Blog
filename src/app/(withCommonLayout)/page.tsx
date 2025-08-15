@@ -18,6 +18,7 @@ const getNewsData = async () => {
       return null;
     }
     const news = await res.json();
+    console.log(news?.data)
     const data = news?.data || [];
     return data;
   } catch (error) {

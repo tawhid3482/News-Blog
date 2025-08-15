@@ -34,7 +34,7 @@ const VideoNews = () => {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {videoData.map((video) => (
+        {videoData?.map((video) => (
           <div
             key={video.id}
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"

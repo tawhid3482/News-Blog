@@ -40,7 +40,7 @@ const MyPosts = () => {
               </p>
 
               <div className="flex flex-wrap gap-2 my-2">
-                {post.tags.map((tag: any) => (
+                {post.tags?.map((tag: any) => (
                   <span
                     key={tag.id}
                     className="text-xs bg-blue-100 text-[#0896EF] px-2 py-1 rounded-full"

@@ -50,7 +50,7 @@ const Review = () => {
           },
         }}
       >
-        {reviews.map((review: any) => (
+        {reviews?.map((review: any) => (
           <SwiperSlide key={review.id}>
             <div className="bg-white shadow-lg rounded-2xl p-5 border border-[#0896EF] w-full max-w-md mx-auto h-auto min-h-[260px] flex flex-col justify-between">
               <div className="flex items-center gap-4 mb-4">
