@@ -23,7 +23,7 @@ const AuthButton = () => {
 
   return (
     <div>
-      {isClient && userInfo?.userId ? (
+      {isClient && userInfo?.userEmail ? (
         <div className="flex items-center gap-5">
           <Link
             href={`/dashboard/${userInfo.role}`}

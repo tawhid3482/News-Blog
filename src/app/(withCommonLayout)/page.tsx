@@ -18,8 +18,7 @@ const getNewsData = async () => {
       return null;
     }
     const news = await res.json();
-    console.log(news?.data)
-    const data = news?.data || [];
+    const data = news?.data.data || [];
     return data;
   } catch (error) {
     console.error("Fetch failed:", error);

@@ -41,7 +41,6 @@ const truncateWords = (text: string, wordLimit: number) => {
 };
 
 const MainNewsCard = ({ mainNews }: { mainNews: any }) => {
-  console.log("Main News:", mainNews);
   const router = useRouter();
   const user = getUserInfo();
   const [newComment, setNewComment] = useState("");
